@@ -13,13 +13,13 @@ const app = new Hono<AppContext>();
 
 // Aplicar middlewares globales
 app.use('*', corsMiddleware);
-app.use('*', urlServiceMiddleware);
+app.use('*', urlServiceMiddleware as any);
 
 // Montar las rutas de URL
 app.route('/', urlRouter);
 
 // Configurar página 404 para rutas no encontradas
-app.notFound((c) => {
+app.notFound((c): Response => {
   return c.html(html);
 });
 

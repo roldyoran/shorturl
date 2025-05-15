@@ -6,12 +6,12 @@ import { Context } from 'hono';
 import { generateRandomCode, normalizeUrl } from '../utils';
 import { html } from '../html/not-found';
 import { urlFormatSchema } from '../schemas';
-import { AppContext } from '../types';
+import { AppContext, ShortUrlResponse, ErrorResponse } from '../types';
 
 /**
  * Muestra un mensaje de bienvenida
  */
-export const welcomeController = (c: Context) => {
+export const welcomeController = (c: Context): Response => {
   return c.text('¡Hola! Bienvenido a la API de acortador de URLs creada por roldyoran!');
 };
 
@@ -19,8 +19,8 @@ export const welcomeController = (c: Context) => {
  * Acorta una URL original
  * Verifica si ya existe y crea una nueva URL corta si es necesario
  */
-export const shortenUrlController = async (c: AppContext) => {
-  const { original_url } = c.req.valid('json');
+export const shortenUrlController = async (c: AppContext): Promise<Response> => {
+  const { original_url } = c.req.valid('json') as { original_url: string };
   const normalizedUrl = normalizeUrl(original_url);
 
   const urlService = c.get('urlService');
@@ -28,10 +28,11 @@ export const shortenUrlController = async (c: AppContext) => {
   // Verificar si la URL ya existe en la base de datos
   const existingShortUrl = await urlService.getShortUrl(normalizedUrl);
   if (existingShortUrl) {
-    return c.json({
+    const response: ShortUrlResponse = {
       short_url: existingShortUrl[0].short_url,
       original_url: normalizedUrl,
-    });
+    };
+    return c.json(response, 200);
   }
 
   // Generar una nueva URL corta única
@@ -43,22 +44,25 @@ export const shortenUrlController = async (c: AppContext) => {
   // Insertar la nueva URL en la base de datos
   const insertSuccess = await urlService.createUrl(shortUrl, normalizedUrl);
   if (!insertSuccess) {
-    return c.json({ error: 'Error al insertar URL' }, 500);
+    const errorResponse: ErrorResponse = { error: 'Error al insertar URL' };
+    return c.json(errorResponse, 500);
   }
 
-  return c.json({ short_url: shortUrl, original_url: normalizedUrl });
+  const response: ShortUrlResponse = { short_url: shortUrl, original_url: normalizedUrl };
+  return c.json(response);
 };
 
 /**
  * Obtiene información detallada de una URL acortada
  */
-export const getUrlInfoController = async (c: AppContext) => {
+export const getUrlInfoController = async (c: AppContext): Promise<Response> => {
   const shortUrl = c.req.param('short_url');
   const urlService = c.get('urlService');
   const result = await urlService.getUrlInfo(shortUrl);
 
   if (!result) {
-    return c.json({ error: 'URL corta no encontrada' }, 404);
+    const errorResponse: ErrorResponse = { error: 'URL corta no encontrada' };
+    return c.json(errorResponse, 404);
   }
 
   return c.json(result);
@@ -68,7 +72,7 @@ export const getUrlInfoController = async (c: AppContext) => {
  * Redirige a la URL original a partir de una URL acortada
  * Incrementa el contador de clics al redirigir
  */
-export const redirectToOriginalUrlController = async (c: AppContext) => {
+export const redirectToOriginalUrlController = async (c: AppContext): Promise<Response> => {
   const shortUrl = c.req.param('short_url');
   const urlService = c.get('urlService');
   
@@ -81,7 +85,8 @@ export const redirectToOriginalUrlController = async (c: AppContext) => {
   // Validar el formato de la URL
   const parsed = urlFormatSchema.safeParse({ original_url: result.original_url });
   if (!parsed.success) {
-    return c.json({ error: 'Formato de URL inválido' }, 400);
+    const errorResponse: ErrorResponse = { error: 'Formato de URL inválido' };
+    return c.json(errorResponse, 400);
   }
   
   // Incrementar el contador de clics

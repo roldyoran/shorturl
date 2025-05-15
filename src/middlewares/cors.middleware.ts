@@ -8,8 +8,9 @@ import { Context, Next } from 'hono';
  * Configura las cabeceras CORS para permitir solicitudes desde cualquier origen
  * @param c Contexto de la solicitud
  * @param next Función para continuar con el siguiente middleware
+ * @returns Response en caso de solicitud OPTIONS o void para otros métodos
  */
-export const corsMiddleware = async (c: Context, next: Next) => {
+export const corsMiddleware = async (c: Context, next: Next): Promise<Response | void> => {
   // Configura las cabeceras CORS
   c.header('Access-Control-Allow-Origin', '*');
   c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
