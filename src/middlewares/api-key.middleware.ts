@@ -12,9 +12,9 @@ import { AppContext, ErrorResponse } from '../types';
  * @returns Response en caso de error o el resultado del siguiente middleware
  */
 export const apiKeyMiddleware = async (c: AppContext, next: Next): Promise<Response | void> => {
-  if (c.req.header('x-api-key') !== c.env.API_KEY) {
-    const errorResponse: ErrorResponse = { error: 'API key inválida' };
-    return c.json(errorResponse, 401);
-  }
-  await next();
+   if (c.req.header('x-api-key') !== c.env.API_KEY) {
+      const errorResponse: ErrorResponse = { error: 'API key inválida' };
+      return c.json(errorResponse, 401);
+   }
+   await next();
 };

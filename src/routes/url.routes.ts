@@ -8,10 +8,10 @@ import { urlFormatSchema } from '../schemas';
 import { apiKeyMiddleware } from '../middlewares';
 import { AppContext } from '../types';
 import {
-  welcomeController,
-  shortenUrlController,
-  getUrlInfoController,
-  redirectToOriginalUrlController
+   welcomeController,
+   shortenUrlController,
+   getUrlInfoController,
+   redirectToOriginalUrlController,
 } from '../controllers/url.controller';
 
 // Crear instancia de Hono para las rutas de URL
@@ -26,7 +26,12 @@ urlRouter.get('/', welcomeController);
  * Endpoint para acortar una URL
  * Requiere autenticación con API key
  */
-urlRouter.post('/shorten', apiKeyMiddleware, zValidator('json', urlFormatSchema), shortenUrlController);
+urlRouter.post(
+   '/shorten',
+   apiKeyMiddleware,
+   zValidator('json', urlFormatSchema),
+   shortenUrlController,
+);
 
 /**
  * Endpoint para obtener información de una URL acortada

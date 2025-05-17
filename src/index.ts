@@ -20,7 +20,7 @@ app.route('/', urlRouter);
 
 // Configurar página 404 para rutas no encontradas
 app.notFound((c): Response => {
-  return c.html(html);
+   return c.html(html);
 });
 
 export default app;

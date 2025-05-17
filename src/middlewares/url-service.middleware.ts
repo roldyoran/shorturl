@@ -13,8 +13,8 @@ import { AppContext } from '../types';
  * @returns Promise<void>
  */
 export const urlServiceMiddleware = async (c: AppContext, next: Next): Promise<void> => {
-  // Inicializa UrlService y lo asigna al contexto
-  const urlService = new UrlService(c.env.DB);
-  c.set('urlService', urlService);
-  await next();
+   // Inicializa UrlService y lo asigna al contexto
+   const urlService = new UrlService(c.env.DB);
+   c.set('urlService', urlService);
+   await next();
 };

@@ -1,70 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acortador de URLs - Pro</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Acortador de URLs - Pro</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+         rel="stylesheet"
+      />
+      <!-- Tailwind CSS CDN -->
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script>
+         tailwind.config = {
             darkMode: 'class',
             theme: {
-                extend: {
-                    colors: {
-                        primary: '#000000',
-                        secondary: '#0A0A0A',
-                        accent: '#10b981',
-                        'accent-hover': '#0d9668',
-                        'dark-card': '#111111',
-                        'dark-input': '#1A1A1A',
-                        'dark-border': '#2A2A2A',
-                        'dark-text': '#F8FAFC',
-                        'dark-text-secondary': '#94A3B8'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif']
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'bounce-slow': 'bounce 2s infinite',
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-up': 'slideUp 0.5s ease-out'
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' }
-                        },
-                        slideUp: {
-                            '0%': { transform: 'translateY(20px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' }
-                        }
-                    },
-                    backgroundImage: {
-                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Estilos adicionales para animaciones y efectos */
-        .animate-fade-in, .animate-slide-up {
+               extend: {
+                  colors: {
+                     primary: '#000000',
+                     secondary: '#0A0A0A',
+                     accent: '#10b981',
+                     'accent-hover': '#0d9668',
+                     'dark-card': '#111111',
+                     'dark-input': '#1A1A1A',
+                     'dark-border': '#2A2A2A',
+                     'dark-text': '#F8FAFC',
+                     'dark-text-secondary': '#94A3B8',
+                  },
+                  fontFamily: {
+                     sans: ['Inter', 'sans-serif'],
+                  },
+                  animation: {
+                     'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                     'bounce-slow': 'bounce 2s infinite',
+                     'fade-in': 'fadeIn 0.5s ease-in-out',
+                     'slide-up': 'slideUp 0.5s ease-out',
+                  },
+                  keyframes: {
+                     fadeIn: {
+                        '0%': { opacity: '0' },
+                        '100%': { opacity: '1' },
+                     },
+                     slideUp: {
+                        '0%': { transform: 'translateY(20px)', opacity: '0' },
+                        '100%': { transform: 'translateY(0)', opacity: '1' },
+                     },
+                  },
+                  backgroundImage: {
+                     'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                     'gradient-conic':
+                        'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+                  },
+               },
+            },
+         };
+      </script>
+      <style>
+         /* Estilos adicionales para animaciones y efectos */
+         .animate-fade-in,
+         .animate-slide-up {
             opacity: 0;
-        }
-        
-        /* Efecto de brillo en hover para botones */
-        button:hover {
+         }
+
+         /* Efecto de brillo en hover para botones */
+         button:hover {
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
-        }
-        
-        /* Efecto de partículas de fondo */
-        .bg-particles {
+         }
+
+         /* Efecto de partículas de fondo */
+         .bg-particles {
             position: fixed;
             top: 0;
             left: 0;
@@ -72,292 +77,500 @@
             height: 100%;
             pointer-events: none;
             z-index: -1;
-        }
-        
-        /* Mejora de contraste para textos sobre gradientes */
-        .text-shadow {
+         }
+
+         /* Mejora de contraste para textos sobre gradientes */
+         .text-shadow {
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-        }
-    </style>
-</head>
-<body class="bg-gradient-to-b from-primary to-secondary text-dark-text font-sans min-h-screen dark overflow-x-hidden">
-    <div class="bg-particles"></div>
-    <div class="max-w-6xl mx-auto px-4 py-8">
-        <!-- Navbar -->
-        <nav class="flex justify-between items-center mb-10 animate-fade-in">
+         }
+      </style>
+   </head>
+   <body
+      class="bg-gradient-to-b from-primary to-secondary text-dark-text font-sans min-h-screen dark overflow-x-hidden"
+   >
+      <div class="bg-particles"></div>
+      <div class="max-w-6xl mx-auto px-4 py-8">
+         <!-- Navbar -->
+         <nav class="flex justify-between items-center mb-10 animate-fade-in">
             <div class="flex items-center space-x-2">
-                <svg class="w-8 h-8 text-accent animate-pulse-slow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
-                <span class="text-xl font-bold bg-gradient-to-r from-accent to-emerald-500 bg-clip-text text-transparent">ShortURL Pro</span>
+               <svg
+                  class="w-8 h-8 text-accent animate-pulse-slow"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+               >
+                  <path
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     stroke-width="2"
+                     d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                  />
+               </svg>
+               <span
+                  class="text-xl font-bold bg-gradient-to-r from-accent to-emerald-500 bg-clip-text text-transparent"
+                  >ShortURL Pro</span
+               >
             </div>
-        </nav>
+         </nav>
 
-        <!-- Hero Section -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold mb-3">Construye conexiones digitales más fuertes</h1>
-            <p class="text-xl text-dark-text-secondary max-w-3xl mx-auto">Usa nuestro acortador de URLs para conectar con tu audiencia y dirigirlos a la información correcta.</p>
-        </div>
+         <!-- Hero Section -->
+         <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-3">
+               Construye conexiones digitales más fuertes
+            </h1>
+            <p class="text-xl text-dark-text-secondary max-w-3xl mx-auto">
+               Usa nuestro acortador de URLs para conectar con tu audiencia y dirigirlos a la
+               información correcta.
+            </p>
+         </div>
 
-        <!-- Main Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+         <!-- Main Content -->
+         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Left Column - API Configuration -->
             <div class="lg:col-span-1">
-                <div class="bg-dark-card rounded-lg shadow-lg p-6 mb-6 border border-dark-border">
-                    <div class="flex items-center gap-2 mb-4 text-lg font-semibold">
-                        <svg class="w-5 h-5 text-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                        </svg>
-                        Configuración de API
-                    </div>
-                    <div class="mb-4">
-                        <label for="api-key" class="block mb-2 font-medium">Clave de API</label>
-                        <input type="text" id="api-key" placeholder="Ingresa tu clave de API" class="w-full px-4 py-3 bg-dark-input border border-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent text-dark-text">
-                    </div>
-                    <div class="mb-4">
-                        <label for="api-url" class="block mb-2 font-medium">URL Base de la API</label>
-                        <input type="url" id="api-url" placeholder="https://tu-worker.workers.dev" class="w-full px-4 py-3 bg-dark-input border border-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent text-dark-text">
-                    </div>
-                </div>
+               <div class="bg-dark-card rounded-lg shadow-lg p-6 mb-6 border border-dark-border">
+                  <div class="flex items-center gap-2 mb-4 text-lg font-semibold">
+                     <svg
+                        class="w-5 h-5 text-accent"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                     >
+                        <path
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                           stroke-width="2"
+                           d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                        />
+                     </svg>
+                     Configuración de API
+                  </div>
+                  <div class="mb-4">
+                     <label for="api-key" class="block mb-2 font-medium">Clave de API</label>
+                     <input
+                        type="text"
+                        id="api-key"
+                        placeholder="Ingresa tu clave de API"
+                        class="w-full px-4 py-3 bg-dark-input border border-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent text-dark-text"
+                     />
+                  </div>
+                  <div class="mb-4">
+                     <label for="api-url" class="block mb-2 font-medium">URL Base de la API</label>
+                     <input
+                        type="url"
+                        id="api-url"
+                        placeholder="https://tu-worker.workers.dev"
+                        class="w-full px-4 py-3 bg-dark-input border border-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent text-dark-text"
+                     />
+                  </div>
+               </div>
 
-                <!-- Redirect Test -->
-                <div class="bg-dark-card rounded-lg shadow-lg p-6 border border-dark-border">
-                    <div class="flex items-center gap-2 mb-4 text-lg font-semibold">
-                        <svg class="w-5 h-5 text-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                        </svg>
-                        Probar Redirección
-                    </div>
-                    <div class="mb-4">
-                        <label for="redirect-url" class="block mb-2 font-medium">Código de URL Corta</label>
-                        <input type="text" id="redirect-url" placeholder="abc123" class="w-full px-4 py-3 bg-dark-input border border-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent text-dark-text">
-                    </div>
-                    <button id="redirect-btn" class="w-full bg-accent hover:bg-accent-hover text-white font-medium py-3 px-4 rounded-md transition duration-300 uppercase">Ir a URL Original</button>
-                </div>
+               <!-- Redirect Test -->
+               <div class="bg-dark-card rounded-lg shadow-lg p-6 border border-dark-border">
+                  <div class="flex items-center gap-2 mb-4 text-lg font-semibold">
+                     <svg
+                        class="w-5 h-5 text-accent"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                     >
+                        <path
+                           stroke-linecap="round"
+                           stroke-linejoin="round"
+                           stroke-width="2"
+                           d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                        />
+                     </svg>
+                     Probar Redirección
+                  </div>
+                  <div class="mb-4">
+                     <label for="redirect-url" class="block mb-2 font-medium"
+                        >Código de URL Corta</label
+                     >
+                     <input
+                        type="text"
+                        id="redirect-url"
+                        placeholder="abc123"
+                        class="w-full px-4 py-3 bg-dark-input border border-dark-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent text-dark-text"
+                     />
+                  </div>
+                  <button
+                     id="redirect-btn"
+                     class="w-full bg-accent hover:bg-accent-hover text-white font-medium py-3 px-4 rounded-md transition duration-300 uppercase"
+                  >
+                     Ir a URL Original
+                  </button>
+               </div>
             </div>
 
             <!-- Right Column - Main Functionality -->
             <div class="lg:col-span-2">
-                <!-- Tabs -->
-                <div class="flex mb-6 border-b border-dark-border bg-gradient-to-r from-dark-card/50 to-transparent rounded-t-lg">
-                    <button class="tab active py-3 px-6 font-medium focus:outline-none transition-all duration-300 hover:bg-accent/20" data-tab="shorten">Acortar URL</button>
-                    <button class="tab py-3 px-6 font-medium focus:outline-none transition-all duration-300 hover:bg-accent/20" data-tab="info">Información de URL</button>
-                    <button class="tab py-3 px-6 font-medium focus:outline-none transition-all duration-300 hover:bg-accent/20" data-tab="my-urls">Mis URLs</button>
-                </div>
+               <!-- Tabs -->
+               <div
+                  class="flex mb-6 border-b border-dark-border bg-gradient-to-r from-dark-card/50 to-transparent rounded-t-lg"
+               >
+                  <button
+                     class="tab active py-3 px-6 font-medium focus:outline-none transition-all duration-300 hover:bg-accent/20"
+                     data-tab="shorten"
+                  >
+                     Acortar URL
+                  </button>
+                  <button
+                     class="tab py-3 px-6 font-medium focus:outline-none transition-all duration-300 hover:bg-accent/20"
+                     data-tab="info"
+                  >
+                     Información de URL
+                  </button>
+                  <button
+                     class="tab py-3 px-6 font-medium focus:outline-none transition-all duration-300 hover:bg-accent/20"
+                     data-tab="my-urls"
+                  >
+                     Mis URLs
+                  </button>
+               </div>
 
-                <!-- Shorten URL Tab -->
-                <div class="tab-content active" id="shorten-tab">
-                    <div class="bg-gradient-to-br from-dark-card to-secondary rounded-lg shadow-lg p-6 border border-dark-border hover:shadow-2xl transition-all duration-300 animate-slide-up">
-                        <div class="flex items-center gap-2 mb-6 text-lg font-semibold">
-                            <svg class="w-5 h-5 text-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                            </svg>
-                            Acortar URL
+               <!-- Shorten URL Tab -->
+               <div class="tab-content active" id="shorten-tab">
+                  <div
+                     class="bg-gradient-to-br from-dark-card to-secondary rounded-lg shadow-lg p-6 border border-dark-border hover:shadow-2xl transition-all duration-300 animate-slide-up"
+                  >
+                     <div class="flex items-center gap-2 mb-6 text-lg font-semibold">
+                        <svg
+                           class="w-5 h-5 text-accent"
+                           xmlns="http://www.w3.org/2000/svg"
+                           fill="none"
+                           viewBox="0 0 24 24"
+                           stroke="currentColor"
+                        >
+                           <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                           />
+                        </svg>
+                        Acortar URL
+                     </div>
+                     <form id="shorten-form" class="mb-6">
+                        <div class="mb-4">
+                           <label for="original-url" class="block mb-2 font-medium"
+                              >URL Original</label
+                           >
+                           <div class="flex">
+                              <input
+                                 type="url"
+                                 id="original-url"
+                                 placeholder="https://ejemplo.com/pagina-muy-larga"
+                                 required
+                                 class="flex-grow px-4 py-3 bg-dark-input border border-dark-border rounded-l-md focus:outline-none focus:ring-2 focus:ring-accent text-dark-text"
+                              />
+                              <button
+                                 type="submit"
+                                 id="shorten-btn"
+                                 class="bg-accent hover:bg-accent-hover text-white font-medium py-3 px-6 rounded-r-md transition duration-300 uppercase flex items-center"
+                              >
+                                 Acortar
+                                 <span class="loader hidden ml-2" id="shorten-loader">
+                                    <svg
+                                       class="animate-spin h-5 w-5 text-white"
+                                       xmlns="http://www.w3.org/2000/svg"
+                                       fill="none"
+                                       viewBox="0 0 24 24"
+                                    >
+                                       <circle
+                                          class="opacity-25"
+                                          cx="12"
+                                          cy="12"
+                                          r="10"
+                                          stroke="currentColor"
+                                          stroke-width="4"
+                                       ></circle>
+                                       <path
+                                          class="opacity-75"
+                                          fill="currentColor"
+                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                       ></path>
+                                    </svg>
+                                 </span>
+                              </button>
+                           </div>
+                           <div class="text-red-500 mt-2 text-sm hidden" id="shorten-error"></div>
                         </div>
-                        <form id="shorten-form" class="mb-6">
-                            <div class="mb-4">
-                                <label for="original-url" class="block mb-2 font-medium">URL Original</label>
-                                <div class="flex">
-                                    <input type="url" id="original-url" placeholder="https://ejemplo.com/pagina-muy-larga" required class="flex-grow px-4 py-3 bg-dark-input border border-dark-border rounded-l-md focus:outline-none focus:ring-2 focus:ring-accent text-dark-text">
-                                    <button type="submit" id="shorten-btn" class="bg-accent hover:bg-accent-hover text-white font-medium py-3 px-6 rounded-r-md transition duration-300 uppercase flex items-center">
-                                        Acortar
-                                        <span class="loader hidden ml-2" id="shorten-loader">
-                                            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="text-red-500 mt-2 text-sm hidden" id="shorten-error"></div>
-                            </div>
-                        </form>
-                        <div class="bg-gradient-to-br from-secondary to-dark-card rounded-md p-4 border border-dark-border hidden animate-fade-in shadow-inner" id="shorten-result">
-                            <div class="font-semibold mb-2">URL Acortada:</div>
-                            <div class="flex items-center justify-between p-3 bg-gradient-to-r from-accent/10 to-emerald-600/10 rounded-md mb-2 backdrop-blur-sm transition-all duration-300 hover:from-accent/20 hover:to-emerald-600/20">
-                                <span id="short-url-text" class="break-all mr-2"></span>
-                                <button class="text-accent hover:bg-gradient-to-r hover:from-accent/20 hover:to-emerald-600/20 px-3 py-1 rounded-md transition-all duration-300 text-sm transform hover:scale-105" id="copy-short-url">Copiar</button>
-                            </div>
-                            <div class="text-green-500 text-sm hidden" id="copy-success">¡URL copiada al portapapeles!</div>
+                     </form>
+                     <div
+                        class="bg-gradient-to-br from-secondary to-dark-card rounded-md p-4 border border-dark-border hidden animate-fade-in shadow-inner"
+                        id="shorten-result"
+                     >
+                        <div class="font-semibold mb-2">URL Acortada:</div>
+                        <div
+                           class="flex items-center justify-between p-3 bg-gradient-to-r from-accent/10 to-emerald-600/10 rounded-md mb-2 backdrop-blur-sm transition-all duration-300 hover:from-accent/20 hover:to-emerald-600/20"
+                        >
+                           <span id="short-url-text" class="break-all mr-2"></span>
+                           <button
+                              class="text-accent hover:bg-gradient-to-r hover:from-accent/20 hover:to-emerald-600/20 px-3 py-1 rounded-md transition-all duration-300 text-sm transform hover:scale-105"
+                              id="copy-short-url"
+                           >
+                              Copiar
+                           </button>
                         </div>
-                    </div>
-                </div>
+                        <div class="text-green-500 text-sm hidden" id="copy-success">
+                           ¡URL copiada al portapapeles!
+                        </div>
+                     </div>
+                  </div>
+               </div>
 
-                <!-- URL Info Tab -->
-                <div class="tab-content hidden" id="info-tab">
-                    <div class="bg-gradient-to-br from-dark-card to-secondary rounded-lg shadow-lg p-6 border border-dark-border hover:shadow-2xl transition-all duration-300 animate-slide-up">
-                        <div class="flex items-center gap-2 mb-6 text-lg font-semibold">
-                            <svg class="w-5 h-5 text-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Información de URL
+               <!-- URL Info Tab -->
+               <div class="tab-content hidden" id="info-tab">
+                  <div
+                     class="bg-gradient-to-br from-dark-card to-secondary rounded-lg shadow-lg p-6 border border-dark-border hover:shadow-2xl transition-all duration-300 animate-slide-up"
+                  >
+                     <div class="flex items-center gap-2 mb-6 text-lg font-semibold">
+                        <svg
+                           class="w-5 h-5 text-accent"
+                           xmlns="http://www.w3.org/2000/svg"
+                           fill="none"
+                           viewBox="0 0 24 24"
+                           stroke="currentColor"
+                        >
+                           <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                           />
+                        </svg>
+                        Información de URL
+                     </div>
+                     <form id="info-form" class="mb-6">
+                        <div class="mb-4">
+                           <label for="short-url-code" class="block mb-2 font-medium"
+                              >Código de URL Corta</label
+                           >
+                           <div class="flex">
+                              <input
+                                 type="text"
+                                 id="short-url-code"
+                                 placeholder="abc123"
+                                 required
+                                 class="flex-grow px-4 py-3 bg-dark-input border border-dark-border rounded-l-md focus:outline-none focus:ring-2 focus:ring-accent text-dark-text"
+                              />
+                              <button
+                                 type="submit"
+                                 id="info-btn"
+                                 class="bg-accent hover:bg-accent-hover text-white font-medium py-3 px-6 rounded-r-md transition duration-300 uppercase flex items-center"
+                              >
+                                 Obtener
+                                 <span class="loader hidden ml-2" id="info-loader">
+                                    <svg
+                                       class="animate-spin h-5 w-5 text-white"
+                                       xmlns="http://www.w3.org/2000/svg"
+                                       fill="none"
+                                       viewBox="0 0 24 24"
+                                    >
+                                       <circle
+                                          class="opacity-25"
+                                          cx="12"
+                                          cy="12"
+                                          r="10"
+                                          stroke="currentColor"
+                                          stroke-width="4"
+                                       ></circle>
+                                       <path
+                                          class="opacity-75"
+                                          fill="currentColor"
+                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                       ></path>
+                                    </svg>
+                                 </span>
+                              </button>
+                           </div>
+                           <div class="text-red-500 mt-2 text-sm hidden" id="info-error"></div>
                         </div>
-                        <form id="info-form" class="mb-6">
-                            <div class="mb-4">
-                                <label for="short-url-code" class="block mb-2 font-medium">Código de URL Corta</label>
-                                <div class="flex">
-                                    <input type="text" id="short-url-code" placeholder="abc123" required class="flex-grow px-4 py-3 bg-dark-input border border-dark-border rounded-l-md focus:outline-none focus:ring-2 focus:ring-accent text-dark-text">
-                                    <button type="submit" id="info-btn" class="bg-accent hover:bg-accent-hover text-white font-medium py-3 px-6 rounded-r-md transition duration-300 uppercase flex items-center">
-                                        Obtener
-                                        <span class="loader hidden ml-2" id="info-loader">
-                                            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                        </span>
-                                    </button>
-                                </div>
-                                <div class="text-red-500 mt-2 text-sm hidden" id="info-error"></div>
-                            </div>
-                        </form>
-                        <div class="bg-gradient-to-br from-secondary to-dark-card rounded-md p-4 border border-dark-border hidden animate-fade-in shadow-inner" id="info-result">
-                            <div class="font-semibold mb-2">Información de la URL:</div>
-                            <div class="flex items-center justify-between p-3 bg-gradient-to-r from-accent/10 to-emerald-600/10 rounded-md mb-4 backdrop-blur-sm transition-all duration-300 hover:from-accent/20 hover:to-emerald-600/20">
-                                <span id="original-url-text" class="break-all mr-2"></span>
-                                <button class="text-accent hover:bg-gradient-to-r hover:from-accent/20 hover:to-emerald-600/20 px-3 py-1 rounded-md transition-all duration-300 text-sm transform hover:scale-105" id="copy-original-url">Copiar</button>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-green-900 bg-opacity-30 rounded-md p-4 text-center">
-                                    <div class="text-3xl font-bold mb-1" id="clicks-count">0</div>
-                                    <div class="text-dark-text-secondary text-sm">Clics</div>
-                                </div>
-                                <div class="bg-indigo-900 bg-opacity-30 rounded-md p-4 text-center">
-                                    <div class="text-3xl font-bold mb-1" id="created-date">-</div>
-                                    <div class="text-dark-text-secondary text-sm">Creada</div>
-                                </div>
-                            </div>
+                     </form>
+                     <div
+                        class="bg-gradient-to-br from-secondary to-dark-card rounded-md p-4 border border-dark-border hidden animate-fade-in shadow-inner"
+                        id="info-result"
+                     >
+                        <div class="font-semibold mb-2">Información de la URL:</div>
+                        <div
+                           class="flex items-center justify-between p-3 bg-gradient-to-r from-accent/10 to-emerald-600/10 rounded-md mb-4 backdrop-blur-sm transition-all duration-300 hover:from-accent/20 hover:to-emerald-600/20"
+                        >
+                           <span id="original-url-text" class="break-all mr-2"></span>
+                           <button
+                              class="text-accent hover:bg-gradient-to-r hover:from-accent/20 hover:to-emerald-600/20 px-3 py-1 rounded-md transition-all duration-300 text-sm transform hover:scale-105"
+                              id="copy-original-url"
+                           >
+                              Copiar
+                           </button>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Mis URLs Tab -->
-                <div class="tab-content hidden" id="my-urls-tab">
-                    <div class="bg-gradient-to-br from-dark-card to-secondary rounded-lg shadow-lg p-6 border border-dark-border hover:shadow-2xl transition-all duration-300 animate-slide-up">
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="flex items-center gap-2 text-lg font-semibold">
-                                <svg class="w-5 h-5 text-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                </svg>
-                                Mis URLs Guardadas
-                            </div>
-                            <button id="clear-urls-btn" class="text-red-500 hover:text-red-400 text-sm px-3 py-1 rounded-md border border-red-500/30 hover:border-red-400/50 transition-all duration-300">
-                                Borrar Historial
-                            </button>
+                        <div class="grid grid-cols-2 gap-4">
+                           <div class="bg-green-900 bg-opacity-30 rounded-md p-4 text-center">
+                              <div class="text-3xl font-bold mb-1" id="clicks-count">0</div>
+                              <div class="text-dark-text-secondary text-sm">Clics</div>
+                           </div>
+                           <div class="bg-indigo-900 bg-opacity-30 rounded-md p-4 text-center">
+                              <div class="text-3xl font-bold mb-1" id="created-date">-</div>
+                              <div class="text-dark-text-secondary text-sm">Creada</div>
+                           </div>
                         </div>
-                        <div id="no-saved-urls" class="text-center py-8 text-dark-text-secondary">
-                            No tienes URLs guardadas. Acorta una URL para comenzar a guardarla automáticamente.
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Mis URLs Tab -->
+               <div class="tab-content hidden" id="my-urls-tab">
+                  <div
+                     class="bg-gradient-to-br from-dark-card to-secondary rounded-lg shadow-lg p-6 border border-dark-border hover:shadow-2xl transition-all duration-300 animate-slide-up"
+                  >
+                     <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-2 text-lg font-semibold">
+                           <svg
+                              class="w-5 h-5 text-accent"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                           >
+                              <path
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 stroke-width="2"
+                                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                              />
+                           </svg>
+                           Mis URLs Guardadas
                         </div>
-                        <div id="saved-urls-container" class="hidden">
-                            <div class="overflow-x-auto">
-                                <table class="w-full">
-                                    <thead>
-                                        <tr class="border-b border-dark-border text-left text-dark-text-secondary">
-                                            <th class="pb-2 font-medium">URL Original</th>
-                                            <th class="pb-2 font-medium">URL Corta</th>
-                                            <th class="pb-2 font-medium">Fecha</th>
-                                            <th class="pb-2 font-medium text-right">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="saved-urls-list">
-                                        <!-- Las URLs guardadas se mostrarán aquí dinámicamente -->
-                                    </tbody>
-                                </table>
-                            </div>
+                        <button
+                           id="clear-urls-btn"
+                           class="text-red-500 hover:text-red-400 text-sm px-3 py-1 rounded-md border border-red-500/30 hover:border-red-400/50 transition-all duration-300"
+                        >
+                           Borrar Historial
+                        </button>
+                     </div>
+                     <div id="no-saved-urls" class="text-center py-8 text-dark-text-secondary">
+                        No tienes URLs guardadas. Acorta una URL para comenzar a guardarla
+                        automáticamente.
+                     </div>
+                     <div id="saved-urls-container" class="hidden">
+                        <div class="overflow-x-auto">
+                           <table class="w-full">
+                              <thead>
+                                 <tr
+                                    class="border-b border-dark-border text-left text-dark-text-secondary"
+                                 >
+                                    <th class="pb-2 font-medium">URL Original</th>
+                                    <th class="pb-2 font-medium">URL Corta</th>
+                                    <th class="pb-2 font-medium">Fecha</th>
+                                    <th class="pb-2 font-medium text-right">Acciones</th>
+                                 </tr>
+                              </thead>
+                              <tbody id="saved-urls-list">
+                                 <!-- Las URLs guardadas se mostrarán aquí dinámicamente -->
+                              </tbody>
+                           </table>
                         </div>
-                    </div>
-                </div>
+                     </div>
+                  </div>
+               </div>
             </div>
-        </div>
-    </div>
+         </div>
+      </div>
 
-    <footer class="mt-16 py-6 text-center text-dark-text-secondary text-sm bg-gradient-to-t from-black/50 to-transparent rounded-t-lg">
-        <p class="animate-pulse-slow">Acortador de URLs con Cloudflare Workers &copy; 2023</p>
-    </footer>
+      <footer
+         class="mt-16 py-6 text-center text-dark-text-secondary text-sm bg-gradient-to-t from-black/50 to-transparent rounded-t-lg"
+      >
+         <p class="animate-pulse-slow">Acortador de URLs con Cloudflare Workers &copy; 2023</p>
+      </footer>
 
-    <script>
-        // Elementos DOM
-        const apiKeyInput = document.getElementById('api-key');
-        const apiUrlInput = document.getElementById('api-url');
-        const shortenForm = document.getElementById('shorten-form');
-        const shortenBtn = document.getElementById('shorten-btn');
-        const shortenLoader = document.getElementById('shorten-loader');
-        const shortenError = document.getElementById('shorten-error');
-        const shortenResult = document.getElementById('shorten-result');
-        const shortUrlText = document.getElementById('short-url-text');
-        const copyShortUrl = document.getElementById('copy-short-url');
-        const copySuccess = document.getElementById('copy-success');
-        const infoForm = document.getElementById('info-form');
-        const infoBtn = document.getElementById('info-btn');
-        const infoLoader = document.getElementById('info-loader');
-        const infoError = document.getElementById('info-error');
-        const infoResult = document.getElementById('info-result');
-        const originalUrlText = document.getElementById('original-url-text');
-        const copyOriginalUrl = document.getElementById('copy-original-url');
-        const clicksCount = document.getElementById('clicks-count');
-        const createdDate = document.getElementById('created-date');
-        const redirectUrlInput = document.getElementById('redirect-url');
-        const redirectBtn = document.getElementById('redirect-btn');
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-        const refreshBtn = document.getElementById('refresh-btn');
-        const savedUrlsList = document.getElementById('saved-urls-list');
-        const noSavedUrls = document.getElementById('no-saved-urls');
-        const savedUrlsContainer = document.getElementById('saved-urls-container');
-        const clearUrlsBtn = document.getElementById('clear-urls-btn');
+      <script>
+         // Elementos DOM
+         const apiKeyInput = document.getElementById('api-key');
+         const apiUrlInput = document.getElementById('api-url');
+         const shortenForm = document.getElementById('shorten-form');
+         const shortenBtn = document.getElementById('shorten-btn');
+         const shortenLoader = document.getElementById('shorten-loader');
+         const shortenError = document.getElementById('shorten-error');
+         const shortenResult = document.getElementById('shorten-result');
+         const shortUrlText = document.getElementById('short-url-text');
+         const copyShortUrl = document.getElementById('copy-short-url');
+         const copySuccess = document.getElementById('copy-success');
+         const infoForm = document.getElementById('info-form');
+         const infoBtn = document.getElementById('info-btn');
+         const infoLoader = document.getElementById('info-loader');
+         const infoError = document.getElementById('info-error');
+         const infoResult = document.getElementById('info-result');
+         const originalUrlText = document.getElementById('original-url-text');
+         const copyOriginalUrl = document.getElementById('copy-original-url');
+         const clicksCount = document.getElementById('clicks-count');
+         const createdDate = document.getElementById('created-date');
+         const redirectUrlInput = document.getElementById('redirect-url');
+         const redirectBtn = document.getElementById('redirect-btn');
+         const tabs = document.querySelectorAll('.tab');
+         const tabContents = document.querySelectorAll('.tab-content');
+         const refreshBtn = document.getElementById('refresh-btn');
+         const savedUrlsList = document.getElementById('saved-urls-list');
+         const noSavedUrls = document.getElementById('no-saved-urls');
+         const savedUrlsContainer = document.getElementById('saved-urls-container');
+         const clearUrlsBtn = document.getElementById('clear-urls-btn');
 
-        // Gestión de URLs guardadas
-        let savedUrls = [];
-        
-        // Función para cargar URLs guardadas desde localStorage
-        function loadSavedUrls() {
+         // Gestión de URLs guardadas
+         let savedUrls = [];
+
+         // Función para cargar URLs guardadas desde localStorage
+         function loadSavedUrls() {
             const savedUrlsJson = localStorage.getItem('saved_urls');
             savedUrls = savedUrlsJson ? JSON.parse(savedUrlsJson) : [];
             updateSavedUrlsList();
-        }
-        
-        // Función para guardar una nueva URL acortada
-        function saveUrl(originalUrl, shortUrl, shortCode) {
+         }
+
+         // Función para guardar una nueva URL acortada
+         function saveUrl(originalUrl, shortUrl, shortCode) {
             const newUrl = {
-                id: Date.now().toString(),
-                originalUrl,
-                shortUrl,
-                shortCode,
-                createdAt: new Date().toISOString()
+               id: Date.now().toString(),
+               originalUrl,
+               shortUrl,
+               shortCode,
+               createdAt: new Date().toISOString(),
             };
-            
+
             savedUrls.unshift(newUrl); // Añadir al principio de la lista
             localStorage.setItem('saved_urls', JSON.stringify(savedUrls));
             updateSavedUrlsList();
-        }
-        
-        // Función para eliminar una URL guardada
-        function deleteUrl(id) {
-            savedUrls = savedUrls.filter(url => url.id !== id);
+         }
+
+         // Función para eliminar una URL guardada
+         function deleteUrl(id) {
+            savedUrls = savedUrls.filter((url) => url.id !== id);
             localStorage.setItem('saved_urls', JSON.stringify(savedUrls));
             updateSavedUrlsList();
-        }
-        
-        // Función para actualizar la lista de URLs guardadas en la interfaz
-        function updateSavedUrlsList() {
+         }
+
+         // Función para actualizar la lista de URLs guardadas en la interfaz
+         function updateSavedUrlsList() {
             if (savedUrls.length === 0) {
-                noSavedUrls.classList.remove('hidden');
-                savedUrlsContainer.classList.add('hidden');
-                return;
+               noSavedUrls.classList.remove('hidden');
+               savedUrlsContainer.classList.add('hidden');
+               return;
             }
-            
+
             noSavedUrls.classList.add('hidden');
             savedUrlsContainer.classList.remove('hidden');
-            
+
             savedUrlsList.innerHTML = '';
-            
-            savedUrls.forEach(url => {
-                const row = document.createElement('tr');
-                row.className = 'border-b border-dark-border/30 hover:bg-dark-card/50 transition-colors';
-                
-                const date = new Date(url.createdAt);
-                const formattedDate = date.toLocaleDateString();
-                
-                row.innerHTML = `
+
+            savedUrls.forEach((url) => {
+               const row = document.createElement('tr');
+               row.className =
+                  'border-b border-dark-border/30 hover:bg-dark-card/50 transition-colors';
+
+               const date = new Date(url.createdAt);
+               const formattedDate = date.toLocaleDateString();
+
+               row.innerHTML = `
                     <td class="py-3 pr-2 truncate max-w-[200px]" title="${url.originalUrl}">${url.originalUrl}</td>
                     <td class="py-3 pr-2 truncate max-w-[150px]" title="${url.shortUrl}">${url.shortUrl}</td>
                     <td class="py-3 pr-2">${formattedDate}</td>
@@ -379,117 +592,133 @@
                         </button>
                     </td>
                 `;
-                
-                savedUrlsList.appendChild(row);
+
+               savedUrlsList.appendChild(row);
             });
-            
+
             // Añadir event listeners a los botones
-            document.querySelectorAll('.copy-btn').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    try {
-                        await navigator.clipboard.writeText(btn.dataset.url);
-                        alert('URL copiada al portapapeles');
-                    } catch (error) {
-                        alert('Error al copiar: ' + error.message);
-                    }
-                });
+            document.querySelectorAll('.copy-btn').forEach((btn) => {
+               btn.addEventListener('click', async () => {
+                  try {
+                     await navigator.clipboard.writeText(btn.dataset.url);
+                     alert('URL copiada al portapapeles');
+                  } catch (error) {
+                     alert('Error al copiar: ' + error.message);
+                  }
+               });
             });
-            
-            document.querySelectorAll('.redirect-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    try {
-                        const shortCode = btn.dataset.code;
-                        const apiBaseUrl = getApiBaseUrl();
-                        window.open(`${apiBaseUrl}/${shortCode}`, '_blank');
-                    } catch (error) {
-                        alert(error.message);
-                    }
-                });
+
+            document.querySelectorAll('.redirect-btn').forEach((btn) => {
+               btn.addEventListener('click', () => {
+                  try {
+                     const shortCode = btn.dataset.code;
+                     const apiBaseUrl = getApiBaseUrl();
+                     window.open(`${apiBaseUrl}/${shortCode}`, '_blank');
+                  } catch (error) {
+                     alert(error.message);
+                  }
+               });
             });
-            
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (confirm('¿Estás seguro de que deseas eliminar esta URL?')) {
-                        deleteUrl(btn.dataset.id);
-                    }
-                });
+
+            document.querySelectorAll('.delete-btn').forEach((btn) => {
+               btn.addEventListener('click', () => {
+                  if (confirm('¿Estás seguro de que deseas eliminar esta URL?')) {
+                     deleteUrl(btn.dataset.id);
+                  }
+               });
             });
-        }
-        
-        // Cargar configuración guardada
-        window.addEventListener('DOMContentLoaded', () => {
+         }
+
+         // Cargar configuración guardada
+         window.addEventListener('DOMContentLoaded', () => {
             const savedApiKey = localStorage.getItem('api_key');
             const savedApiUrl = localStorage.getItem('api_url');
-            
+
             if (savedApiKey) apiKeyInput.value = savedApiKey;
             if (savedApiUrl) apiUrlInput.value = savedApiUrl;
-            
+
             // Cargar URLs guardadas
             loadSavedUrls();
-        });
+         });
 
-        // Guardar configuración
-        apiKeyInput.addEventListener('change', () => {
+         // Guardar configuración
+         apiKeyInput.addEventListener('change', () => {
             localStorage.setItem('api_key', apiKeyInput.value);
-        });
+         });
 
-        apiUrlInput.addEventListener('change', () => {
+         apiUrlInput.addEventListener('change', () => {
             localStorage.setItem('api_url', apiUrlInput.value);
-        });
+         });
 
-        // Cambio de pestañas
-        tabs.forEach(tab => {
+         // Cambio de pestañas
+         tabs.forEach((tab) => {
             tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active', 'bg-accent', 'text-white', 'border-b-2', 'border-accent'));
-                tabContents.forEach(c => c.classList.add('hidden'));
-                
-                tab.classList.add('active', 'bg-accent', 'text-white', 'border-b-2', 'border-accent');
-                document.getElementById(`${tab.dataset.tab}-tab`).classList.remove('hidden');
-            });
-        });
+               tabs.forEach((t) =>
+                  t.classList.remove(
+                     'active',
+                     'bg-accent',
+                     'text-white',
+                     'border-b-2',
+                     'border-accent',
+                  ),
+               );
+               tabContents.forEach((c) => c.classList.add('hidden'));
 
-        // Inicializar pestañas
-        document.querySelector('.tab.active').click();
-        
-        // Añadir efectos de animación a los elementos al cargar la página
-        document.addEventListener('DOMContentLoaded', () => {
-            // Animar elementos con entrada escalonada
-            const animatedElements = document.querySelectorAll('.animate-fade-in, .animate-slide-up');
-            animatedElements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.style.opacity = '1';
-                }, 100 * index);
+               tab.classList.add(
+                  'active',
+                  'bg-accent',
+                  'text-white',
+                  'border-b-2',
+                  'border-accent',
+               );
+               document.getElementById(`${tab.dataset.tab}-tab`).classList.remove('hidden');
             });
-            
+         });
+
+         // Inicializar pestañas
+         document.querySelector('.tab.active').click();
+
+         // Añadir efectos de animación a los elementos al cargar la página
+         document.addEventListener('DOMContentLoaded', () => {
+            // Animar elementos con entrada escalonada
+            const animatedElements = document.querySelectorAll(
+               '.animate-fade-in, .animate-slide-up',
+            );
+            animatedElements.forEach((el, index) => {
+               setTimeout(() => {
+                  el.style.opacity = '1';
+               }, 100 * index);
+            });
+
             // Crear efecto de partículas en el fondo
             const particlesContainer = document.querySelector('.bg-particles');
             const particleCount = 30;
-            
+
             for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.style.position = 'absolute';
-                particle.style.width = `${Math.random() * 3 + 1}px`;
-                particle.style.height = particle.style.width;
-                particle.style.background = 'rgba(16, 185, 129, 0.3)';
-                particle.style.borderRadius = '50%';
-                particle.style.top = `${Math.random() * 100}%`;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.5)';
-                
-                // Animación de movimiento
-                const duration = Math.random() * 50 + 30;
-                const delay = Math.random() * 10;
-                
-                particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
-                particle.style.opacity = Math.random() * 0.5;
-                
-                particlesContainer.appendChild(particle);
+               const particle = document.createElement('div');
+               particle.style.position = 'absolute';
+               particle.style.width = `${Math.random() * 3 + 1}px`;
+               particle.style.height = particle.style.width;
+               particle.style.background = 'rgba(16, 185, 129, 0.3)';
+               particle.style.borderRadius = '50%';
+               particle.style.top = `${Math.random() * 100}%`;
+               particle.style.left = `${Math.random() * 100}%`;
+               particle.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.5)';
+
+               // Animación de movimiento
+               const duration = Math.random() * 50 + 30;
+               const delay = Math.random() * 10;
+
+               particle.style.animation = `float ${duration}s ease-in-out ${delay}s infinite`;
+               particle.style.opacity = Math.random() * 0.5;
+
+               particlesContainer.appendChild(particle);
             }
-        });
-        
-        // Añadir keyframes para la animación de partículas
-        const style = document.createElement('style');
-        style.textContent = `
+         });
+
+         // Añadir keyframes para la animación de partículas
+         const style = document.createElement('style');
+         style.textContent = `
             @keyframes float {
                 0% { transform: translateY(0) translateX(0); }
                 25% { transform: translateY(-20px) translateX(10px); }
@@ -498,176 +727,176 @@
                 100% { transform: translateY(0) translateX(0); }
             }
         `;
-        document.head.appendChild(style);
+         document.head.appendChild(style);
 
-        // Función para obtener la URL base de la API
-        function getApiBaseUrl() {
+         // Función para obtener la URL base de la API
+         function getApiBaseUrl() {
             let url = apiUrlInput.value.trim();
             if (!url) {
-                throw new Error('Por favor, ingresa la URL base de la API');
+               throw new Error('Por favor, ingresa la URL base de la API');
             }
-            
+
             // Eliminar la barra final si existe
             if (url.endsWith('/')) {
-                url = url.slice(0, -1);
+               url = url.slice(0, -1);
             }
-            
-            return url;
-        }
 
-        // Función para obtener la clave de API
-        function getApiKey() {
+            return url;
+         }
+
+         // Función para obtener la clave de API
+         function getApiKey() {
             const apiKey = apiKeyInput.value.trim();
             if (!apiKey) {
-                throw new Error('Por favor, ingresa tu clave de API');
+               throw new Error('Por favor, ingresa tu clave de API');
             }
             return apiKey;
-        }
+         }
 
-        // Acortar URL
-        shortenForm.addEventListener('submit', async (e) => {
+         // Acortar URL
+         shortenForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             // Mostrar loader y ocultar mensajes anteriores
             shortenBtn.disabled = true;
             shortenLoader.classList.remove('hidden');
             shortenError.classList.add('hidden');
             shortenResult.classList.add('hidden');
-            
-            try {
-                const originalUrl = document.getElementById('original-url').value;
-                const apiBaseUrl = getApiBaseUrl();
-                const apiKey = getApiKey();
-                
-                const response = await fetch(`${apiBaseUrl}/shorten`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': apiKey
-                    },
-                    body: JSON.stringify({ original_url: originalUrl })
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error || 'Error al acortar la URL');
-                }
-                
-                // Mostrar resultado
-                const shortUrl = `${apiBaseUrl}/${data.short_url}`;
-                shortUrlText.textContent = shortUrl;
-                shortenResult.classList.remove('hidden');
-                
-                // Guardar URL en localStorage
-                saveUrl(originalUrl, shortUrl, data.short_url);
-            } catch (error) {
-                shortenError.textContent = error.message;
-                shortenError.classList.remove('hidden');
-            } finally {
-                shortenBtn.disabled = false;
-                shortenLoader.classList.add('hidden');
-            }
-        });
 
-        // Obtener información de URL
-        infoForm.addEventListener('submit', async (e) => {
+            try {
+               const originalUrl = document.getElementById('original-url').value;
+               const apiBaseUrl = getApiBaseUrl();
+               const apiKey = getApiKey();
+
+               const response = await fetch(`${apiBaseUrl}/shorten`, {
+                  method: 'POST',
+                  headers: {
+                     'Content-Type': 'application/json',
+                     'x-api-key': apiKey,
+                  },
+                  body: JSON.stringify({ original_url: originalUrl }),
+               });
+
+               const data = await response.json();
+
+               if (!response.ok) {
+                  throw new Error(data.error || 'Error al acortar la URL');
+               }
+
+               // Mostrar resultado
+               const shortUrl = `${apiBaseUrl}/${data.short_url}`;
+               shortUrlText.textContent = shortUrl;
+               shortenResult.classList.remove('hidden');
+
+               // Guardar URL en localStorage
+               saveUrl(originalUrl, shortUrl, data.short_url);
+            } catch (error) {
+               shortenError.textContent = error.message;
+               shortenError.classList.remove('hidden');
+            } finally {
+               shortenBtn.disabled = false;
+               shortenLoader.classList.add('hidden');
+            }
+         });
+
+         // Obtener información de URL
+         infoForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             // Mostrar loader y ocultar mensajes anteriores
             infoBtn.disabled = true;
             infoLoader.classList.remove('hidden');
             infoError.classList.add('hidden');
             infoResult.classList.add('hidden');
-            
+
             try {
-                const shortUrlCode = document.getElementById('short-url-code').value;
-                const apiBaseUrl = getApiBaseUrl();
-                const apiKey = getApiKey();
-                
-                const response = await fetch(`${apiBaseUrl}/info/${shortUrlCode}`, {
-                    method: 'GET',
-                    headers: {
-                        'x-api-key': apiKey
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error || 'Error al obtener información de la URL');
-                }
-                
-                // Mostrar resultado
-                originalUrlText.textContent = data.original_url;
-                clicksCount.textContent = data.clicks || 0;
-                
-                // Formatear fecha
-                if (data.created_at) {
-                    const date = new Date(data.created_at);
-                    createdDate.textContent = date.toLocaleDateString();
-                } else {
-                    createdDate.textContent = '-';
-                }
-                
-                infoResult.classList.remove('hidden');
+               const shortUrlCode = document.getElementById('short-url-code').value;
+               const apiBaseUrl = getApiBaseUrl();
+               const apiKey = getApiKey();
+
+               const response = await fetch(`${apiBaseUrl}/info/${shortUrlCode}`, {
+                  method: 'GET',
+                  headers: {
+                     'x-api-key': apiKey,
+                  },
+               });
+
+               const data = await response.json();
+
+               if (!response.ok) {
+                  throw new Error(data.error || 'Error al obtener información de la URL');
+               }
+
+               // Mostrar resultado
+               originalUrlText.textContent = data.original_url;
+               clicksCount.textContent = data.clicks || 0;
+
+               // Formatear fecha
+               if (data.created_at) {
+                  const date = new Date(data.created_at);
+                  createdDate.textContent = date.toLocaleDateString();
+               } else {
+                  createdDate.textContent = '-';
+               }
+
+               infoResult.classList.remove('hidden');
             } catch (error) {
-                infoError.textContent = error.message;
-                infoError.classList.remove('hidden');
+               infoError.textContent = error.message;
+               infoError.classList.remove('hidden');
             } finally {
-                infoBtn.disabled = false;
-                infoLoader.classList.add('hidden');
+               infoBtn.disabled = false;
+               infoLoader.classList.add('hidden');
             }
-        });
+         });
 
-        // Redirección
-        redirectBtn.addEventListener('click', () => {
+         // Redirección
+         redirectBtn.addEventListener('click', () => {
             try {
-                const shortUrlCode = redirectUrlInput.value.trim();
-                if (!shortUrlCode) {
-                    throw new Error('Por favor, ingresa un código de URL corta');
-                }
-                
-                const apiBaseUrl = getApiBaseUrl();
-                window.open(`${apiBaseUrl}/${shortUrlCode}`, '_blank');
-            } catch (error) {
-                alert(error.message);
-            }
-        });
+               const shortUrlCode = redirectUrlInput.value.trim();
+               if (!shortUrlCode) {
+                  throw new Error('Por favor, ingresa un código de URL corta');
+               }
 
-        // Copiar URLs
-        copyShortUrl.addEventListener('click', async () => {
+               const apiBaseUrl = getApiBaseUrl();
+               window.open(`${apiBaseUrl}/${shortUrlCode}`, '_blank');
+            } catch (error) {
+               alert(error.message);
+            }
+         });
+
+         // Copiar URLs
+         copyShortUrl.addEventListener('click', async () => {
             try {
-                await navigator.clipboard.writeText(shortUrlText.textContent);
-                copySuccess.classList.remove('hidden');
-                setTimeout(() => copySuccess.classList.add('hidden'), 3000);
+               await navigator.clipboard.writeText(shortUrlText.textContent);
+               copySuccess.classList.remove('hidden');
+               setTimeout(() => copySuccess.classList.add('hidden'), 3000);
             } catch (error) {
-                alert('Error al copiar: ' + error.message);
+               alert('Error al copiar: ' + error.message);
             }
-        });
+         });
 
-        copyOriginalUrl.addEventListener('click', async () => {
+         copyOriginalUrl.addEventListener('click', async () => {
             try {
-                await navigator.clipboard.writeText(originalUrlText.textContent);
-                alert('URL original copiada al portapapeles');
+               await navigator.clipboard.writeText(originalUrlText.textContent);
+               alert('URL original copiada al portapapeles');
             } catch (error) {
-                alert('Error al copiar: ' + error.message);
+               alert('Error al copiar: ' + error.message);
             }
-        });
+         });
 
-        // Actualizar datos (botón en la barra de navegación)
-        refreshBtn.addEventListener('click', () => {
+         // Actualizar datos (botón en la barra de navegación)
+         refreshBtn.addEventListener('click', () => {
             location.reload();
-        });
-        
-        // Borrar historial de URLs
-        clearUrlsBtn.addEventListener('click', () => {
+         });
+
+         // Borrar historial de URLs
+         clearUrlsBtn.addEventListener('click', () => {
             if (confirm('¿Estás seguro de que deseas borrar todo el historial de URLs?')) {
-                localStorage.removeItem('saved_urls');
-                savedUrls = [];
-                updateSavedUrlsList();
+               localStorage.removeItem('saved_urls');
+               savedUrls = [];
+               updateSavedUrlsList();
             }
-        });
-    </script>
-</body>
+         });
+      </script>
+   </body>
 </html>

@@ -26,7 +26,7 @@ export class UrlService {
             .prepare('SELECT short_url FROM URLS WHERE original_url = ?')
             .bind(originalUrl)
             .all();
-         return results.length ? results as Array<Pick<UrlData, 'short_url'>> : null;
+         return results.length ? (results as Array<Pick<UrlData, 'short_url'>>) : null;
       } catch (error) {
          console.error('Error en consulta getShortUrl:', error);
          return null;
@@ -44,7 +44,7 @@ export class UrlService {
             .prepare('SELECT original_url FROM URLS WHERE short_url = ?')
             .bind(shortUrl)
             .first();
-         return result ? result as Pick<UrlData, 'original_url'> : null;
+         return result ? (result as Pick<UrlData, 'original_url'>) : null;
       } catch (error) {
          console.error('Error en consulta getOriginalUrl:', error);
          return null;
@@ -99,12 +99,14 @@ export class UrlService {
             .bind(shortUrl)
             .first();
 
-         return result ? {
-            short_url: result.short_url as string,
-            original_url: result.original_url as string,
-            clicks: result.clicks as number,
-            created_at: result.created_at as string
-         } as UrlData : null;
+         return result
+            ? ({
+                 short_url: result.short_url as string,
+                 original_url: result.original_url as string,
+                 clicks: result.clicks as number,
+                 created_at: result.created_at as string,
+              } as UrlData)
+            : null;
       } catch (error) {
          console.error('Error al obtener información de URL:', error);
          return null;

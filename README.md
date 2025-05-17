@@ -74,6 +74,7 @@ El proyecto utiliza Wrangler para la configuración y despliegue. La configuraci
 ## Desarrollo Local
 
 1. Instalar dependencias:
+
    ```
    npm install
    ```
@@ -113,4 +114,22 @@ curl -X GET https://tu-worker.workers.dev/info/abc123 \
 
 ```
 https://tu-worker.workers.dev/abc123
+```
+
+## D1DATABASE
+
+```bash
+pnpx wrangler d1 create prod-d1-shorturl
+
+pnpx wrangler d1 execute prod-d1-shorturl --local --file=./schema.sql
+
+pnpx wrangler d1 execute prod-d1-shorturl --local --command="SELECT * FROM URLS"
+```
+
+```bash
+pnpx wrangler d1 execute prod-d1-shorturl --remote --file=./schema.sql
+
+pnpx wrangler d1 execute prod-d1-shorturl --remote --command="SELECT * FROM URLS"
+
+pnpm run deploy
 ```
