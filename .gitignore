@@ -37,3 +37,6 @@ shorturl-frontend/node_modules
 
 # wrangler with env
 wrangler.toml
+
+# html
+front_test.html
