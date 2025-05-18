@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+
+
+button:hover {
+    cursor: pointer;
+}
+
+body { font-family: 'Inter', sans-serif; }
+.animate-slide-up {
+  animation: slide-up 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes slide-up {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+.animate-pulse-slow {
+  animation: pulse-slow 2.5s infinite;
+}
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.bg-particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 20% 30%, #1e293b44 0%, transparent 70%),
+              radial-gradient(circle at 80% 70%, #33415533 0%, transparent 80%);
+  animation: fade-in 2s;
+}
