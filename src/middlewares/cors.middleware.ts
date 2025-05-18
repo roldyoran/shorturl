@@ -14,7 +14,7 @@ export const corsMiddleware = async (c: Context, next: Next): Promise<Response |
    // Configura las cabeceras CORS
    c.header('Access-Control-Allow-Origin', '*');
    c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-   c.header('Access-Control-Allow-Headers', 'Content-Type, x-api-key');
+   c.header('Access-Control-Allow-Headers', 'Content-Type, x-api-key, Authorization');
 
    // Si es una solicitud OPTIONS, responde inmediatamente
    if (c.req.method === 'OPTIONS') {
