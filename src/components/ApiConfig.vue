@@ -1,27 +1,27 @@
 <template>
-  <div class="bg-gray-800 rounded-xl shadow-2xl p-6 md:p-8">
+  <div class="bg-gradient-to-br from-yellow-400/20 via-yellow-700/10 to-yellow-900/30 rounded-2xl shadow-xl p-8 border border-yellow-700/30">
     <div class="flex items-center gap-3 mb-6">
-      <svg class="w-7 h-7 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg class="w-7 h-7 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
       </svg>
-      <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">Configuración de API</h2>
+      <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-300">Configuración de API</h2>
     </div>
 
     <div class="space-y-6">
       <div>
-        <label for="api-key" class="block text-sm font-medium text-gray-300 mb-1">Clave de API</label>
+        <label for="api-key" class="block text-sm font-medium text-yellow-100 mb-1">Clave de API</label>
         <div class="relative">
           <input 
             :type="showApiKey ? 'text' : 'password'" 
             id="api-key" 
             v-model="apiKey" 
             placeholder="Ingresa tu clave de API"
-            class="w-full px-4 py-3 pr-10 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-100 placeholder-gray-400 transition-all duration-200 shadow-sm"
+            class="w-full px-4 py-3 pr-10 bg-yellow-900/40 border border-yellow-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-yellow-100 placeholder-yellow-200 transition-all duration-200 shadow-sm"
           >
           <button 
             @click="showApiKey = !showApiKey"
             type="button"
-            class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-400 hover:text-indigo-400 transition-colors duration-200"
+            class="absolute inset-y-0 right-0 px-3 flex items-center text-yellow-300 hover:text-yellow-400 transition-colors duration-200"
             aria-label="Mostrar/ocultar clave de API"
           >
             <svg v-if="!showApiKey" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
@@ -31,16 +31,16 @@
       </div>
 
       <div>
-        <label for="api-url" class="block text-sm font-medium text-gray-300 mb-1">URL Base de la API</label>
+        <label for="api-url" class="block text-sm font-medium text-yellow-100 mb-1">URL Base de la API</label>
         <input 
           type="url" 
           id="api-url" 
           v-model="apiUrl" 
           placeholder="https://tu-worker.workers.dev"
-          class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-100 placeholder-gray-400 transition-all duration-200 shadow-sm"
+          class="w-full px-4 py-3 bg-yellow-900/40 border border-yellow-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-yellow-100 placeholder-yellow-200 transition-all duration-200 shadow-sm"
         >
       </div>
-      <p class="text-xs text-gray-400 italic">Estos datos se guardan localmente en tu navegador.</p>
+      <p class="text-xs text-yellow-200 italic">Estos datos se guardan localmente en tu navegador.</p>
     </div>
   </div>
 </template>

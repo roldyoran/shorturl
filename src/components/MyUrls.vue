@@ -1,30 +1,30 @@
 <template>
-  <div class="bg-gray-800 rounded-xl shadow-2xl p-6 md:p-8">
+  <div class="bg-gradient-to-br from-yellow-400/20 via-yellow-700/10 to-yellow-900/30 rounded-2xl shadow-xl p-8 border border-yellow-700/30">
     <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
       <div class="flex items-center gap-3">
-        <svg class="w-7 h-7 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="w-7 h-7 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
         </svg>
-        <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-500">Mis URLs Guardadas</h2>
+        <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-300">Mis URLs Guardadas</h2>
       </div>
       <button 
         v-if="urls.length > 0"
         @click="confirmClearUrls"
-        class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 whitespace-nowrap"
+        class="px-4 py-2 bg-yellow-700 hover:bg-yellow-600 text-yellow-50 text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 whitespace-nowrap"
       >
         Borrar Historial
       </button>
     </div>
 
-    <div v-if="urls.length === 0" class="text-center py-10 text-gray-400">
-      <svg class="w-16 h-16 mx-auto mb-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+    <div v-if="urls.length === 0" class="text-center py-10 text-yellow-200">
+      <svg class="w-16 h-16 mx-auto mb-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
       <p class="text-lg">No tienes URLs guardadas.</p>
       <p class="text-sm">Acorta una URL para que aparezca aquí.</p>
     </div>
 
-    <div v-else class="overflow-x-auto bg-gray-700 rounded-lg shadow">
-      <table class="w-full min-w-max text-sm text-left text-gray-300">
-        <thead class="text-xs text-gray-400 uppercase bg-gray-750">
+    <div v-else class="overflow-x-auto bg-yellow-900/40 rounded-lg shadow">
+      <table class="w-full min-w-max text-sm text-left text-yellow-100">
+        <thead class="text-xs text-yellow-200 uppercase bg-yellow-900/60">
           <tr>
             <th scope="col" class="px-6 py-3">URL Corta</th>
             <th scope="col" class="px-6 py-3">URL Original</th>
@@ -36,18 +36,23 @@
           <tr 
             v-for="(url, idx) in paginatedUrls" 
             :key="idx" 
-            class="bg-gray-700 border-b border-gray-600 hover:bg-gray-600/70 transition-colors duration-150"
+            class="bg-yellow-900/40 border-b border-yellow-700 hover:bg-yellow-900/60 transition-colors duration-150"
           >
             <td class="px-6 py-4 font-mono">
-              <a :href="getFullShortUrl(url.short)" target="_blank" class="text-indigo-400 hover:text-indigo-300 hover:underline break-all">
+              <a :href="getFullShortUrl(url.short)" target="_blank" class="text-yellow-300 hover:text-yellow-200 hover:underline break-all">
                 {{ url.short }}
               </a>
             </td>
             <td class="px-6 py-4 break-all">{{ url.original }}</td>
             <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(url.date) }}</td>
             <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
-              <button @click="copyToClipboard(getFullShortUrl(url.short))" class="px-3 py-1.5 bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-105">Copiar</button>
-              <button @click="removeUrl(url.original, url.short)" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-105">Eliminar</button>
+              import { inject } from 'vue'
+              const copyUrl = inject('copyUrl') as (url: string) => void
+              function copyToClipboard(url: string) {
+                if (copyUrl) copyUrl(url)
+              }
+              <button @click="copyToClipboard(getFullShortUrl(url.short))" class="px-3 py-1.5 bg-yellow-500 hover:bg-yellow-400 text-yellow-900 text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-105">Copiar</button>
+              <button @click="removeUrl(url.original, url.short)" class="px-3 py-1.5 bg-yellow-700 hover:bg-yellow-600 text-yellow-50 text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-105">Eliminar</button>
             </td>
           </tr>
         </tbody>
@@ -59,17 +64,17 @@
       <button 
         @click="currentPage--" 
         :disabled="currentPage === 1"
-        class="px-3 py-1.5 rounded-md bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        class="px-3 py-1.5 rounded-md bg-yellow-900/40 hover:bg-yellow-900/60 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >Anterior</button>
       <span>Página {{ currentPage }} de {{ totalPages }}</span>
       <button 
         @click="currentPage++" 
         :disabled="currentPage === totalPages"
-        class="px-3 py-1.5 rounded-md bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        class="px-3 py-1.5 rounded-md bg-yellow-900/40 hover:bg-yellow-900/60 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >Siguiente</button>
     </div>
 
-    <div v-if="copySuccess" class="fixed bottom-5 right-5 bg-green-500 text-white text-sm py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300">
+    <div v-if="copySuccess" class="fixed bottom-5 right-5 bg-yellow-500 text-yellow-900 text-sm py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300">
       ¡URL copiada al portapapeles!
     </div>
   </div>
