@@ -24,19 +24,19 @@
         <div v-if="error" class="text-red-400 mt-2 text-sm animate-pulse-slow">{{ error }}</div>
       </div>
     </form>
-    <div v-if="info" class="bg-gradient-to-br from-pink-900 to-fuchsia-900 rounded-md p-4 border border-pink-800 animate-fade-in shadow-inner">
+    <div v-if="urlInfo" class="bg-gradient-to-br from-pink-900 to-fuchsia-900 rounded-md p-4 border border-pink-800 animate-fade-in shadow-inner">
       <div class="font-semibold mb-2">Información de la URL:</div>
       <div class="flex items-center justify-between p-3 bg-gradient-to-r from-orange-500/10 via-pink-500/10 to-fuchsia-600/10 rounded-md mb-4 backdrop-blur-sm transition-all duration-300 hover:from-orange-500/20 hover:to-fuchsia-600/20">
-        <span class="break-all mr-2">{{ info.url }}</span>
+        <span class="break-all mr-2">{{ urlInfo.original_url }}</span>
         <button @click="copyToClipboard" class="text-pink-400 hover:bg-gradient-to-r hover:from-orange-500/20 hover:to-fuchsia-600/20 px-3 py-1 rounded-md transition-all duration-300 text-sm transform hover:scale-105">Copiar</button>
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="bg-orange-900 bg-opacity-30 rounded-md p-4 text-center animate-slide-up">
-          <div class="text-3xl font-bold mb-1">{{ info.clicks }}</div>
+          <div class="text-3xl font-bold mb-1">{{ urlInfo.clicks }}</div>
           <div class="text-pink-200 text-sm">Clics</div>
         </div>
         <div class="bg-fuchsia-900 bg-opacity-30 rounded-md p-4 text-center animate-slide-up">
-          <div class="text-3xl font-bold mb-1">{{ createdDate }}</div>
+          <div class="text-3xl font-bold mb-1">{{ urlInfo.created_at }}</div>
           <div class="text-pink-200 text-sm">Creada</div>
         </div>
       </div>
@@ -47,58 +47,55 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { getUrlInfoRequest } from '../api/http'
+import type { UrlInfoResponse } from '../api/types'
 
 const shortCode = ref<string>('')
-const info = ref<{ url: string; clicks: number; created: string } | null>(null)
+const urlInfo = ref<UrlInfoResponse | null>(null)
 const error = ref<string>('')
 const loading = ref<boolean>(false)
 const copySuccess = ref<boolean>(false)
 
-function getApiUrl() {
-  return localStorage.getItem('apiUrl') || ''
+const createdDate = computed(() => {
+  if (urlInfo.value && urlInfo.value.created_at) {
+    const date = new Date(urlInfo.value.created_at)
+    return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
+  }
+  return ''
+})
+
+async function copyToClipboard() {
+  if (urlInfo.value && urlInfo.value.original_url) {
+    try {
+      await navigator.clipboard.writeText(urlInfo.value.original_url)
+      copySuccess.value = true
+      setTimeout(() => { copySuccess.value = false }, 2000)
+    } catch (e) {
+      copySuccess.value = false
+    }
+  }
 }
 
 async function getUrlInfo() {
   error.value = ''
-  info.value = null
-  copySuccess.value = false
+  urlInfo.value = null
   if (!shortCode.value) {
-    error.value = 'Por favor ingresa un código.'
-    return
-  }
-  const apiUrl = getApiUrl()
-  if (!apiUrl) {
-    error.value = 'Configura la URL base de la API primero.'
+    error.value = 'Por favor ingresa el código de la URL corta.'
     return
   }
   loading.value = true
   try {
-    const res = await fetch(`${apiUrl}/info/${(shortCode.value)}`)
-    if (!res.ok) throw new Error('No se encontró información para la URL.')
-    const data = await res.json()
-    if (data && data.url) {
-      info.value = data
-    } else {
-      error.value = 'Respuesta inválida de la API.'
+    const data = await getUrlInfoRequest(shortCode.value)
+    urlInfo.value = {
+      clicks: data.clicks,
+      created_at: data.created_at,
+      original_url: data.original_url,
+      short_url: data.short_url
     }
-  } catch (e) {
-    error.value = 'Error al obtener la información.'
+  } catch (e: any) {
+    error.value = e?.response?.data?.message || 'Error al obtener la información.'
   } finally {
     loading.value = false
   }
 }
-
-function copyToClipboard() {
-  if (!info.value?.url) return
-  navigator.clipboard.writeText(info.value.url).then(() => {
-    copySuccess.value = true
-    setTimeout(() => (copySuccess.value = false), 1500)
-  })
-}
-
-const createdDate = computed(() => {
-  if (!info.value?.created) return '-'
-  const date = new Date(info.value.created)
-  return date.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })
-})
 </script>

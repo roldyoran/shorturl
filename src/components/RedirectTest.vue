@@ -17,34 +17,28 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { getUrlInfoRequest } from '../api/http'
+import type { UrlInfoResponse } from '../api/types'
 
 const shortCode = ref<string>('')
 const error = ref<string>('')
 
-function getApiUrl() {
-  return localStorage.getItem('apiUrl') || ''
-}
-
 async function redirectToUrl() {
   error.value = ''
   if (!shortCode.value) {
-    error.value = 'Por favor ingresa un código.'
+    error.value = 'Por favor ingresa el código de la URL corta.'
     return
   }
   try {
-    const apiUrl = getApiUrl()
-    const response = await fetch(`${apiUrl}/info/${shortCode.value}`)
-    if (!response.ok) {
-      throw new Error('No se encontró la URL original.')
-    }
-    const data = await response.json()
-    if (data && data.originalUrl) {
-      window.open(data.originalUrl, '_blank')
+    const data: UrlInfoResponse = await getUrlInfoRequest(shortCode.value)
+    if (data && data.original_url) {
+      // Open in new tab
+      window.open(data.original_url, '_blank')
     } else {
-      throw new Error('No se encontró la URL original.')
+      error.value = 'No se encontró la URL original.'
     }
-  } catch (err: any) {
-    error.value = err.message || 'Error al redireccionar.'
+  } catch (e: any) {
+    error.value = e?.response?.data?.message || 'Error al redirigir.'
   }
 }
 </script>

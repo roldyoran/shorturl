@@ -18,18 +18,18 @@
       <table class="w-full">
         <thead>
           <tr class="border-b border-pink-800 text-left text-pink-200">
-            <th class="pb-2 font-medium">URL Original</th>
             <th class="pb-2 font-medium">URL Corta</th>
+            <th class="pb-2 font-medium">URL Original</th>
             <th class="pb-2 font-medium">Fecha</th>
             <th class="pb-2 font-medium text-right">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(url, idx) in urls" :key="idx" class="border-b border-pink-800 hover:bg-pink-950/30 animate-fade-in">
-            <td class="py-2 break-all">{{ url.original }}</td>
             <td class="py-2 break-all">
-              <a :href="url.short" target="_blank" class="text-orange-400 hover:underline">{{ url.short }}</a>
+              <a :href="baseURL + '/' + url.short" target="_blank" class="text-orange-400 hover:underline">{{ url.short }}</a>
             </td>
+            <td class="py-2 break-all">{{ url.original }}</td>
             <td class="py-2">{{ formatDate(url.date) }}</td>
             <td class="py-2 text-right">
               <button @click="copyToClipboard(url.short)" class="text-pink-400 hover:bg-gradient-to-r hover:from-orange-500/20 hover:to-fuchsia-600/20 px-3 py-1 rounded-md transition-all duration-300 text-sm transform hover:scale-105 animate-slide-up">Copiar</button>
@@ -50,9 +50,13 @@ type UrlItem = { original: string; short: string; date: string }
 
 const urls = ref<UrlItem[]>([])
 const copySuccess = ref<boolean>(false)
+// let baseURL = localStorage.getItem('apiUrl') || ''
+const baseURL = ref('')
 
 function loadUrls() {
   urls.value = JSON.parse(localStorage.getItem('savedUrls') || '[]')
+  baseURL.value = localStorage.getItem('apiUrl') || ''
+  if (baseURL.value.endsWith('/')) baseURL.value = baseURL.value.slice(0, -1)
 }
 
 function clearUrls() {
@@ -66,7 +70,8 @@ function removeUrl(idx: number) {
 }
 
 function copyToClipboard(text: string) {
-  navigator.clipboard.writeText(text).then(() => {
+  const urlFinal = baseURL.value + "/" + text 
+  navigator.clipboard.writeText(urlFinal).then(() => {
     copySuccess.value = true
     setTimeout(() => (copySuccess.value = false), 1500)
   })

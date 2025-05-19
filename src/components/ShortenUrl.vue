@@ -37,19 +37,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { shortenUrlRequest } from '../api/http'
+import type { UrlInfoResponse } from '../api/types'
 
 const originalUrl = ref<string>('')
 const shortUrl = ref<string>('')
 const error = ref<string>('')
 const loading = ref<boolean>(false)
 const copySuccess = ref<boolean>(false)
-
-function getApiUrl() {
-  return localStorage.getItem('apiUrl') || ''
-}
-function getApiKey() {
-  return localStorage.getItem('apiKey') || ''
-}
 
 async function shortenUrl() {
   error.value = ''
@@ -59,32 +54,17 @@ async function shortenUrl() {
     error.value = 'Por favor ingresa una URL.'
     return
   }
-  const apiUrl = getApiUrl()
-  const apiKey = getApiKey()
-  if (!apiUrl) {
-    error.value = 'Configura la URL base de la API primero.'
-    return
-  }
   loading.value = true
   try {
-    const res = await fetch(`${apiUrl}/shorten`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': apiKey ? `Bearer ${apiKey}` : ''
-      },
-      body: JSON.stringify({ url: originalUrl.value })
-    })
-    if (!res.ok) throw new Error('No se pudo acortar la URL.')
-    const data = await res.json()
-    if (data && data.shortUrl) {
-      shortUrl.value = data.shortUrl
-      saveUrl(originalUrl.value, data.shortUrl)
+    const data: UrlInfoResponse = await shortenUrlRequest(originalUrl.value)
+    if (data && data.short_url) {
+      shortUrl.value = data.short_url
+      saveUrl(data.original_url, data.short_url)
     } else {
       error.value = 'Respuesta inválida de la API.'
     }
-  } catch (e) {
-    error.value = 'Error al acortar la URL.'
+  } catch (e: any) {
+    error.value = e?.response?.data?.message || 'Error al acortar la URL.'
   } finally {
     loading.value = false
   }
@@ -92,7 +72,10 @@ async function shortenUrl() {
 
 function copyToClipboard() {
   if (!shortUrl.value) return
-  navigator.clipboard.writeText(shortUrl.value).then(() => {
+   let baseURL = localStorage.getItem('apiUrl') || ''
+   if (baseURL.endsWith('/')) baseURL = baseURL.slice(0, -1)
+  const urlFinal = baseURL + "/" + shortUrl.value 
+  navigator.clipboard.writeText(urlFinal).then(() => {
     copySuccess.value = true
     setTimeout(() => (copySuccess.value = false), 1500)
   })
