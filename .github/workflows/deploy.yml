@@ -1,6 +1,6 @@
 # ~/.github/workflows/deploy.yml
 
-name: Deploy Vite To GitHub Pages
+name: Deploy Vite and VUE To GitHub Pages
 
 on:
   push:
