@@ -353,6 +353,7 @@ onMounted(() => {
   const dpr = window.devicePixelRatio || 1
   
   function resize() {
+    if (!canvas) return
     canvas.width = window.innerWidth * dpr
     canvas.height = window.innerHeight * dpr
     canvas.style.width = window.innerWidth + 'px'
@@ -372,7 +373,15 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   if (animationId) cancelAnimationFrame(animationId)
-  window.removeEventListener('resize', resize)
+window.removeEventListener('resize', () => {
+  if (!particlesCanvas.value) return
+  const dpr = window.devicePixelRatio || 1
+  particlesCanvas.value.width = window.innerWidth * dpr
+  particlesCanvas.value.height = window.innerHeight * dpr
+  particlesCanvas.value.style.width = window.innerWidth + 'px'
+  particlesCanvas.value.style.height = window.innerHeight + 'px'
+  particles = createParticles(60, particlesCanvas.value.width, particlesCanvas.value.height)
+})
   if (copyModalTimeout) clearTimeout(copyModalTimeout)
 })
 </script>
