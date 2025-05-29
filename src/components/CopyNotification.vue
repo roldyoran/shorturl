@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect, defineProps, defineEmits, onUnmounted } from 'vue'
+import {  watchEffect, defineProps, defineEmits, onUnmounted } from 'vue'
 
 const props = defineProps<{ 
   show: boolean,
@@ -20,8 +20,6 @@ const props = defineProps<{
 const emits = defineEmits(['update:show'])
 let timeout: ReturnType<typeof setTimeout> | null = null
 
-// Valor por defecto para el mensaje
-const notificationMessage = props.message || '¡URL copiada al portapapeles!'
 
 watchEffect(() => {
   if (props.show) {
