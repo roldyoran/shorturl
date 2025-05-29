@@ -51,7 +51,7 @@
               <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(url.date) }}</td>
               <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                 <button 
-                  @click="copyToClipboard(getFullShortUrl(url.short))" 
+                  @click="copyToClipboard(url.short)" 
                   class="px-3 py-1.5 bg-blue-500 hover:bg-blue-400 text-white text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-[1.03]"
                 >
                   Copiar
@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, inject } from 'vue'
 import Notification from './Notification.vue'
 
 type UrlItem = { original: string; short: string; date: string }
@@ -103,6 +103,7 @@ const urls = ref<UrlItem[]>([])
 const notification = ref<InstanceType<typeof Notification>>()
 const itemsPerPage = 10;
 const currentPage = ref(1);
+const copyUrl = inject('copyUrl') as (url: string) => void
 
 const totalPages = computed(() => {
   return Math.ceil(urls.value.length / itemsPerPage);
@@ -125,11 +126,30 @@ function getFullShortUrl(shortCode: string): string {
 function loadUrls() {
   try {
     const storedUrls = localStorage.getItem('savedUrls')
-    urls.value = storedUrls ? JSON.parse(storedUrls) : []
+    if (storedUrls) {
+      // Eliminar duplicados basados en la URL original
+      const parsedUrls: UrlItem[] = JSON.parse(storedUrls)
+      const uniqueUrls = removeDuplicateUrls(parsedUrls)
+      urls.value = uniqueUrls
+    } else {
+      urls.value = []
+    }
   } catch (e) {
     console.error('Error cargando URLs de localStorage:', e)
     urls.value = [] // Resetear en caso de error de parseo
   }
+}
+
+function removeDuplicateUrls(urlList: UrlItem[]): UrlItem[] {
+  const seen = new Set<string>()
+  return urlList.filter(url => {
+    // Verificar si ya hemos visto esta URL original
+    if (seen.has(url.original)) {
+      return false
+    }
+    seen.add(url.original)
+    return true
+  })
 }
 
 function confirmClearUrls() {
@@ -154,12 +174,9 @@ function removeUrl(original: string, short: string) {
 }
 
 function copyToClipboard(text: string) {
-  navigator.clipboard.writeText(text).then(() => {
-    notification.value?.showNotification('¡URL copiada al portapapeles!')
-  }).catch(err => {
-    console.error('Error al copiar:', err)
-    notification.value?.showNotification('Error al copiar la URL', 3000)
-  })
+  if (copyUrl) {
+    copyUrl(getFullShortUrl(text))
+  }
 }
 
 function formatDate(dateStr: string): string {
@@ -174,6 +191,20 @@ function formatDate(dateStr: string): string {
 }
 
 onMounted(loadUrls)
+
+function saveUrl(original: string, short: string) {
+  try {
+    const urls = JSON.parse(localStorage.getItem('savedUrls') || '[]')
+    // Check if the URL already exists
+    const exists = urls.some((url: UrlItem) => url.original === original)
+    if (!exists) {
+      urls.unshift({ original, short, date: new Date().toISOString() })
+      localStorage.setItem('savedUrls', JSON.stringify(urls.slice(0, 50)))
+    }
+  } catch (e) {
+    console.error('Error al guardar URL en localStorage:', e)
+  }
+}
 </script>
 
 <style scoped>

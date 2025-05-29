@@ -166,7 +166,7 @@
       </section>
       
       <!-- Main Content -->
-      <div class="space-y-12" id="main-content">
+      <div class=" space-y-24 my-10" id="main-content">
         <transition name="fade" mode="out-in">
           <div :key="activeTab">
             <ShortenUrl v-if="activeTab === 'shorten'" />

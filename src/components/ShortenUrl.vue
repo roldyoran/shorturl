@@ -8,6 +8,7 @@
         </svg>
         <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-teal-300">Acortar URL</h2>
       </div>
+      <p class="text-sm font-medium my-4" :class="remainingAttempts === 0 ? 'text-pink-400/90' : 'text-yellow-400/90'" my-4>Puede probar el acortador un máximo de 3 veces. Intentos restantes: {{ remainingAttempts }}</p>
 
       <form @submit.prevent="shortenUrl" class="space-y-6">
         <div>
@@ -66,6 +67,13 @@ const error = ref<string>('')
 const loading = ref<boolean>(false)
 const copySuccess = ref<boolean>(false)
 const copyUrl = inject('copyUrl') as (url: string) => void
+const remainingAttempts = ref<number>(3)
+
+function decrementAttempts() {
+  if (remainingAttempts.value > 0) {
+    remainingAttempts.value -= 1
+  }
+}
 
 async function shortenUrl() {
   error.value = ''
@@ -75,12 +83,17 @@ async function shortenUrl() {
     error.value = 'Por favor ingresa una URL.'
     return
   }
+  if (remainingAttempts.value <= 0) {
+    error.value = 'Ha alcanzado el límite de intentos.'
+    return
+  }
   loading.value = true
   try {
     const data: UrlInfoResponse = await shortenUrlRequest(originalUrl.value)
     if (data && data.short_url) {
-      shortUrl.value = data.short_url 
+      shortUrl.value = data.short_url
       saveUrl(data.original_url, data.short_url)
+      decrementAttempts()
     } else {
       error.value = 'Respuesta inválida de la API.'
     }
@@ -93,7 +106,7 @@ async function shortenUrl() {
 
 function copyToClipboard() {
   if (copyUrl && shortUrl.value) {
-    copyUrl(shortUrl.value)
+    copyUrl("https://shorturl.roldyoran.workers.dev/"+shortUrl.value)
     copySuccess.value = true
     setTimeout(() => copySuccess.value = false, 2000)
   }

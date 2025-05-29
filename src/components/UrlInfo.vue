@@ -43,7 +43,7 @@
         <div class="flex items-center justify-between bg-white/10 p-3 rounded-md mb-4 border border-white/10">
           <span class="break-all mr-4 text-blue-300 font-mono text-sm">{{ urlInfo.original_url }}</span>
           <button 
-            @click="copyToClipboard" 
+            @click="copyToClipboard(urlInfo.original_url)" 
             class="px-4 py-2 bg-gradient-to-r from-blue-500 to-teal-400 hover:from-blue-400 hover:to-teal-300 text-white text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-[1.03] whitespace-nowrap"
           >
             Copiar
@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { getUrlInfoRequest } from '../api/http'
 import type { UrlInfoResponse } from '../api/types'
 import Notification from './Notification.vue'
@@ -78,15 +78,22 @@ const urlInfo = ref<UrlInfoResponse | null>(null)
 const error = ref<string>('')
 const loading = ref<boolean>(false)
 const notification = ref<InstanceType<typeof Notification>>()
+const copyUrl = inject('copyUrl') as (url: string) => void
 
-async function copyToClipboard() {
-  if (urlInfo.value && urlInfo.value.original_url) {
-    try {
-      await navigator.clipboard.writeText(urlInfo.value.original_url)
-      notification.value?.showNotification('¡URL copiada al portapapeles!')
-    } catch (e) {
-      notification.value?.showNotification('Error al copiar la URL', 3000)
-    }
+// async function copyToClipboard() {
+//   if (urlInfo.value && urlInfo.value.original_url) {
+//     try {
+//       await navigator.clipboard.writeText(urlInfo.value.original_url)
+//       notification.value?.showNotification('¡URL copiada al portapapeles!')
+//     } catch (e) {
+//       notification.value?.showNotification('Error al copiar la URL', 3000)
+//     }
+//   }
+// }
+
+function copyToClipboard(text: string) {
+  if (copyUrl ) {
+    copyUrl(text)
   }
 }
 
@@ -100,13 +107,23 @@ async function getUrlInfo() {
   loading.value = true
   try {
     const data = await getUrlInfoRequest(shortCode.value)
+    // Format the date to be more readable
+    const formattedDate = new Date(data.created_at).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+    
     urlInfo.value = {
       clicks: data.clicks,
-      created_at: data.created_at,
+      created_at: formattedDate,
       original_url: data.original_url,
       short_url: data.short_url
     }
-    notification.value?.showNotification('Información de URL obtenida correctamente')
+    // notification.value?.showNotification('Información de URL obtenida correctamente')
+    // copyUrl("Información de URL obtenida correctamente")
   } catch (e: any) {
     error.value = e?.response?.data?.message || 'Error al obtener la información.'
     notification.value?.showNotification(error.value, 3000)

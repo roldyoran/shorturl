@@ -3,7 +3,7 @@ import axios from 'axios'
 // Obtiene la URL base y la API Key desde localStorage
 export function getAxiosInstance() {
   const baseURL = localStorage.getItem('apiUrl') || ''
-  const apiKey = localStorage.getItem('apiKey') || ''
+  const apiKey = import.meta.env.VITE_API_KEY || ''
 
 //   console.log('Base URL:', baseURL)
 //   console.log('API Key:', apiKey)
