@@ -1,92 +1,106 @@
 <template>
-  <div class="bg-gradient-to-br from-yellow-400/20 via-yellow-700/10 to-yellow-900/30 rounded-2xl shadow-xl p-8 border border-yellow-700/30">
-    <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
-      <div class="flex items-center gap-3">
-        <svg class="w-7 h-7 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-        <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-300">Mis URLs Guardadas</h2>
+  <div class="relative backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/10 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-zinc-500/10 to-teal-500/10 pointer-events-none"></div>
+    <div class="relative z-10">
+      <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
+        <div class="flex items-center gap-3">
+          <svg class="w-7 h-7 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+          <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-teal-300">Mis URLs Guardadas</h2>
+        </div>
+        <button 
+          v-if="urls.length > 0"
+          @click="confirmClearUrls"
+          class="px-4 py-2 bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-500 hover:to-teal-400 text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] whitespace-nowrap"
+        >
+          Borrar Historial
+        </button>
       </div>
-      <button 
-        v-if="urls.length > 0"
-        @click="confirmClearUrls"
-        class="px-4 py-2 bg-yellow-700 hover:bg-yellow-600 text-yellow-50 text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 whitespace-nowrap"
-      >
-        Borrar Historial
-      </button>
-    </div>
 
-    <div v-if="urls.length === 0" class="text-center py-10 text-yellow-200">
-      <svg class="w-16 h-16 mx-auto mb-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-      <p class="text-lg">No tienes URLs guardadas.</p>
-      <p class="text-sm">Acorta una URL para que aparezca aquí.</p>
-    </div>
+      <div v-if="urls.length === 0" class="text-center py-10 text-blue-200/80">
+        <svg class="w-16 h-16 mx-auto mb-4 text-blue-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <p class="text-lg text-blue-100">No tienes URLs guardadas.</p>
+        <p class="text-sm text-blue-200/70">Acorta una URL para que aparezca aquí.</p>
+      </div>
 
-    <div v-else class="overflow-x-auto bg-yellow-900/40 rounded-lg shadow">
-      <table class="w-full min-w-max text-sm text-left text-yellow-100">
-        <thead class="text-xs text-yellow-200 uppercase bg-yellow-900/60">
-          <tr>
-            <th scope="col" class="px-6 py-3">URL Corta</th>
-            <th scope="col" class="px-6 py-3">URL Original</th>
-            <th scope="col" class="px-6 py-3">Fecha</th>
-            <th scope="col" class="px-6 py-3 text-right">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr 
-            v-for="(url, idx) in paginatedUrls" 
-            :key="idx" 
-            class="bg-yellow-900/40 border-b border-yellow-700 hover:bg-yellow-900/60 transition-colors duration-150"
-          >
-            <td class="px-6 py-4 font-mono">
-              <a :href="getFullShortUrl(url.short)" target="_blank" class="text-yellow-300 hover:text-yellow-200 hover:underline break-all">
-                {{ url.short }}
-              </a>
-            </td>
-            <td class="px-6 py-4 break-all">{{ url.original }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(url.date) }}</td>
-            <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
-              import { inject } from 'vue'
-              const copyUrl = inject('copyUrl') as (url: string) => void
-              function copyToClipboard(url: string) {
-                if (copyUrl) copyUrl(url)
-              }
-              <button @click="copyToClipboard(getFullShortUrl(url.short))" class="px-3 py-1.5 bg-yellow-500 hover:bg-yellow-400 text-yellow-900 text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-105">Copiar</button>
-              <button @click="removeUrl(url.original, url.short)" class="px-3 py-1.5 bg-yellow-700 hover:bg-yellow-600 text-yellow-50 text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-105">Eliminar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    
-    <!-- Paginación -->
-    <div v-if="totalPages > 1" class="mt-6 flex justify-center items-center space-x-2 text-sm">
-      <button 
-        @click="currentPage--" 
-        :disabled="currentPage === 1"
-        class="px-3 py-1.5 rounded-md bg-yellow-900/40 hover:bg-yellow-900/60 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >Anterior</button>
-      <span>Página {{ currentPage }} de {{ totalPages }}</span>
-      <button 
-        @click="currentPage++" 
-        :disabled="currentPage === totalPages"
-        class="px-3 py-1.5 rounded-md bg-yellow-900/40 hover:bg-yellow-900/60 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >Siguiente</button>
-    </div>
+      <div v-else class="overflow-x-auto bg-white/5 backdrop-blur-sm rounded-lg shadow-lg border border-white/10">
+        <table class="w-full min-w-max text-sm text-left text-blue-100">
+          <thead class="text-xs text-blue-200 uppercase bg-white/10">
+            <tr>
+              <th scope="col" class="px-6 py-3">URL Corta</th>
+              <th scope="col" class="px-6 py-3">URL Original</th>
+              <th scope="col" class="px-6 py-3">Fecha</th>
+              <th scope="col" class="px-6 py-3 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr 
+              v-for="(url, idx) in paginatedUrls" 
+              :key="idx" 
+              class="border-b border-white/10 hover:bg-white/10 transition-colors duration-150"
+            >
+              <td class="px-6 py-4 font-mono">
+                <a :href="getFullShortUrl(url.short)" target="_blank" class="text-blue-300 hover:text-blue-200 hover:underline break-all">
+                  {{ url.short }}
+                </a>
+              </td>
+              <td class="px-6 py-4 break-all">{{ url.original }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(url.date) }}</td>
+              <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
+                <button 
+                  @click="copyToClipboard(getFullShortUrl(url.short))" 
+                  class="px-3 py-1.5 bg-blue-500 hover:bg-blue-400 text-white text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-[1.03]"
+                >
+                  Copiar
+                </button>
+                <button 
+                  @click="removeUrl(url.original, url.short)" 
+                  class="px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-[1.03]"
+                >
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Paginación -->
+      <div v-if="totalPages > 1" class="mt-6 flex justify-center items-center space-x-2 text-sm">
+        <button 
+          @click="currentPage--" 
+          :disabled="currentPage === 1"
+          class="px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border border-white/10"
+        >
+          Anterior
+        </button>
+        <span class="text-blue-200/80">Página {{ currentPage }} de {{ totalPages }}</span>
+        <button 
+          @click="currentPage++" 
+          :disabled="currentPage === totalPages"
+          class="px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors border border-white/10"
+        >
+          Siguiente
+        </button>
+      </div>
 
-    <div v-if="copySuccess" class="fixed bottom-5 right-5 bg-yellow-500 text-yellow-900 text-sm py-2 px-4 rounded-lg shadow-lg transition-opacity duration-300">
-      ¡URL copiada al portapapeles!
+      <!-- Componente de notificación reutilizable -->
+      <Notification ref="notification" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import Notification from './Notification.vue'
 
 type UrlItem = { original: string; short: string; date: string }
 
 const urls = ref<UrlItem[]>([])
-const copySuccess = ref<boolean>(false)
+const notification = ref<InstanceType<typeof Notification>>()
 const itemsPerPage = 10;
 const currentPage = ref(1);
 
@@ -136,15 +150,15 @@ function removeUrl(original: string, short: string) {
   if (paginatedUrls.value.length === 0 && currentPage.value > 1) {
     currentPage.value--; // Retroceder si la página actual queda vacía
   }
+  notification.value?.showNotification('URL eliminada correctamente')
 }
 
 function copyToClipboard(text: string) {
   navigator.clipboard.writeText(text).then(() => {
-    copySuccess.value = true
-    setTimeout(() => (copySuccess.value = false), 2000)
+    notification.value?.showNotification('¡URL copiada al portapapeles!')
   }).catch(err => {
     console.error('Error al copiar:', err)
-    // Podrías mostrar un mensaje de error al usuario aquí
+    notification.value?.showNotification('Error al copiar la URL', 3000)
   })
 }
 

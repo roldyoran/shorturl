@@ -1,34 +1,39 @@
 <template>
-  <div class="bg-gradient-to-br from-yellow-400/20 via-yellow-700/10 to-yellow-900/30 rounded-2xl shadow-xl p-8 border border-yellow-700/30">
-    <div class="flex items-center gap-3 mb-6">
-      <svg class="w-7 h-7 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-      <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-300">Probar Redirección</h2>
-    </div>
-
-    <div class="space-y-6">
-      <div>
-        <label for="redirect-url" class="block text-sm font-medium text-yellow-100 mb-1">Código de URL Corta</label>
-        <input 
-          type="text" 
-          id="redirect-url" 
-          v-model="shortCode" 
-          placeholder="Ej: abc123xyz"
-          class="w-full px-4 py-3 bg-yellow-900/40 border border-yellow-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 text-yellow-100 placeholder-yellow-200 transition-all duration-200 shadow-sm"
-        >
+  <div class="relative backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/10 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-zinc-500/10 to-teal-500/10 pointer-events-none"></div>
+    <div class="relative z-10">
+      <div class="flex items-center gap-3 mb-6">
+        <svg class="w-7 h-7 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-teal-300">Probar Redirección</h2>
       </div>
-      <button 
-        @click="redirectToUrl"
-        class="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 text-yellow-900 font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-        :disabled="!shortCode.trim()"
-      >
-        Ir a URL Original
-      </button>
-      <p v-if="error" class="text-yellow-300 text-sm">{{ error }}</p>
+
+      <div class="space-y-6">
+        <div>
+          <label for="redirect-url" class="block text-sm font-medium text-blue-100 mb-1">Código de URL Corta</label>
+          <input 
+            type="text" 
+            id="redirect-url" 
+            v-model="shortCode" 
+            placeholder="Ej: abc123xyz"
+            class="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 focus:border-blue-400/50 text-white placeholder-blue-200/70 transition-all duration-200 shadow-lg hover:bg-white/10"
+          >
+        </div>
+        <button 
+          @click="redirectToUrl"
+          class="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-400 hover:from-blue-400 hover:to-teal-300 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="!shortCode.trim()"
+        >
+          Ir a URL Original
+        </button>
+        <p v-if="error" class="text-blue-300 text-sm">{{ error }}</p>
+      </div>
     </div>
   </div>
 </template>
+
+
 
 <script setup lang="ts">
 import { ref } from 'vue'
