@@ -44,7 +44,7 @@
             >
               <td class="px-6 py-4 font-mono">
                 <a :href="getFullShortUrl(url.short)" target="_blank" class="text-blue-300 hover:text-blue-200 hover:underline break-all">
-                  {{ url.short }}
+                 https://shorturl.roldyoran.workers.dev/{{ url.short }}
                 </a>
               </td>
               <td class="px-6 py-4 break-all">{{ url.original }}</td>

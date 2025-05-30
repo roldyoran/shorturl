@@ -139,7 +139,9 @@
                       <a :href="url.original" target="_blank" class="hover:underline text-blue-100 hover:text-blue-300">{{ url.original }}</a>
                     </td>
                     <td class="px-6 py-4 break-all font-mono text-blue-200">
-                      <span>{{ baseUrl + url.code }}</span>
+                      <a :href="baseUrl + url.code" target="_blank" class="text-blue-300 hover:text-blue-400 underline">
+                        <span>{{ baseUrl + url.code }}</span>
+                       </a>
                     </td>
                     <td class="px-6 py-4">
                       <button 
