@@ -192,19 +192,6 @@ function formatDate(dateStr: string): string {
 
 onMounted(loadUrls)
 
-function saveUrl(original: string, short: string) {
-  try {
-    const urls = JSON.parse(localStorage.getItem('savedUrls') || '[]')
-    // Check if the URL already exists
-    const exists = urls.some((url: UrlItem) => url.original === original)
-    if (!exists) {
-      urls.unshift({ original, short, date: new Date().toISOString() })
-      localStorage.setItem('savedUrls', JSON.stringify(urls.slice(0, 50)))
-    }
-  } catch (e) {
-    console.error('Error al guardar URL en localStorage:', e)
-  }
-}
 </script>
 
 <style scoped>
