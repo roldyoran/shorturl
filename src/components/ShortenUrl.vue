@@ -41,7 +41,9 @@
       <div v-if="shortUrl" class="mt-8 bg-zinc-800/60 backdrop-blur-sm rounded-lg p-4 shadow-inner border border-white/10">
         <p class="text-sm font-medium text-cyan-100 mb-2">URL Acortada:</p>
         <div class="flex items-center justify-between bg-zinc-950/50 p-3 rounded-md border border-white/10">  
-          <span class="break-all px-2 text-cyan-300 font-mono text-md">{{ shortUrl }}</span>
+          <span class="break-all px-2 text-cyan-300 font-mono text-md">
+            {{urlbase + shortUrl }}
+          </span>
           <button 
             @click="copyToClipboard('https://shorturl.roldyoran.workers.dev/'+shortUrl)" 
             class="px-4 py-2 text-white/80  text-xs font-semibold rounded-md duration-200 transform hover:scale-120 transition-all whitespace-nowrap"
@@ -68,6 +70,7 @@ const shortUrl = ref<string>('')
 const error = ref<string>('')
 const loading = ref<boolean>(false)
 const copySuccess = ref<boolean>(false)
+const urlbase = 'https://shorturl.roldyoran.workers.dev/' 
 const remainingAttempts = ref<number>(Number(localStorage.getItem('remainingAttempts')) || 3)
 
 function decrementAttempts() {
