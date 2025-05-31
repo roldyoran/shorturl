@@ -28,7 +28,7 @@
             class="flex items-center text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all duration-300 hover:scale-105 px-3 py-1.5 rounded-md text-sm"
           >
             <ExternalLink class="h-4 w-4 mr-2" />
-            Probar
+            Probar Redirección
           </button>
 
           <a

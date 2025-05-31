@@ -43,7 +43,7 @@
         <div class="flex items-center justify-between bg-zinc-950/50 p-3 rounded-md border border-white/10">  
           <span class="break-all px-2 text-cyan-300 font-mono text-md">{{ shortUrl }}</span>
           <button 
-            @click="copyToClipboard("https://shorturl.roldyoran.workers.dev/"+shortUrl)" 
+            @click="copyToClipboard('https://shorturl.roldyoran.workers.dev/'+shortUrl)" 
             class="px-4 py-2 text-white/80  text-xs font-semibold rounded-md duration-200 transform hover:scale-120 transition-all whitespace-nowrap"
           >
           <Copy class="inline-block mr-1 w-4 h-4" />
