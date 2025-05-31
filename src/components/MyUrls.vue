@@ -49,7 +49,7 @@
               <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(url.date) }}</td>
               <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                 <button 
-                  @click="copyToClipboard(url.short)" 
+                  @click="copyToClipboard("https://shorturl.roldyoran.workers.dev/"+url.short)" 
                   class="px-3 py-1.5 hover:scale-150 text-zinc-200 hover:text-white transition-all"
                 >
                   <Copy class="inline-block mr-1 w-4 h-4" />
