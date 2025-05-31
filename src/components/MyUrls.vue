@@ -1,49 +1,47 @@
 <template>
-  <div class="relative backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/10 overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-zinc-500/10 to-teal-500/10 pointer-events-none"></div>
+  <div class="relative backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/10 overflow-hidden bg-zinc-950/60">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-zinc-900/10 to-teal-900/10 pointer-events-none"></div>
     <div class="relative z-10">
       <div class="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
         <div class="flex items-center gap-3">
-          <svg class="w-7 h-7 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-          </svg>
-          <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-teal-300">Mis URLs Guardadas</h2>
+          <Database class="inline-block w-7 h-7 text-cyan-400" />
+          <h2 class="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-teal-300">Mis URLs Guardadas</h2>
         </div>
         <button 
           v-if="urls.length > 0"
           @click="confirmClearUrls"
-          class="px-4 py-2 bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-500 hover:to-teal-400 text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] whitespace-nowrap"
+          class="px-4 py-2 bg-gradient-to-r from-cyan-600 to-teal-500 hover:from-cyan-500 hover:to-teal-400 text-black text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-[1.02] whitespace-nowrap"
         >
           Borrar Historial
         </button>
       </div>
 
-      <div v-if="urls.length === 0" class="text-center py-10 text-blue-200/80">
-        <svg class="w-16 h-16 mx-auto mb-4 text-blue-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div v-if="urls.length === 0" class="text-center  text-cyan-200/80">
+        <svg class="w-10 h-10 mx-auto mb-4 text-cyan-400/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
-        <p class="text-lg text-blue-100">No tienes URLs guardadas.</p>
-        <p class="text-sm text-blue-200/70">Acorta una URL para que aparezca aquí.</p>
+        <p class="text-lg text-cyan-100">No tienes URLs guardadas.</p>
+        <p class="text-sm text-cyan-200/70">Acorta una URL para que aparezca aquí.</p>
       </div>
 
-      <div v-else class="overflow-x-auto bg-white/5 backdrop-blur-sm rounded-lg shadow-lg border border-white/10">
-        <table class="w-full min-w-max text-sm text-left text-blue-100">
-          <thead class="text-xs text-blue-200 uppercase bg-white/10">
+      <div v-else class="overflow-x-auto bg-zinc-900/80 backdrop-blur-sm rounded-lg shadow-lg border border-white/10">
+        <table class="w-full min-w-max text-sm text-left text-white/80 ">
+          <thead class="text-xs text-purple-300 uppercase bg-zinc-700/20">
             <tr>
               <th scope="col" class="px-6 py-3">URL Corta</th>
               <th scope="col" class="px-6 py-3">URL Original</th>
               <th scope="col" class="px-6 py-3">Fecha</th>
-              <th scope="col" class="px-6 py-3 text-right">Acciones</th>
+              <th scope="col" class="px-6 py-3 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr 
               v-for="(url, idx) in paginatedUrls" 
               :key="idx" 
-              class="border-b border-white/10 hover:bg-white/10 transition-colors duration-150"
+              class="border-b border-white/10 hover:bg-white/5 transition-colors duration-150"
             >
               <td class="px-6 py-4 font-mono">
-                <a :href="getFullShortUrl(url.short)" target="_blank" class="text-blue-300 hover:text-blue-200 hover:underline break-all">
+                <a :href="getFullShortUrl(url.short)" target="_blank" class="text-cyan-400 hover:text-cyan-300 hover:underline break-all">
                  https://shorturl.roldyoran.workers.dev/{{ url.short }}
                 </a>
               </td>
@@ -52,15 +50,16 @@
               <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                 <button 
                   @click="copyToClipboard(url.short)" 
-                  class="px-3 py-1.5 bg-blue-500 hover:bg-blue-400 text-white text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-[1.03]"
+                  class="px-3 py-1.5 hover:scale-150 text-zinc-200 hover:text-white transition-all"
                 >
-                  Copiar
+                  <Copy class="inline-block mr-1 w-4 h-4" />
                 </button>
                 <button 
                   @click="removeUrl(url.original, url.short)" 
-                  class="px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-semibold rounded-md transition-colors duration-200 transform hover:scale-[1.03]"
+                  class="px-3 py-1.5 text-red-500 hover:text-red-400 hover:scale-150 transition-all "
                 >
-                  Eliminar
+                  <Trash class="inline-block mr-1 w-4 h-4" />
+                  
                 </button>
               </td>
             </tr>
@@ -77,7 +76,7 @@
         >
           Anterior
         </button>
-        <span class="text-blue-200/80">Página {{ currentPage }} de {{ totalPages }}</span>
+        <span class="text-cyan-200/80">Página {{ currentPage }} de {{ totalPages }}</span>
         <button 
           @click="currentPage++" 
           :disabled="currentPage === totalPages"
@@ -94,8 +93,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, inject } from 'vue'
-import Notification from './Notification.vue'
+import { ref, onMounted, computed } from 'vue'
+import { copyToClipboard } from '../utils/copyUrl';
+import { deleteUrl } from '../utils/deleteUrl';
+import { Copy, Trash, Database } from 'lucide-vue-next'
 
 type UrlItem = { original: string; short: string; date: string }
 
@@ -103,7 +104,6 @@ const urls = ref<UrlItem[]>([])
 const notification = ref<InstanceType<typeof Notification>>()
 const itemsPerPage = 10;
 const currentPage = ref(1);
-const copyUrl = inject('copyUrl') as (url: string) => void
 
 const totalPages = computed(() => {
   return Math.ceil(urls.value.length / itemsPerPage);
@@ -170,13 +170,7 @@ function removeUrl(original: string, short: string) {
   if (paginatedUrls.value.length === 0 && currentPage.value > 1) {
     currentPage.value--; // Retroceder si la página actual queda vacía
   }
-  notification.value?.showNotification('URL eliminada correctamente')
-}
-
-function copyToClipboard(text: string) {
-  if (copyUrl) {
-    copyUrl(getFullShortUrl(text))
-  }
+  deleteUrl()
 }
 
 function formatDate(dateStr: string): string {
