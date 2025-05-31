@@ -10,7 +10,6 @@ import { z } from 'zod';
 export const urlFormatSchema = z.object({
    original_url: z
       .string()
-      .toLowerCase()
       .url({ message: 'La URL debe tener un formato válido' })
       .refine((url) => url.startsWith('http://') || url.startsWith('https://'), {
          message: 'La URL debe comenzar con http:// o https://',

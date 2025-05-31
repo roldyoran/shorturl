@@ -25,5 +25,5 @@ export const generateRandomCode = (): string => {
  * @returns URL normalizada
  */
 export const normalizeUrl = (url: string): string => {
-   return url.toLowerCase().replace(/\/$/, '');
+   return url.replace(/\/$/, '');
 };
