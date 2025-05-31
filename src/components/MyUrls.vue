@@ -53,6 +53,14 @@
                   class="px-3 py-1.5 hover:scale-150 text-zinc-200 hover:text-white transition-all"
                 >
                   <Copy class="inline-block mr-1 w-4 h-4" />
+                  Copiar Url Acortada
+                </button>
+                <button 
+                    @click="copyToClipboard(url.short)"
+                  class="px-3 py-1.5 hover:scale-150 text-purple-400 hover:text-purple-200 transition-all"
+                >
+                  <Copy class="inline-block mr-1 w-4 h-4" />
+                  Copiar Codigo de la URL
                 </button>
                 <button 
                   @click="removeUrl(url.original, url.short)" 

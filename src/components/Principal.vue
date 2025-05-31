@@ -17,9 +17,9 @@
             </div>
           </div>
 
-          <div class="mt-6">
-            <h2 class="text-xl font-bold mb-2">URLs cortas Disponibles</h2>
+          <div class="mt-8">
             <div class="overflow-x-auto rounded-lg shadow border border-white/10 bg-zinc-600/20 backdrop-blur-sm">
+              <h2 class="text-xl font-bold mb-2 text-white/70 py-2">URLs cortas Disponibles</h2>
               <table class="w-full min-w-max text-sm text-left ">
                 <thead class="text-xs text-purple-300 uppercase">
                   <tr>
