@@ -87,7 +87,7 @@
       </div>
 
       <!-- Componente de notificación reutilizable -->
-      <Notification ref="notification" />
+      <!-- <Notification ref="notification" /> -->
     </div>
   </div>
 </template>
@@ -101,7 +101,7 @@ import { Copy, Trash, Database } from 'lucide-vue-next'
 type UrlItem = { original: string; short: string; date: string }
 
 const urls = ref<UrlItem[]>([])
-const notification = ref<InstanceType<typeof Notification>>()
+// const notification = ref<InstanceType<typeof Notification>>()
 const itemsPerPage = 10;
 const currentPage = ref(1);
 

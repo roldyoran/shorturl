@@ -10,8 +10,7 @@
   </Teleport>
 </template>
 
-<script setup>
-import { Teleport } from 'vue';
+<script setup lang="ts">
 
 defineProps({
   modelValue: Boolean

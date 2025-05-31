@@ -111,11 +111,14 @@
   </header>
 </template>
 
-<script setup>
+
+
+<script setup lang="ts">
 import { ref } from 'vue';
 import { Link2, Settings, ExternalLink, Github, Menu, X } from 'lucide-vue-next';
 import ApiConfig from './ApiConfig.vue';
 import Dialog from './Dialog.vue';
+
 import RedirectTest from './RedirectTest.vue';
 
 
@@ -124,21 +127,6 @@ import RedirectTest from './RedirectTest.vue';
 const showConfig = ref(false);
 const showTest = ref(false);
 const mobileMenuOpen = ref(false);
-const configDialogOpen = ref(false);
-const testDialogOpen = ref(false);
 
 
-
-// Methods
-const openDialog = (type) => {
-  if (type === 'config') {
-    configDialogOpen.value = true;
-  } else if (type === 'test') {
-    testDialogOpen.value = true;
-  }
-};
-
-const openGithub = () => {
-  window.open("https://github.com/roldyoran", "_blank");
-};
 </script>

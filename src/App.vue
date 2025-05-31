@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen text-gray-100 bg-zinc-950 flex flex-col relative">
     <Toast ref="globalToast" />
-    <Navbar />
+    <NavbarHeader />
     
     <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Principal />
@@ -69,8 +69,8 @@ declare global {
 
 import { ref, onMounted } from 'vue'
 import { Info, Link, Database } from 'lucide-vue-next';
-import Toast from './components/Toast.vue'
-import Navbar from './components/NavbarHeader.vue'
+import Toast from './components/Toast.vue';
+import NavbarHeader from './components/NavbarHeader.vue';
 import Principal from './components/Principal.vue'
 
 import ShortenUrl from './components/ShortenUrl.vue'

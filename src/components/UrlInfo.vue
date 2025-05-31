@@ -63,7 +63,7 @@
       </div>
 
       <!-- Componente de notificación reutilizable -->
-      <Notification ref="notification" />
+      <!-- <Notification ref="notification" /> -->
     </div>
   </div>
 </template>
@@ -79,7 +79,7 @@ const shortCode = ref<string>('')
 const urlInfo = ref<UrlInfoResponse | null>(null)
 const error = ref<string>('')
 const loading = ref<boolean>(false)
-const notification = ref<InstanceType<typeof Notification>>()
+// const notification = ref<InstanceType<typeof Notification>>()
 
 
 async function getUrlInfo() {
