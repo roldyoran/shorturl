@@ -26,48 +26,59 @@
 
       <div v-else class="overflow-x-auto bg-zinc-900/80 backdrop-blur-sm rounded-lg shadow-lg border border-white/10">
         <table class="w-full min-w-max text-sm text-left text-white/80 ">
-          <thead class="text-xs text-purple-300 uppercase bg-zinc-700/20">
+          <thead class="text-xs text-purple-300 uppercase ">
             <tr>
               <th scope="col" class="px-6 py-3">URL Corta</th>
               <th scope="col" class="px-6 py-3">URL Original</th>
               <th scope="col" class="px-6 py-3">Fecha</th>
-              <th scope="col" class="px-6 py-3 text-center">Acciones</th>
+              <th scope="col" class="px-6 py-3 text-center"></th>
             </tr>
           </thead>
           <tbody>
             <tr 
               v-for="(url, idx) in paginatedUrls" 
               :key="idx" 
-              class="border-b border-white/10 hover:bg-white/5 transition-colors duration-150"
+              class="border-b border-white/10 hover:bg-white/5 transition-colors duration-150 text-sm"
             >
               <td class="px-6 py-4 font-mono">
                 <a :href="getFullShortUrl(url.short)" target="_blank" class="text-cyan-400 hover:text-cyan-300 hover:underline break-all">
                  https://shorturl.roldyoran.workers.dev/{{ url.short }}
                 </a>
               </td>
-              <td class="px-6 py-4 break-all">{{ url.original }}</td>
+                <td class="px-6 py-4 break-all text-wrap" :title="url.original">
+                {{ url.original.length > 28 ? url.original.substring(0, 28) + '...' : url.original }}
+                </td>
               <td class="px-6 py-4 whitespace-nowrap">{{ formatDate(url.date) }}</td>
               <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                 <button 
                     @click="copyToClipboard('https://shorturl.roldyoran.workers.dev/' + url.short)"
-                  class="px-3 py-1.5 hover:scale-150 text-zinc-200 hover:text-white transition-all"
+                  class="px-3 py-1.5 hover:scale-110 text-zinc-200/80 hover:text-white transition-all text-sm"
                 >
+                <div class="flex flex-col items-center gap-2">
+
                   <Copy class="inline-block mr-1 w-4 h-4" />
-                  Copiar Url Acortada
+                  Copiar Url <br> Acortada
+                </div>
                 </button>
                 <button 
                     @click="copyToClipboard(url.short)"
-                  class="px-3 py-1.5 hover:scale-150 text-purple-400 hover:text-purple-200 transition-all"
+                  class="px-3 py-1.5 hover:scale-110 text-purple-400 hover:text-purple-200 transition-all text-sm"
                 >
+                <div class="flex flex-col items-center gap-2">
+
                   <Copy class="inline-block mr-1 w-4 h-4" />
-                  Copiar Codigo de la URL
-                </button>
+                  Copiar <br> Codigo
+                </div>
+              </button>
                 <button 
                   @click="removeUrl(url.original, url.short)" 
-                  class="px-3 py-1.5 text-red-500 hover:text-red-400 hover:scale-150 transition-all "
+                  class="px-3 py-1.5 text-red-500 hover:text-red-400 hover:scale-125 transition-all "
                 >
+                <div class="flex flex-col items-center gap-2">
                   <Trash class="inline-block mr-1 w-4 h-4" />
-                  
+                  Borrar
+
+                </div>
                 </button>
               </td>
             </tr>

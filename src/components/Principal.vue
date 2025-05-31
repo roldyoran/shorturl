@@ -1,6 +1,6 @@
 <template>
     <!-- Hero Section -->
-      <section class="text-center mb-12 relative backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/5 overflow-hidden bg-zinc-900/60">
+      <section class="text-center mb-12 relative backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/5 overflow-hidden bg-zinc-950/60">
         <div class="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-zinc-900/10 to-teal-900/10 pointer-events-none"></div>
         <div class="relative z-10">
           <h1 class="text-3xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-l to-purple-500  via-cyan-500 from-teal-400 mb-4 drop-shadow-lg">
@@ -18,7 +18,7 @@
           </div>
 
           <div class="mt-8">
-            <div class="overflow-x-auto rounded-lg shadow border border-white/10 bg-zinc-600/20 backdrop-blur-sm">
+            <div class="overflow-x-auto rounded-lg shadow border border-white/10 bg-zinc-900/80 backdrop-blur-sm">
               <h2 class="text-xl font-bold mb-2 text-white/70 py-2">URLs cortas Disponibles</h2>
               <table class="w-full min-w-max text-sm text-left ">
                 <thead class="text-xs text-purple-300 uppercase">
