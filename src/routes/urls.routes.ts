@@ -7,7 +7,12 @@ import { originalURLFormatSchema } from '@/models/zod.schemas';
 
 const app = new Hono<AppContext>();
 
-app.get('/',  zValidator("json", originalURLFormatSchema), getShortUrlInfoHandler);
+
+app.get('/', (c) => {
+  return c.json({ message: 'Welcome to the URL Shortener API' });   
+});
+
+app.get('/getinfo',  zValidator("json", originalURLFormatSchema), getShortUrlInfoHandler);
 // app.post('/', addTodo);
 // Más rutas aquí (PUT, DELETE)...
 
