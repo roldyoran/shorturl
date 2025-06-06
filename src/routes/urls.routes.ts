@@ -11,7 +11,8 @@ app.get('/', (c) => {
     return c.json({ message: 'Welcome to the URL Shortener API' });
 });
 
-app.get('/getinfo', zValidator('json', originalURLFormatSchema), getShortUrlInfoHandler);
+const validateOriginalURL = zValidator('json', originalURLFormatSchema);
+app.get('/getinfo', validateOriginalURL, getShortUrlInfoHandler);
 
 // app.post("/shorten", zValidator("json", originalURLFormatSchema), getShortUrlInfoHandler);
 // app.post('/', addTodo);
