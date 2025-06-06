@@ -7,6 +7,5 @@ const app = new Hono();
 // Monta las rutas
 app.route('/', urlsRoutes);
 
-
 // Ejemplo para Cloudflare Workers
 export default app;

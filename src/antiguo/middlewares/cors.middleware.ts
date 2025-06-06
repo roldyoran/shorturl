@@ -11,16 +11,16 @@ import { Context, Next } from 'hono';
  * @returns Response en caso de solicitud OPTIONS o void para otros métodos
  */
 export const corsMiddleware = async (c: Context, next: Next): Promise<Response | void> => {
-   // Configura las cabeceras CORS
-   c.header('Access-Control-Allow-Origin', '*');
-   c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-   c.header('Access-Control-Allow-Headers', 'Content-Type, x-api-key, Authorization');
+    // Configura las cabeceras CORS
+    c.header('Access-Control-Allow-Origin', '*');
+    c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    c.header('Access-Control-Allow-Headers', 'Content-Type, x-api-key, Authorization');
 
-   // Si es una solicitud OPTIONS, responde inmediatamente
-   if (c.req.method === 'OPTIONS') {
-      return c.json(204);
-   }
+    // Si es una solicitud OPTIONS, responde inmediatamente
+    if (c.req.method === 'OPTIONS') {
+        return c.json(204);
+    }
 
-   // Continúa con la siguiente función middleware o el manejador de la ruta
-   await next();
+    // Continúa con la siguiente función middleware o el manejador de la ruta
+    await next();
 };

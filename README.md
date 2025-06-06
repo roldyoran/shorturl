@@ -75,14 +75,14 @@ El proyecto utiliza Wrangler para la configuración y despliegue. La configuraci
 
 1. Instalar dependencias:
 
-   ```
-   npm install
-   ```
+    ```
+    npm install
+    ```
 
 2. Iniciar el servidor de desarrollo:
-   ```
-   npm run dev
-   ```
+    ```
+    npm run dev
+    ```
 
 ## Despliegue
 
