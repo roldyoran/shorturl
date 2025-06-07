@@ -17,16 +17,19 @@ export const getOriginalUrl = async (db: D1Database, short_url: string) => {
 
 export const incrementClicks = async (db: D1Database, short_url: string) => {
     try {
-        await db
+        const response = await db
             .prepare('UPDATE URLS SET clicks = clicks + 1 WHERE short_url = ?')
             .bind(short_url)
             .run();
+
+        // retornar si la respuesta fue exitosa
+        return response.success;
     } catch (error) {
         console.error('Error al incrementar clics:', error);
     }
 };
 
-export const createUrl = async (db: D1Database, short_url: string, original_url: string) => {
+export const insertURL = async (db: D1Database, short_url: string, original_url: string) => {
     try {
         const insert = await db
             .prepare('INSERT INTO URLS (short_url, original_url) VALUES (?, ?)')

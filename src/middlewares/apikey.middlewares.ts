@@ -12,7 +12,10 @@ import { AppContext } from '@/models/bindings';
  * @param next Función para continuar con el siguiente middleware
  * @returns Response en caso de error o el resultado del siguiente middleware
  */
-export const apiKeyMiddleware = async (c: Context<AppContext>, next: Next): Promise<Response | void> => {
+export const apiKeyMiddleware = async (
+    c: Context<AppContext>,
+    next: Next,
+): Promise<Response | void> => {
     // Verifica si la API key está presente en el encabezado de la solicitud
     if (!c.req.header('x-api-key')) {
         return c.json({ error: 'API key is required' }, 401);

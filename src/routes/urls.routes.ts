@@ -1,6 +1,10 @@
 // src/routes/urls.routes.ts
 import { Hono } from 'hono';
-import { getShortUrlInfoHandler, redirectToOriginalUrl } from '@/controllers/urls.controller';
+import {
+    getInfoShortUrlHandler,
+    postShortenUrlHandler,
+    redirectToOriginalUrl,
+} from '@/controllers/urls.controller';
 import { AppContext } from '@/models/bindings';
 import { validateOriginalURL } from '@/controllers/urls.zValidator';
 import { apiKeyMiddleware } from '@/middlewares/apikey.middlewares';
@@ -13,10 +17,13 @@ app.get('/', (c) => {
 });
 
 // Ruta para obtener información de un URL acortado
-app.get('/info', validateOriginalURL, apiKeyMiddleware, getShortUrlInfoHandler);
+app.get('/info/:short_url{^[a-zA-Z0-9]{1,14}$}', apiKeyMiddleware, getInfoShortUrlHandler);
+
+// Ruta para acortar una URL
+app.post('/shorten', apiKeyMiddleware, validateOriginalURL, postShortenUrlHandler);
 
 // Get Info Short URL Handler
-app.get('/:short_url', redirectToOriginalUrl);
+app.get('/:short_url{^[a-zA-Z0-9]{1,14}$}', redirectToOriginalUrl);
 
 // app.post("/shorten", zValidator("json", originalURLFormatSchema), getShortUrlInfoHandler);
 // app.post('/', addTodo);
