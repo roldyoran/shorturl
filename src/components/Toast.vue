@@ -4,7 +4,7 @@
       v-for="(toast) in toasts"
       :key="toast.id"
       :class="[
-        'px-4 py-2 rounded-md shadow-lg text-white border-2 backdrop-blur-md ',
+        'px-4 py-2 rounded-md shadow-lg border-2 backdrop-blur-md ',
         toast.class || 'bg-blue-600'
       ]"
     >

@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen text-gray-100 bg-zinc-950 flex flex-col relative">
     <Toast ref="globalToast" />
-    <NavbarHeader />
+    <NavbarHeader :attempts="attempts" />
     
     <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Principal />
@@ -9,7 +9,7 @@
       <!-- Main Content -->
       <div class=" space-y-24 mb-10" id="main-content">
         <!-- menu for the function -->
-        <div class="grid grid-cols-3 text-sm  mb-6 p-2 rounded-md relative backdrop-blur-sm  shadow-2xl border border-white/5 overflow-hidden bg-zinc-900/60 font-semibold">
+        <div class="grid grid-cols-4 text-sm  mb-6 p-2 rounded-md relative backdrop-blur-sm  shadow-2xl border border-white/5 overflow-hidden bg-zinc-900/60 font-semibold">
         <div class="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-zinc-900/10 to-teal-900/10 pointer-events-none"></div>
             <button
               @click="activeTab = 'shorten'"
@@ -36,14 +36,22 @@
           <Database class="inline-block mr-2 w-4" />
             Mis URLs
           </button>
+          <button
+            @click="activeTab = 'list'"
+            :class="{'bg-zinc-800/80 text-cyan-400 font-semibold': activeTab === 'list', 'text-purple-400': activeTab !== 'list'}"
+            class="px-4 py-1 rounded-md transition-colors duration-300"
+          >
+          <List class="inline-block mr-2 w-4" />
+            Lista URLs
+          </button>
         </div>
         <transition name="fade" mode="out-in">
           <div :key="activeTab">
             <div class=" min-h-60">
-
-              <ShortenUrl v-if="activeTab === 'shorten'" />
+              <ShortenUrl v-if="activeTab === 'shorten'" @url-shortened="incrementAttempts" />
               <UrlInfo v-else-if="activeTab === 'info'" />
               <MyUrls v-else-if="activeTab === 'myurls'" />
+              <UrlList v-else-if="activeTab === 'list'" />
             </div>
           </div>
         </transition>
@@ -68,7 +76,7 @@ declare global {
 }
 
 import { ref, onMounted } from 'vue'
-import { Info, Link, Database } from 'lucide-vue-next';
+import { Info, Link, Database, List } from 'lucide-vue-next';
 import Toast from './components/Toast.vue';
 import NavbarHeader from './components/NavbarHeader.vue';
 import Principal from './components/Principal.vue'
@@ -76,12 +84,18 @@ import Principal from './components/Principal.vue'
 import ShortenUrl from './components/ShortenUrl.vue'
 import UrlInfo from './components/UrlInfo.vue'
 import MyUrls from './components/MyUrls.vue'
+import UrlList from './components/UrlList.vue'
 
-type Tab = 'shorten' | 'info' | 'myurls'
+type Tab = 'shorten' | 'info' | 'myurls' | 'list'
 
 const activeTab = ref<Tab>('shorten')
+const attempts = ref(0)
 
 const globalToast = ref()
+
+const incrementAttempts = () => {
+  attempts.value++
+}
 
 // Hacerlo accesible globalmente (opcional)
 onMounted(() => {
@@ -89,9 +103,6 @@ onMounted(() => {
     globalToast.value?.showToast(message, options)
   }
 })
-
-
-
 </script>
 
 <style scoped>

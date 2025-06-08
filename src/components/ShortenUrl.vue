@@ -80,6 +80,10 @@ function decrementAttempts() {
   }
 }
 
+const emit = defineEmits<{
+  (e: 'url-shortened'): void
+}>()
+
 async function shortenUrl() {
   error.value = ''
   shortUrl.value = ''
@@ -99,6 +103,7 @@ async function shortenUrl() {
       shortUrl.value = data.short_url
       saveUrl(data.original_url, data.short_url)
       decrementAttempts()
+      emit('url-shortened')
     } else {
       error.value = 'Respuesta inválida de la API.'
     }

@@ -4,12 +4,16 @@
     <div class="container mx-auto px-4 sm:px-6 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <div class="p-2 rounded-lg bg-zinc-800/80 border border-zinc-700/50 backdrop-blur-sm">
+            <div class="p-2 rounded-lg bg-zinc-800/80 border border-zinc-700/50 backdrop-blur-sm relative">
             <Link2 class="h-5 w-5 sm:h-6 sm:w-6 text-cyan-400" />
-          </div>
+            <span class="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-green-500 animate-pulse"></span>
+            </div>
           <div>
             <h1 class="text-lg sm:text-xl font-bold text-zinc-100">ShortURL</h1>
             <p class="text-xs text-zinc-400">by roldyoran</p>
+          </div>
+          <div class="ml-4 px-3 py-1 rounded-md bg-zinc-800/80 border border-zinc-700/50">
+            <p class="text-sm text-cyan-400">URLs Acortadas: <span class="font-mono">{{ attempts }}</span></p>
           </div>
         </div>
 
@@ -118,15 +122,14 @@ import { ref } from 'vue';
 import { Link2, Settings, ExternalLink, Github, Menu, X } from 'lucide-vue-next';
 import ApiConfig from './ApiConfig.vue';
 import Dialog from './Dialog.vue';
-
 import RedirectTest from './RedirectTest.vue';
 
-
+defineProps<{
+  attempts: number
+}>();
 
 // State
 const showConfig = ref(false);
 const showTest = ref(false);
 const mobileMenuOpen = ref(false);
-
-
 </script>

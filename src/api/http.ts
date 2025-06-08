@@ -32,3 +32,9 @@ export async function getUrlInfoRequest(shortCode: string) {
   return response.data
 }
 
+// Funcion para obtener todas las URLs
+export async function getUrlsRequest() {
+  const axiosInstance = getAxiosInstance()
+  const response = await axiosInstance.get('/urls')
+  return response
+}

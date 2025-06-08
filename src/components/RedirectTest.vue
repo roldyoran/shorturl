@@ -4,7 +4,7 @@
         <svg class="w-7 h-7 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
-        <h2 class=" text-2xl text-white font-bold">Configuración de API</h2>
+        <h2 class=" text-2xl text-white font-bold">Probar Redirección</h2>
       </div>
 
       <div class="space-y-6 min-w-xl">
