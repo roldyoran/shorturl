@@ -25,13 +25,10 @@ app.post('/shorten', apiKeyMiddleware, validateOriginalURL, postShortenUrlHandle
 // Get Info Short URL Handler
 app.get('/:short_url{^[a-zA-Z0-9]{1,14}$}', redirectToOriginalUrl);
 
-// app.post("/shorten", zValidator("json", originalURLFormatSchema), getShortUrlInfoHandler);
-// app.post('/', addTodo);
-// Más rutas aquí (PUT, DELETE)...
 
 // URL not found handler
 app.notFound((c) => {
-    return c.json({ error: 'URL not found' }, 404);
+    return c.text('URL not found', 404);
 });
 
 export default app;
