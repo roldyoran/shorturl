@@ -9,8 +9,7 @@ import {
     getUrlInfo,
 } from '@/db/queries';
 import { AppContext } from '@/models/bindings';
-import { reformatUrl } from '@/controllers/url.reformat';
-import { generateRandomCode } from '@/antiguo/utils';
+import { generateUniqueHash, reformatUrl } from '@/utils/url.utils';
 import { htmlNotFound } from '@/html/not-found';
 
 export const getInfoShortUrlHandler = async (c: Context<AppContext>) => {
@@ -53,8 +52,10 @@ export const postShortenUrlHandler = async (c: Context<AppContext>) => {
         return c.json({ error: 'Invalid URL format' }, 400);
     }
 
-    const { existingShortUrl } = (await getShortUrl(c.env.DB, formatted_url)) || {};
+    const {short_url}  = (await getShortUrl(c.env.DB, formatted_url)) || {};
+    const existingShortUrl = short_url;
     let shortUrl = hash ? hash : '';
+    // console.log('Short URL:', formatted_url, 'Hash:', hash, 'Existing Short URL:', existingShortUrl);
     // Si no se proporciona un hash, generar uno aleatorio
     if (!hash) {
         // Verificar si la URL acortada ya existe
@@ -63,13 +64,13 @@ export const postShortenUrlHandler = async (c: Context<AppContext>) => {
         }
 
         // Generar una nueva URL corta única
-        shortUrl = generateRandomCode();
+        shortUrl = generateUniqueHash();
         while (await urlExists(c.env.DB, shortUrl)) {
-            shortUrl = generateRandomCode();
+            shortUrl = generateUniqueHash();
         }
     }
     // Si se proporciona un hash, verificar que no exista
-    else if (hash && (await urlExists(c.env.DB, hash))) {
+    if (hash && (await urlExists(c.env.DB, hash))) {
         return c.json(
             {
                 error: 'CUSTOM_URL_EXISTS',

@@ -1,3 +1,17 @@
+export const generateUniqueHash = (): string => {
+    // Caracteres permitidos para generar el código
+    const possibleCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let code = '';
+
+    // Generar un código de 9 caracteres
+    for (let i = 0; i < 9; i++) {
+        code += possibleCharacters.charAt(Math.floor(Math.random() * possibleCharacters.length));
+    }
+
+    return code;
+};
+
+
 export const reformatUrl = (url: string): string => {
     // Eliminar espacios en blanco al principio y al final
     url = url.trim();
