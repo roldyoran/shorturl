@@ -7,6 +7,7 @@ import {
     insertURL,
     urlExists,
     getUrlInfo,
+    getAllUrls,
 } from '@/db/queries';
 import { AppContext } from '@/models/bindings';
 import { generateUniqueHash, reformatUrl } from '@/utils/url.utils';
@@ -88,4 +89,18 @@ export const postShortenUrlHandler = async (c: Context<AppContext>) => {
     }
 
     return c.json({ short_url: shortUrl, original_url: formatted_url }, 201);
+};
+
+export const getAllUrlsHandler = async (c: Context<AppContext>) => {
+    try {
+        const urls = await getAllUrls(c.env.DB);
+        if (!urls || urls.length === 0) {
+            return c.json({ message: 'No URLs found' }, 404);
+        }
+
+        return c.json(urls, 200);
+    } catch (error) {
+        console.error('Error fetching all URLs:', error);
+        return c.json({ error: 'Error fetching URLs' }, 500);
+    }
 };

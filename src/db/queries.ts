@@ -91,3 +91,20 @@ export const originalUrlExists = async (db: D1Database, original_url: string) =>
         return false;
     }
 };
+
+// get all URLs
+export const getAllUrls = async (db: D1Database) => {
+    try {
+        const result = await db.prepare('SELECT * FROM URLS').all();
+
+        return result.results.map((row) => ({
+            short_url: row.short_url as string,
+            original_url: row.original_url as string,
+            clicks: row.clicks as number,
+            created_at: row.created_at as string,
+        }));
+    } catch (error) {
+        console.error('Error al obtener todas las URLs:', error);
+        return [];
+    }
+};

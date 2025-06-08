@@ -4,6 +4,7 @@ import {
     getInfoShortUrlHandler,
     postShortenUrlHandler,
     redirectToOriginalUrl,
+    getAllUrlsHandler,
 } from '@/controllers/urls.controller';
 import { AppContext } from '@/models/bindings';
 import { validateOriginalURL } from '@/controllers/urls.zValidator';
@@ -15,6 +16,9 @@ const app = new Hono<AppContext>();
 app.get('/', (c) => {
     return c.text('¡Hola! Bienvenido a la API de acortador de URLs creada por roldyoran!');
 });
+
+// Get All URLs
+app.get('/urls', apiKeyMiddleware, getAllUrlsHandler);
 
 // Ruta para obtener información de un URL acortado
 app.get('/info/:short_url{^[a-zA-Z0-9]{1,14}$}', apiKeyMiddleware, getInfoShortUrlHandler);
