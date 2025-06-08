@@ -20,6 +20,7 @@ export const originalURLFormatSchema = z.object({
         .string()
         .min(1, { message: 'El hash debe tener al menos 1 carácter' })
         .max(14, { message: 'El hash no puede exceder los 14 caracteres' })
+        .regex(/^[a-zA-Z0-9]+$/, { message: 'El hash solo puede contener letras y números' })
         .refine((hash) => /^[a-zA-Z0-9]+$/.test(hash), {
             message: 'El texto solo debe contener letras y números',
         })

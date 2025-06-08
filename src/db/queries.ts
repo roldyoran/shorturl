@@ -77,3 +77,17 @@ export const urlExists = async (db: D1Database, short_url: string) => {
         return false;
     }
 };
+
+export const originalUrlExists = async (db: D1Database, original_url: string) => {
+    try {
+        const result = await db
+            .prepare('SELECT 1 FROM URLS WHERE original_url = ?')
+            .bind(original_url)
+            .first();
+
+        return !!result;
+    } catch (error) {
+        console.error('Error al verificar existencia de URL original:', error);
+        return false;
+    }
+};

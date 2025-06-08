@@ -25,7 +25,6 @@ app.post('/shorten', apiKeyMiddleware, validateOriginalURL, postShortenUrlHandle
 // Get Info Short URL Handler
 app.get('/:short_url{^[a-zA-Z0-9]{1,14}$}', redirectToOriginalUrl);
 
-
 // URL not found handler
 app.notFound((c) => {
     return c.text('URL not found', 404);

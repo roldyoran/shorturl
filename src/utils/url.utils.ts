@@ -11,7 +11,6 @@ export const generateUniqueHash = (): string => {
     return code;
 };
 
-
 export const reformatUrl = (url: string): string => {
     // Eliminar espacios en blanco al principio y al final
     url = url.trim();
