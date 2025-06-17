@@ -18,13 +18,20 @@ export function getAxiosInstance() {
 }
 
 // Función para acortar URL
-export async function shortenUrlRequest(originalUrl: string) {
+export async function shortenUrlRequest(originalUrl: string, hash?: string) {
 	const axiosInstance = getAxiosInstance();
-	const response = await axiosInstance.post("/shorten", {
-		original_url: originalUrl,
-	});
-	//   console.log(response.data)
-	return response.data;
+	if (hash){
+		const response = await axiosInstance.post("/shorten", {
+			original_url: originalUrl,
+			hash: hash
+		});
+		return response.data;
+	}else{
+		const response = await axiosInstance.post("/shorten", {
+			original_url: originalUrl,
+		});
+		return response.data;
+	}
 }
 
 // Función para obtener información de una URL corta

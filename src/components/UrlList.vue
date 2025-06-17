@@ -90,7 +90,6 @@ import {
 	Globe,
 	Clock,
 	Hash,
-	Trash,
 } from "lucide-vue-next";
 import { copyToClipboard } from "../utils/copyUrl";
 import { getUrlsRequest } from "../api/http";
