@@ -69,53 +69,54 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { getUrlInfoRequest } from '../api/http'
-import { copyToClipboard } from '../utils/copyUrl'
-import type { UrlInfoResponse } from '../api/types'
-import { Copy } from 'lucide-vue-next'
+import { ref } from "vue";
+import { getUrlInfoRequest } from "../api/http";
+import { copyToClipboard } from "../utils/copyUrl";
+import type { UrlInfoResponse } from "../api/types";
+import { Copy } from "lucide-vue-next";
 
-const shortCode = ref<string>('')
-const urlInfo = ref<UrlInfoResponse | null>(null)
-const error = ref<string>('')
-const loading = ref<boolean>(false)
+const shortCode = ref<string>("");
+const urlInfo = ref<UrlInfoResponse | null>(null);
+const error = ref<string>("");
+const loading = ref<boolean>(false);
 // const notification = ref<InstanceType<typeof Notification>>()
 
-
 async function getUrlInfo() {
-  error.value = ''
-  urlInfo.value = null
-  if (!shortCode.value) {
-    error.value = 'Por favor ingresa el código de la URL corta.'
-    return
-  }
-  loading.value = true
-  try {
-    const data = await getUrlInfoRequest(shortCode.value)
-    // Format the date to be more readable
-    const formattedDate = new Date(data.created_at).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-    
-    urlInfo.value = {
-      clicks: data.clicks,
-      created_at: formattedDate,
-      original_url: data.original_url,
-      short_url: data.short_url
-    }
-    // notification.value?.showNotification('Información de URL obtenida correctamente')
-    // copyUrl("Información de URL obtenida correctamente")
-  } catch (e: any) {
-    error.value = e?.response?.data?.message || 'Error al obtener la información.'
-    // notification.value?.showNotification(error.value, 3000)
-  } finally {
-    loading.value = false
-  }
+	error.value = "";
+	urlInfo.value = null;
+	if (!shortCode.value) {
+		error.value = "Por favor ingresa el código de la URL corta.";
+		return;
+	}
+	loading.value = true;
+	try {
+		const data = await getUrlInfoRequest(shortCode.value);
+		// Format the date to be more readable
+		const formattedDate = new Date(data.created_at).toLocaleDateString(
+			"es-ES",
+			{
+				year: "numeric",
+				month: "long",
+				day: "numeric",
+				hour: "2-digit",
+				minute: "2-digit",
+			},
+		);
+
+		urlInfo.value = {
+			clicks: data.clicks,
+			created_at: formattedDate,
+			original_url: data.original_url,
+			short_url: data.short_url,
+		};
+		// notification.value?.showNotification('Información de URL obtenida correctamente')
+		// copyUrl("Información de URL obtenida correctamente")
+	} catch (e: any) {
+		error.value =
+			e?.response?.data?.message || "Error al obtener la información.";
+		// notification.value?.showNotification(error.value, 3000)
+	} finally {
+		loading.value = false;
+	}
 }
-
-
 </script>

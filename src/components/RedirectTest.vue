@@ -34,38 +34,39 @@
 
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 // Asumimos que getUrlInfoRequest ahora podría devolver la URL completa o solo la original.
 // Si la API devuelve la URL completa para redirección, no necesitamos construirla aquí.
 
-const shortCode = ref<string>('')
-const error = ref<string>('')
+const shortCode = ref<string>("");
+const error = ref<string>("");
 
 async function redirectToUrl() {
-  error.value = ''
-  if (!shortCode.value.trim()) {
-    error.value = 'Por favor ingresa el código de la URL corta.'
-    return
-  }
+	error.value = "";
+	if (!shortCode.value.trim()) {
+		error.value = "Por favor ingresa el código de la URL corta.";
+		return;
+	}
 
-  // Construir la URL de redirección. Asumimos que la API base está configurada y es accesible.
-  // Y que el shortCode es solo el path.
-  let baseUrl = localStorage.getItem('apiUrl') || window.location.origin;
-  if (baseUrl.endsWith('/')) {
-    baseUrl = baseUrl.slice(0, -1);
-  }
-  const redirectUrl = `${baseUrl}/${shortCode.value.trim()}`;
+	// Construir la URL de redirección. Asumimos que la API base está configurada y es accesible.
+	// Y que el shortCode es solo el path.
+	let baseUrl = localStorage.getItem("apiUrl") || window.location.origin;
+	if (baseUrl.endsWith("/")) {
+		baseUrl = baseUrl.slice(0, -1);
+	}
+	const redirectUrl = `${baseUrl}/${shortCode.value.trim()}`;
 
-  try {
-    // No necesitamos llamar a getUrlInfoRequest si la URL corta ya es la URL de redirección completa.
-    // Simplemente abrimos la URL construida.
-    // Si la API requiere una verificación antes de redirigir, entonces sí se necesitaría una llamada.
-    // Por simplicidad, asumimos que el short code se anexa a la base URL de la API para la redirección.
-    window.open(redirectUrl, '_blank')
-  } catch (e: any) {
-    console.error('Error al intentar abrir la URL:', e)
-    error.value = 'Error al intentar abrir la URL. Verifica la consola para más detalles.'
-  }
+	try {
+		// No necesitamos llamar a getUrlInfoRequest si la URL corta ya es la URL de redirección completa.
+		// Simplemente abrimos la URL construida.
+		// Si la API requiere una verificación antes de redirigir, entonces sí se necesitaría una llamada.
+		// Por simplicidad, asumimos que el short code se anexa a la base URL de la API para la redirección.
+		window.open(redirectUrl, "_blank");
+	} catch (e: any) {
+		console.error("Error al intentar abrir la URL:", e);
+		error.value =
+			"Error al intentar abrir la URL. Verifica la consola para más detalles.";
+	}
 }
 </script>
 

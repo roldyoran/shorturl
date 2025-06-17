@@ -118,14 +118,21 @@
 
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { Link2, Settings, ExternalLink, Github, Menu, X } from 'lucide-vue-next';
-import ApiConfig from './ApiConfig.vue';
-import Dialog from './Dialog.vue';
-import RedirectTest from './RedirectTest.vue';
+import { ref } from "vue";
+import {
+	Link2,
+	Settings,
+	ExternalLink,
+	Github,
+	Menu,
+	X,
+} from "lucide-vue-next";
+import ApiConfig from "./ApiConfig.vue";
+import Dialog from "./Dialog.vue";
+import RedirectTest from "./RedirectTest.vue";
 
 defineProps<{
-  attempts: number
+	attempts: number;
 }>();
 
 // State

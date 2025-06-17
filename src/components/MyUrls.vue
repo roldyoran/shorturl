@@ -128,112 +128,120 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { copyToClipboard } from '../utils/copyUrl';
-import { deleteUrl } from '../utils/deleteUrl';
-import { 
-  Copy, 
-  Trash, 
-  Database, 
-  Link,
-  ExternalLink,
-  Globe,
-  Clock,
-  Hash,
-  ChevronLeft,
-  ChevronRight 
-} from 'lucide-vue-next'
+import { ref, onMounted, computed } from "vue";
+import { copyToClipboard } from "../utils/copyUrl";
+import { deleteUrl } from "../utils/deleteUrl";
+import {
+	Copy,
+	Trash,
+	Database,
+	Link,
+	ExternalLink,
+	Globe,
+	Clock,
+	Hash,
+	ChevronLeft,
+	ChevronRight,
+} from "lucide-vue-next";
 
-type UrlItem = { original: string; short: string; date: string }
+type UrlItem = { original: string; short: string; date: string };
 
-const urls = ref<UrlItem[]>([])
+const urls = ref<UrlItem[]>([]);
 const itemsPerPage = 10;
 const currentPage = ref(1);
 
 const totalPages = computed(() => {
-  return Math.ceil(urls.value.length / itemsPerPage);
+	return Math.ceil(urls.value.length / itemsPerPage);
 });
 
 const paginatedUrls = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return urls.value.slice(start, end);
+	const start = (currentPage.value - 1) * itemsPerPage;
+	const end = start + itemsPerPage;
+	return urls.value.slice(start, end);
 });
 
 function getFullShortUrl(shortCode: string): string {
-  let baseUrl = localStorage.getItem('apiUrl') || window.location.origin;
-  if (baseUrl.endsWith('/')) {
-    baseUrl = baseUrl.slice(0, -1);
-  }
-  return `${baseUrl}/${shortCode}`;
+	let baseUrl = localStorage.getItem("apiUrl") || window.location.origin;
+	if (baseUrl.endsWith("/")) {
+		baseUrl = baseUrl.slice(0, -1);
+	}
+	return `${baseUrl}/${shortCode}`;
 }
 
 function loadUrls() {
-  try {
-    const storedUrls = localStorage.getItem('savedUrls')
-    if (storedUrls) {
-      const parsedUrls: UrlItem[] = JSON.parse(storedUrls)
-      const uniqueUrls = removeDuplicateUrls(parsedUrls)
-      urls.value = uniqueUrls.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    } else {
-      urls.value = []
-    }
-  } catch (e) {
-    console.error('Error cargando URLs de localStorage:', e)
-    urls.value = []
-  }
+	try {
+		const storedUrls = localStorage.getItem("savedUrls");
+		if (storedUrls) {
+			const parsedUrls: UrlItem[] = JSON.parse(storedUrls);
+			const uniqueUrls = removeDuplicateUrls(parsedUrls);
+			urls.value = uniqueUrls.sort(
+				(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+			);
+		} else {
+			urls.value = [];
+		}
+	} catch (e) {
+		console.error("Error cargando URLs de localStorage:", e);
+		urls.value = [];
+	}
 }
 
 function removeDuplicateUrls(urlList: UrlItem[]): UrlItem[] {
-  const seen = new Set<string>()
-  return urlList.filter(url => {
-    if (seen.has(url.original)) return false
-    seen.add(url.original)
-    return true
-  })
+	const seen = new Set<string>();
+	return urlList.filter((url) => {
+		if (seen.has(url.original)) return false;
+		seen.add(url.original);
+		return true;
+	});
 }
 
 function confirmClearUrls() {
-  if (window.confirm('¿Estás seguro de que quieres borrar todo el historial de URLs? Esta acción no se puede deshacer.')) {
-    clearUrls()
-    window.$toast('Historial borrado correctamente', { class: 'bg-red-500' })
-  }
+	if (
+		window.confirm(
+			"¿Estás seguro de que quieres borrar todo el historial de URLs? Esta acción no se puede deshacer.",
+		)
+	) {
+		clearUrls();
+		window.$toast("Historial borrado correctamente", { class: "bg-red-500" });
+	}
 }
 
 function clearUrls() {
-  localStorage.removeItem('savedUrls')
-  urls.value = []
-  currentPage.value = 1;
+	localStorage.removeItem("savedUrls");
+	urls.value = [];
+	currentPage.value = 1;
 }
 
 function removeUrl(original: string, short: string) {
-  urls.value = urls.value.filter(u => !(u.original === original && u.short === short))
-  localStorage.setItem('savedUrls', JSON.stringify(urls.value))
-  if (paginatedUrls.value.length === 0 && currentPage.value > 1) {
-    currentPage.value--;
-  }
-  deleteUrl()
-  window.$toast('URL eliminada correctamente', { class: 'bg-red-500' })
+	urls.value = urls.value.filter(
+		(u) => !(u.original === original && u.short === short),
+	);
+	localStorage.setItem("savedUrls", JSON.stringify(urls.value));
+	if (paginatedUrls.value.length === 0 && currentPage.value > 1) {
+		currentPage.value--;
+	}
+	deleteUrl();
+	window.$toast("URL eliminada correctamente", { class: "bg-red-500" });
 }
 
 function formatDate(dateStr: string): string {
-  if (!dateStr) return 'Fecha desconocida';
-  try {
-    const date = new Date(dateStr)
-    return date.toLocaleDateString('es-ES', { 
-      day: '2-digit', 
-      month: '2-digit', 
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  } catch (e) {
-    console.error('Error formateando fecha:', e);
-    return 'Fecha inválida';
-  }
+	if (!dateStr) return "Fecha desconocida";
+	try {
+		const date = new Date(dateStr);
+		return date.toLocaleDateString("es-ES", {
+			day: "2-digit",
+			month: "2-digit",
+			year: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+		});
+	} catch (e) {
+		console.error("Error formateando fecha:", e);
+		return "Fecha inválida";
+	}
 }
 
-onMounted(loadUrls)
+onMounted(loadUrls);
 </script>
 
 <style scoped>

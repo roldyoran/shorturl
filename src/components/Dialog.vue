@@ -23,10 +23,10 @@
 
 <script setup lang="ts">
 defineProps({
-  modelValue: Boolean
+	modelValue: Boolean,
 });
 
-defineEmits(['update:modelValue']);
+defineEmits(["update:modelValue"]);
 </script>
 
 <style scoped>

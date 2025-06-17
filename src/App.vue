@@ -70,39 +70,39 @@
 
 <script setup lang="ts">
 declare global {
-  interface Window {
-    $toast: (message: string, options?: any) => void;
-  }
+	interface Window {
+		$toast: (message: string, options?: any) => void;
+	}
 }
 
-import { ref, onMounted } from 'vue'
-import { Info, Link, Database, List } from 'lucide-vue-next';
-import Toast from './components/Toast.vue';
-import NavbarHeader from './components/NavbarHeader.vue';
-import Principal from './components/Principal.vue'
+import { ref, onMounted } from "vue";
+import { Info, Link, Database, List } from "lucide-vue-next";
+import Toast from "./components/Toast.vue";
+import NavbarHeader from "./components/NavbarHeader.vue";
+import Principal from "./components/Principal.vue";
 
-import ShortenUrl from './components/ShortenUrl.vue'
-import UrlInfo from './components/UrlInfo.vue'
-import MyUrls from './components/MyUrls.vue'
-import UrlList from './components/UrlList.vue'
+import ShortenUrl from "./components/ShortenUrl.vue";
+import UrlInfo from "./components/UrlInfo.vue";
+import MyUrls from "./components/MyUrls.vue";
+import UrlList from "./components/UrlList.vue";
 
-type Tab = 'shorten' | 'info' | 'myurls' | 'list'
+type Tab = "shorten" | "info" | "myurls" | "list";
 
-const activeTab = ref<Tab>('shorten')
-const attempts = ref(0)
+const activeTab = ref<Tab>("shorten");
+const attempts = ref(0);
 
-const globalToast = ref()
+const globalToast = ref();
 
 const incrementAttempts = () => {
-  attempts.value++
-}
+	attempts.value++;
+};
 
 // Hacerlo accesible globalmente (opcional)
 onMounted(() => {
-  window.$toast = (message, options) => {
-    globalToast.value?.showToast(message, options)
-  }
-})
+	window.$toast = (message, options) => {
+		globalToast.value?.showToast(message, options);
+	};
+});
 </script>
 
 <style scoped>

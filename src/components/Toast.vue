@@ -14,32 +14,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
 
 interface Toast {
-  id: number
-  message: string
-  class?: string
+	id: number;
+	message: string;
+	class?: string;
 }
 
 interface ToastOptions {
-  class?: string
-  duration?: number
+	class?: string;
+	duration?: number;
 }
 
-const toasts = ref<Toast[]>([])
+const toasts = ref<Toast[]>([]);
 
 function showToast(message: string, options: ToastOptions = {}) {
-  const id = Date.now()
-  toasts.value.push({ id, message, class: options.class })
+	const id = Date.now();
+	toasts.value.push({ id, message, class: options.class });
 
-  setTimeout(() => {
-    toasts.value = toasts.value.filter(t => t.id !== id)
-  }, options.duration || 3000)
+	setTimeout(() => {
+		toasts.value = toasts.value.filter((t) => t.id !== id);
+	}, options.duration || 3000);
 }
 
 // Exponer globalmente
-defineExpose({ showToast })
+defineExpose({ showToast });
 </script>
 
 <style scoped>

@@ -59,70 +59,71 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Copy } from 'lucide-vue-next'
-import { shortenUrlRequest } from '../api/http'
-import { copyToClipboard } from '../utils/copyUrl'
-import type { UrlInfoResponse } from '../api/types'
+import { ref } from "vue";
+import { Copy } from "lucide-vue-next";
+import { shortenUrlRequest } from "../api/http";
+import { copyToClipboard } from "../utils/copyUrl";
+import type { UrlInfoResponse } from "../api/types";
 
-const originalUrl = ref<string>('')
-const shortUrl = ref<string>('')
-const error = ref<string>('')
-const loading = ref<boolean>(false)
-const copySuccess = ref<boolean>(false)
-const urlbase = 'https://shorturl.roldyoran.workers.dev/' 
-const remainingAttempts = ref<number>(Number(localStorage.getItem('remainingAttempts')) || 3)
+const originalUrl = ref<string>("");
+const shortUrl = ref<string>("");
+const error = ref<string>("");
+const loading = ref<boolean>(false);
+const copySuccess = ref<boolean>(false);
+const urlbase = "https://shorturl.roldyoran.workers.dev/";
+const remainingAttempts = ref<number>(
+	Number(localStorage.getItem("remainingAttempts")) || 3,
+);
 
 function decrementAttempts() {
-  if (remainingAttempts.value > 0) {
-    remainingAttempts.value -= 1
-    localStorage.setItem('remainingAttempts', remainingAttempts.value.toString())
-  }
+	if (remainingAttempts.value > 0) {
+		remainingAttempts.value -= 1;
+		localStorage.setItem(
+			"remainingAttempts",
+			remainingAttempts.value.toString(),
+		);
+	}
 }
 
-const emit = defineEmits<{
-  (e: 'url-shortened'): void
-}>()
+const emit = defineEmits<(e: "url-shortened") => void>();
 
 async function shortenUrl() {
-  error.value = ''
-  shortUrl.value = ''
-  copySuccess.value = false
-  if (!originalUrl.value) {
-    error.value = 'Por favor ingresa una URL.'
-    return
-  }
-  if (remainingAttempts.value <= 0) {
-    error.value = 'Ha alcanzado el límite de intentos.'
-    return
-  }
-  loading.value = true
-  try {
-    const data: UrlInfoResponse = await shortenUrlRequest(originalUrl.value)
-    if (data && data.short_url) {
-      shortUrl.value = data.short_url
-      saveUrl(data.original_url, data.short_url)
-      decrementAttempts()
-      emit('url-shortened')
-    } else {
-      error.value = 'Respuesta inválida de la API.'
-    }
-  } catch (e: any) {
-    error.value = e?.response?.data?.message || 'Error al acortar la URL.'
-  } finally {
-    loading.value = false
-  }
+	error.value = "";
+	shortUrl.value = "";
+	copySuccess.value = false;
+	if (!originalUrl.value) {
+		error.value = "Por favor ingresa una URL.";
+		return;
+	}
+	if (remainingAttempts.value <= 0) {
+		error.value = "Ha alcanzado el límite de intentos.";
+		return;
+	}
+	loading.value = true;
+	try {
+		const data: UrlInfoResponse = await shortenUrlRequest(originalUrl.value);
+		if (data && data.short_url) {
+			shortUrl.value = data.short_url;
+			saveUrl(data.original_url, data.short_url);
+			decrementAttempts();
+			emit("url-shortened");
+		} else {
+			error.value = "Respuesta inválida de la API.";
+		}
+	} catch (e: any) {
+		error.value = e?.response?.data?.message || "Error al acortar la URL.";
+	} finally {
+		loading.value = false;
+	}
 }
 
-
-
 function saveUrl(original: string, short: string) {
-  try {
-    const urls = JSON.parse(localStorage.getItem('savedUrls') || '[]')
-    urls.unshift({ original, short, date: new Date().toISOString() })
-    localStorage.setItem('savedUrls', JSON.stringify(urls.slice(0, 50)))
-  } catch (e) {
-    console.error('Error al guardar URL en localStorage:', e)
-  }
+	try {
+		const urls = JSON.parse(localStorage.getItem("savedUrls") || "[]");
+		urls.unshift({ original, short, date: new Date().toISOString() });
+		localStorage.setItem("savedUrls", JSON.stringify(urls.slice(0, 50)));
+	} catch (e) {
+		console.error("Error al guardar URL en localStorage:", e);
+	}
 }
 </script>

@@ -82,53 +82,61 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue';
-  import { Search, Copy, ExternalLink, Globe, Clock, Hash, Trash } from 'lucide-vue-next';
-  import { copyToClipboard } from '../utils/copyUrl';
-  import { getUrlsRequest } from '../api/http';
-  
-  interface Url {
-    short_url: string;
-    original_url: string;
-    clicks: number;
-    created_at: string;
-  }
-  
-  const baseUrl = 'https://shorturl.roldyoran.workers.dev/';
-  const shortUrls = ref<Url[]>([]);
-  const searchQuery = ref('');
-  
-  const fetchShortUrls = async () => {
-    try {
-      const response = await getUrlsRequest();
-      shortUrls.value = response.data;
-    } catch (error) {
-      console.error('Error fetching short URLs:', error);
-    }
-  };
-  
+import { ref, computed, onMounted } from "vue";
+import {
+	Search,
+	Copy,
+	ExternalLink,
+	Globe,
+	Clock,
+	Hash,
+	Trash,
+} from "lucide-vue-next";
+import { copyToClipboard } from "../utils/copyUrl";
+import { getUrlsRequest } from "../api/http";
 
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    };
-    return new Date(dateString).toLocaleDateString('es-ES', options);
-  };
-  
-  const filteredUrls = computed(() => {
-    if (!searchQuery.value) return shortUrls.value;
-    
-    const query = searchQuery.value.toLowerCase();
-    return shortUrls.value.filter(url => 
-      url.short_url.toLowerCase().includes(query) || 
-      url.original_url.toLowerCase().includes(query)
-    );
-  });
-  
-  onMounted(fetchShortUrls);
-  </script>
+interface Url {
+	short_url: string;
+	original_url: string;
+	clicks: number;
+	created_at: string;
+}
+
+const baseUrl = "https://shorturl.roldyoran.workers.dev/";
+const shortUrls = ref<Url[]>([]);
+const searchQuery = ref("");
+
+const fetchShortUrls = async () => {
+	try {
+		const response = await getUrlsRequest();
+		shortUrls.value = response.data;
+	} catch (error) {
+		console.error("Error fetching short URLs:", error);
+	}
+};
+
+const formatDate = (dateString: string) => {
+	const options: Intl.DateTimeFormatOptions = {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+	};
+	return new Date(dateString).toLocaleDateString("es-ES", options);
+};
+
+const filteredUrls = computed(() => {
+	if (!searchQuery.value) return shortUrls.value;
+
+	const query = searchQuery.value.toLowerCase();
+	return shortUrls.value.filter(
+		(url) =>
+			url.short_url.toLowerCase().includes(query) ||
+			url.original_url.toLowerCase().includes(query),
+	);
+});
+
+onMounted(fetchShortUrls);
+</script>
   
 
   

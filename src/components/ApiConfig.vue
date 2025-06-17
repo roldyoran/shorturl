@@ -35,23 +35,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { Info } from 'lucide-vue-next'
+import { ref, watch } from "vue";
+import { Info } from "lucide-vue-next";
 
+const apiKey = ref<string>(
+	import.meta.env.VITE_API_KEY || localStorage.getItem("apiKey") || "",
+);
 
-const apiKey = ref<string>(import.meta.env.VITE_API_KEY || localStorage.getItem('apiKey') || '')
-
-const apiUrl = "https://shorturl.roldyoran.workers.dev/"
+const apiUrl = "https://shorturl.roldyoran.workers.dev/";
 
 watch(apiKey, (val) => {
-  try {
-    localStorage.setItem('apiKey', val)
-  } catch (e) {
-    console.error('Error guardando apiKey en localStorage:', e)
-  }
-})
-
-
+	try {
+		localStorage.setItem("apiKey", val);
+	} catch (e) {
+		console.error("Error guardando apiKey en localStorage:", e);
+	}
+});
 </script>
 
 <style scoped>
