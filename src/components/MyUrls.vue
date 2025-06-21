@@ -86,6 +86,13 @@
                 <Hash class="w-4 h-4" />
               </button>
               <button 
+                @click="generateQR(url.short)"
+                class="p-2 text-zinc-400 hover:text-green-400 hover:bg-green-400/10 rounded-lg transition-all duration-200"
+                :title="'Generar QR'"
+              >
+                <QrCode class="w-4 h-4" />
+              </button>
+              <button 
                 @click="removeUrl(url.original, url.short)" 
                 class="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all duration-200"
                 :title="'Eliminar URL'"
@@ -149,6 +156,13 @@
                       <Hash class="w-4 h-4" />
                     </button>
                     <button 
+                      @click="generateQR(url.short)"
+                      class="p-2 text-zinc-400 hover:text-green-400 hover:bg-green-400/10 rounded-lg transition-all duration-200 tooltip"
+                      data-tooltip="Generar QR"
+                    >
+                      <QrCode class="w-4 h-4" />
+                    </button>
+                    <button 
                       @click="removeUrl(url.original, url.short)" 
                       class="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all duration-200 tooltip"
                       data-tooltip="Eliminar URL"
@@ -186,8 +200,54 @@
         </div>
       </div>
     </div>
+
+ <!-- Modal QR -->
+  <div 
+    v-if="showQRModal" 
+    class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+    @click="showQRModal = false"
+  >
+    <div 
+      class="bg-zinc-900 rounded-2xl border border-white/20 p-6 max-w-md w-full shadow-2xl"
+      @click.stop
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+          <QrCode class="w-5 h-5 text-green-400" />
+          Código QR
+        </h3>
+        <button 
+          @click="showQRModal = false"
+          class="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+        >
+          <X class="w-5 h-5" />
+        </button>
+      </div>
+      
+      <div class="flex flex-col items-center space-y-4">
+        <div class="bg-white p-4 rounded-xl">
+          <canvas ref="qrCanvas" class="rounded-lg"></canvas>
+        </div>
+        
+        <div class="text-center">
+          <p class="text-sm text-zinc-400 mb-2">Escanea para abrir:</p>
+            <p class="text-cyan-400 font-mono text-sm break-all">{{ currentQRUrl }}</p>
+        </div>
+        
+        <button 
+          @click="downloadQR"
+          class="w-full px-4 py-2 bg-gradient-to-r from-green-500/20 to-green-600/20 hover:from-green-500 hover:to-green-600 text-green-400 hover:text-white rounded-lg border border-green-500/30 hover:border-green-500 transition-all duration-300 flex items-center justify-center gap-2"
+        >
+          <Download class="w-4 h-4" />
+          Descargar QR
+        </button>
+      </div>
+    </div>
+    </div>
   </div>
 </template>
+
+
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
@@ -204,13 +264,20 @@ import {
 	Hash,
 	ChevronLeft,
 	ChevronRight,
+	QrCode,
+	X,
+	Download,
 } from "lucide-vue-next";
+import QRCode from 'qrcode-generator';
 
 type UrlItem = { original: string; short: string; date: string };
 
 const urls = ref<UrlItem[]>([]);
 const itemsPerPage = 10;
 const currentPage = ref(1);
+const showQRModal = ref(false);
+const currentQRUrl = ref('');
+const qrCanvas = ref<HTMLCanvasElement | null>(null);
 
 const totalPages = computed(() => {
 	return Math.ceil(urls.value.length / itemsPerPage);
@@ -301,6 +368,122 @@ function formatDate(dateStr: string): string {
 		console.error("Error formateando fecha:", e);
 		return "Fecha inválida";
 	}
+}
+function generateQR(shortCode: string) {
+  let baseUrl = "https://shorturl.roldyoran.workers.dev/";
+  const fullUrl = baseUrl + shortCode;
+  currentQRUrl.value = fullUrl;
+  showQRModal.value = true;
+  
+  // Esperar a que el modal se renderice
+  setTimeout(() => {
+    createQRCode(fullUrl);
+  }, 100);
+}
+
+function createQRCode(url: string) {
+  if (!qrCanvas.value) return;
+  
+  // Crear instancia QR con nivel H (High) para mejor reconocimiento
+  const qr = QRCode(0, 'M');
+  qr.addData(url);
+  qr.make();
+  
+  const canvas = qrCanvas.value;
+  const ctx = canvas.getContext('2d');
+  
+  if (!ctx) return;
+  
+  const moduleCount = qr.getModuleCount();
+  const moduleSize = 6;
+  const margin = 4;
+  canvas.width = canvas.height = moduleCount * moduleSize + margin * 2;
+  
+  // Fondo blanco
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // Dibujar el QR
+  ctx.fillStyle = '#000000';
+  const offset = margin;
+  
+  // Tamaño de los marcadores de posición (esquinas)
+  const markerSize = 7; // 7x7 módulos para los marcadores
+  
+  for (let y = 0; y < moduleCount; y++) {
+    for (let x = 0; x < moduleCount; x++) {
+      if (qr.isDark(y, x)) {
+        // Determinar si estamos en un marcador de posición (esquina)
+        const isMarker = 
+          (x < markerSize && y < markerSize) || // Superior izquierda
+          (x > moduleCount - markerSize - 1 && y < markerSize) || // Superior derecha
+          (x < markerSize && y > moduleCount - markerSize - 1); // Inferior izquierda
+        
+        if (isMarker) {
+          // Dibujar cuadrado para los marcadores
+          ctx.fillRect(
+            offset + x * moduleSize,
+            offset + y * moduleSize,
+            moduleSize,
+            moduleSize
+          );
+        } else {
+          // Dibujar punto redondo para el resto
+          ctx.beginPath();
+          ctx.arc(
+            offset + x * moduleSize + moduleSize/2,
+            offset + y * moduleSize + moduleSize/2,
+            moduleSize/2 * 0.82, // 80% del tamaño para espacio
+            0, 2 * Math.PI
+          );
+          ctx.fill();
+        }
+      }
+    }
+  }
+  
+}
+
+function downloadQR() {
+  if (!qrCanvas.value) {
+    console.error('No se encontró el elemento canvas del QR');
+    return;
+  }
+
+  try {
+    // Obtener la URL del canvas
+    const dataUrl = qrCanvas.value.toDataURL('image/png');
+    
+    // Crear un nombre de archivo más limpio
+    const cleanUrl = currentQRUrl.value
+      .replace(/^https?:\/\//, '') // Eliminar http:// o https://
+      .replace(/\//g, '-') // Reemplazar barras con guiones
+      .slice(0, 50); // Limitar longitud
+    
+    const fileName = `qr-${cleanUrl || 'codigo'}.png`;
+    
+    // Crear elemento <a> temporal
+    const link = document.createElement('a');
+    link.download = fileName;
+    link.href = dataUrl;
+    
+    // Disparar el click programáticamente
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Opcional: Mostrar notificación de éxito
+    window.$toast("QR descargado correctamente!", {
+				class: "bg-green-950/80 border-green-600 text-green-200",
+			});
+    
+  } catch (error) {
+    console.error('Error al descargar el QR:', error);
+    window.$toast('Error al descargar el QR', { 
+      class: 'bg-red-500',
+      icon: '✗'
+    });
+  }
 }
 
 onMounted(loadUrls);

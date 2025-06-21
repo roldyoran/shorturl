@@ -20,6 +20,9 @@ importers:
       lucide-vue-next:
         specifier: ^0.511.0
         version: 0.511.0(vue@3.5.14(typescript@5.8.3))
+      qrcode-generator:
+        specifier: ^1.5.0
+        version: 1.5.0
       radix-vue:
         specifier: ^1.9.17
         version: 1.9.17(vue@3.5.14(typescript@5.8.3))
@@ -887,6 +890,9 @@ packages:
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
 
+  qrcode-generator@1.5.0:
+    resolution: {integrity: sha512-sqo7otiDq5rA4djRkFI7IjLQqxRrLpIou0d3rqr03JJLUGf5raPh91xCio+lFFbQf0SlcVckStz0EmDEX3EeZA==}
+
   radix-vue@1.9.17:
     resolution: {integrity: sha512-mVCu7I2vXt1L2IUYHTt0sZMz7s1K2ZtqKeTIxG3yC5mMFfLBG4FtE1FDeRMpDd+Hhg/ybi9+iXmAP1ISREndoQ==}
     peerDependencies:
@@ -1689,6 +1695,8 @@ snapshots:
       source-map-js: 1.2.1
 
   proxy-from-env@1.1.0: {}
+
+  qrcode-generator@1.5.0: {}
 
   radix-vue@1.9.17(vue@3.5.14(typescript@5.8.3)):
     dependencies:
