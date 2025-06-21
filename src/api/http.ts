@@ -2,7 +2,8 @@ import axios from "axios";
 
 // Obtiene la URL base y la API Key desde localStorage
 export function getAxiosInstance() {
-	const baseURL = localStorage.getItem("apiUrl") ||   "https://shorturl.roldyoran.workers.dev";
+	const baseURL =
+		localStorage.getItem("apiUrl") || "https://shorturl.roldyoran.workers.dev";
 	const apiKey = import.meta.env.VITE_API_KEY || "";
 
 	//   console.log('Base URL:', baseURL)
@@ -20,13 +21,13 @@ export function getAxiosInstance() {
 // Función para acortar URL
 export async function shortenUrlRequest(originalUrl: string, hash?: string) {
 	const axiosInstance = getAxiosInstance();
-	if (hash){
+	if (hash) {
 		const response = await axiosInstance.post("/shorten", {
 			original_url: originalUrl,
-			hash: hash
+			hash: hash,
 		});
 		return response.data;
-	}else{
+	} else {
 		const response = await axiosInstance.post("/shorten", {
 			original_url: originalUrl,
 		});

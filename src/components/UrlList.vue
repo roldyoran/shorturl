@@ -206,21 +206,21 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import {
-  Search,
-  Copy,
-  ExternalLink,
-  Globe,
-  Clock,
-  Hash,
+	Search,
+	Copy,
+	ExternalLink,
+	Globe,
+	Clock,
+	Hash,
 } from "lucide-vue-next";
 import { copyToClipboard } from "../utils/copyUrl";
 import { getUrlsRequest } from "../api/http";
 
 interface Url {
-  short_url: string;
-  original_url: string;
-  clicks: number;
-  created_at: string;
+	short_url: string;
+	original_url: string;
+	clicks: number;
+	created_at: string;
 }
 
 const baseUrl = "https://shorturl.roldyoran.workers.dev/";
@@ -229,35 +229,35 @@ const searchQuery = ref("");
 const isLoading = ref(true);
 
 const fetchShortUrls = async () => {
-  try {
-    isLoading.value = true;
-    const response = await getUrlsRequest();
-    shortUrls.value = response.data;
-  } catch (error) {
-    console.error("Error fetching short URLs:", error);
-  } finally {
-    isLoading.value = false;
-  }
+	try {
+		isLoading.value = true;
+		const response = await getUrlsRequest();
+		shortUrls.value = response.data;
+	} catch (error) {
+		console.error("Error fetching short URLs:", error);
+	} finally {
+		isLoading.value = false;
+	}
 };
 
 const formatDate = (dateString: string) => {
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  };
-  return new Date(dateString).toLocaleDateString("es-ES", options);
+	const options: Intl.DateTimeFormatOptions = {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+	};
+	return new Date(dateString).toLocaleDateString("es-ES", options);
 };
 
 const filteredUrls = computed(() => {
-  if (!searchQuery.value) return shortUrls.value;
+	if (!searchQuery.value) return shortUrls.value;
 
-  const query = searchQuery.value.toLowerCase();
-  return shortUrls.value.filter(
-    (url) =>
-      url.short_url.toLowerCase().includes(query) ||
-      url.original_url.toLowerCase().includes(query),
-  );
+	const query = searchQuery.value.toLowerCase();
+	return shortUrls.value.filter(
+		(url) =>
+			url.short_url.toLowerCase().includes(query) ||
+			url.original_url.toLowerCase().includes(query),
+	);
 });
 
 onMounted(fetchShortUrls);

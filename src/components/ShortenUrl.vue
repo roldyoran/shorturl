@@ -145,10 +145,14 @@ async function shortenUrl() {
 	loading.value = true;
 	try {
 		if (customHash.value && !/^[a-zA-Z0-9-_]+$/.test(customHash.value)) {
-			error.value = "El hash personalizado solo puede contener letras, números, guiones y guiones bajos.";
+			error.value =
+				"El hash personalizado solo puede contener letras, números, guiones y guiones bajos.";
 			return;
 		}
-		const data: UrlInfoResponse = await shortenUrlRequest(originalUrl.value, customHash.value);
+		const data: UrlInfoResponse = await shortenUrlRequest(
+			originalUrl.value,
+			customHash.value,
+		);
 		if (data && data.short_url) {
 			shortUrl.value = data.short_url;
 			saveUrl(data.original_url, data.short_url);
