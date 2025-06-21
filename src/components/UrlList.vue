@@ -128,7 +128,7 @@
         </div>
 
         <!-- Vista escritorio: Tabla -->
-        <div class="hidden sm:block bg-zinc-900/80 backdrop-blur-sm rounded-xl shadow-xl border border-white/10 overflow-x-auto">
+        <div class="hidden sm:block bg-zinc-900/80 backdrop-blur-sm rounded-xl shadow-xl border border-white/10">
           <table class="w-full">
             <thead class="bg-gradient-to-r from-zinc-800/50 to-zinc-900/50 border-b border-white/10">
               <tr>
