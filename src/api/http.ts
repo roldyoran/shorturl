@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Obtiene la URL base y la API Key desde localStorage
 export function getAxiosInstance() {
-	const baseURL = localStorage.getItem("apiUrl") || "";
+	const baseURL = localStorage.getItem("apiUrl") ||   "https://shorturl.roldyoran.workers.dev";
 	const apiKey = import.meta.env.VITE_API_KEY || "";
 
 	//   console.log('Base URL:', baseURL)
