@@ -11,8 +11,8 @@
           </p>
           <div class="flex flex-col items-center gap-2 mb-4 mt-8">
             <span class="text-zinc-300 font-semibold">Servicio Principal:</span>
-            <div class="bg-zinc-800 px-6 rounded-full py-1">
-                <a href="https://shorturl.roldyoran.workers.dev/" target="_blank" class=" font-mono text-cyan-400 hover:text-cyan-300 hover:underline transition-all">https://shorturl.roldyoran.workers.dev/</a>
+            <div class="bg-zinc-800 px-2 md:px-6 rounded-full py-1">
+                <a href="https://shorturl.roldyoran.workers.dev/" target="_blank" class=" font-mono text-sm  md:text-2xl text-cyan-400 hover:text-cyan-300 hover:underline transition-all">https://shorturl.roldyoran.workers.dev/</a>
             </div>
           </div>
         </div>

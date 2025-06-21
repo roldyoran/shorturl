@@ -62,22 +62,39 @@
         </div>
       </form>
 
-      <div v-if="shortUrl" class="mt-8 bg-zinc-800/60 backdrop-blur-sm rounded-lg p-4 shadow-inner border border-white/10">
-        <p class="text-sm font-medium text-cyan-100 mb-2">URL Acortada:</p>
-        <div class="flex items-center justify-between bg-zinc-950/50 p-3 rounded-md border border-white/10">  
-          <span class="break-all px-2 text-cyan-300 font-mono text-md">
-            {{urlbase + shortUrl }}
-          </span>
-          <button 
-            @click="copyToClipboard('https://shorturl.roldyoran.workers.dev/'+shortUrl)" 
-            class="px-4 py-2 text-white/80  text-xs font-semibold rounded-md duration-200 transform hover:scale-120 transition-all whitespace-nowrap"
-          >
-          <Copy class="inline-block mr-1 w-4 h-4" />
-            Copiar
-          </button>
-        </div>
-        <!-- <p v-if="copySuccess" class="text-cyan-400 text-sm mt-2">¡URL copiada al portapapeles!</p> -->
-      </div>
+      <div v-if="shortUrl" class="mt-8 bg-zinc-800/60 backdrop-blur-sm rounded-lg p-3 sm:p-4 shadow-inner border border-white/10">
+  <p class="text-sm font-medium text-cyan-100 mb-3">URL Acortada:</p>
+  
+  <!-- Desktop: flex horizontal -->
+  <div class="hidden sm:flex items-center justify-between bg-zinc-950/50 p-3 rounded-md border border-white/10 gap-3">  
+    <span class="break-all px-2 text-cyan-300 font-mono text-sm lg:text-base flex-1 min-w-0">
+      {{ urlbase + shortUrl }}
+    </span>
+    <button 
+      @click="copyToClipboard('https://shorturl.roldyoran.workers.dev/'+shortUrl)" 
+      class="flex items-center gap-2 px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-zinc-100 text-xs font-semibold rounded-md duration-200 transform hover:scale-105 transition-all whitespace-nowrap border border-zinc-600 hover:border-zinc-500"
+    >
+      <Copy class="w-4 h-4" />
+      Copiar
+    </button>
+  </div>
+
+  <!-- Mobile: stack vertical -->
+  <div class="sm:hidden bg-zinc-950/50 p-3 rounded-md border border-white/10 space-y-3">
+    <div class="break-all px-2 text-cyan-300 font-mono text-sm">
+      {{ urlbase + shortUrl }}
+    </div>
+    <button 
+      @click="copyToClipboard('https://shorturl.roldyoran.workers.dev/'+shortUrl)" 
+      class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-800 text-zinc-100 text-sm font-semibold rounded-md duration-200 transition-all border border-zinc-600 hover:border-zinc-500"
+    >
+      <Copy class="w-4 h-4" />
+      Copiar URL
+    </button>
+  </div>
+  
+  <!-- <p v-if="copySuccess" class="text-cyan-400 text-sm mt-2">¡URL copiada al portapapeles!</p> -->
+</div>
     </div>
   </div>
 </template>
