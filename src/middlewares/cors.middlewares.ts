@@ -4,7 +4,6 @@
  */
 import { Context, Next } from "hono";
 
-
 /**
  * Middleware para configurar CORS de forma segura y personalizable
  *
