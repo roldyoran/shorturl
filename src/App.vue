@@ -83,8 +83,7 @@ import ShortenUrlForm from "@/components/features/url-shortener/ShortenUrlForm.v
 import UrlInfoForm from "@/components/features/url-info/UrlInfoForm.vue";
 import MyUrlsList from "@/components/features/my-urls/MyUrlsList.vue";
 import PublicUrlsList from "@/components/features/url-list/PublicUrlsList.vue";
-import SonnerTest from "@/components/SonnerTest.vue";
-import ConfigTest from "@/components/ConfigTest.vue";
+// Removed unused test components (were causing TS6133)
 
 type Tab = "shorten" | "info" | "myurls" | "list";
 

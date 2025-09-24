@@ -242,16 +242,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import {
-	Database,
-	Link,
-	Globe,
-	Clock,
-	Copy,
-	Hash,
-	QrCode,
-	Trash,
-	ExternalLink,
-	ChevronLeft,
+  Database,
+  Globe,
+  Clock,
+  Copy,
+  Hash,
+  QrCode,
+  Trash,
+  ChevronLeft,
 	ChevronRight,
 	Download,
 } from "lucide-vue-next";

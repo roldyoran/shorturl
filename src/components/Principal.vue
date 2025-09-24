@@ -119,11 +119,10 @@
 </template>
 
 <script setup lang="ts">
-import { Zap, Globe, ExternalLink, Copy, Shield, BarChart3, Brush } from "lucide-vue-next";
+import { Zap, Globe, ExternalLink, Copy, BarChart3, Brush } from "lucide-vue-next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
 import { toast } from "vue-sonner";
@@ -147,14 +146,5 @@ const copyServiceUrl = () => {
   copyToClipboard(SERVICE_URL, 'URL del servicio copiada')
 }
 
-// Test function para verificar que los toasts funcionan
-const testToast = () => {
-  toast('¡Test exitoso!', {
-    description: 'Los toasts están funcionando correctamente',
-    action: {
-      label: 'Genial',
-      onClick: () => console.log('Toast test completado'),
-    },
-  })
-}
+// Note: removed unused test helper `testToast` and `Input` import
 </script>
