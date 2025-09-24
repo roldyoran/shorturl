@@ -192,11 +192,13 @@ defineProps<{
 // Admin state
 const urlStore = useUrlStore();
 const adminPassword = ref("");
+// Read admin password from Vite env to avoid hardcoding
+const ADMIN_PASS = (import.meta as any).env?.VITE_ADMIN_PASS ?? "";
 const isAdmin = computed(() => urlStore.userSession?.isAdmin ?? false);
 const remainingAttempts = computed(() => urlStore.userSession?.remainingAttempts ?? 0);
 
 function submitAdmin() {
-  if (adminPassword.value === "adminroldy") {
+  if (adminPassword.value === ADMIN_PASS) {
     urlStore.setAdminStatus(true);
     toast.success("Modo admin activado", { description: "Tienes intentos ilimitados." });
   } else {
