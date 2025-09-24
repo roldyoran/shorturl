@@ -68,7 +68,7 @@
                   <Hash class="w-4 h-4 text-muted-foreground mt-0.5" />
                   <div class="flex-1 min-w-0">
                     <p class="text-xs text-muted-foreground">URL Corta:</p>
-                    <p class="font-mono text-sm break-all text-primary hover:underline">{{ baseUrl.replace(/\/$/, '') + '/' + url.short_url }}</p>
+                    <p class="font-mono text-sm break-all text-primary hover:underline" :title="baseUrl.replace(/\/$/, '') + '/' + url.short_url">{{ baseUrl.replace(/\/$/, '') + '/' + url.short_url }}</p>
                   </div>
                 </div>
 
@@ -76,7 +76,7 @@
                   <Globe class="w-4 h-4 text-muted-foreground mt-0.5" />
                   <div class="flex-1 min-w-0">
                     <p class="text-xs text-muted-foreground">URL Original:</p>
-                    <p class="text-sm break-all">{{ truncateText(url.original_url, 60) }}</p>
+                    <p class="text-sm break-all" :title="url.original_url">{{ truncateText(url.original_url, 60) }}</p>
                   </div>
                 </div>
 
@@ -168,13 +168,13 @@
                 <TableCell>
                   <div class="flex items-center gap-2 max-w-md">
                     <Hash class="w-4 h-4 text-muted-foreground" />
-                    <span class="font-mono text-sm truncate">{{ baseUrl.replace(/\/$/, '') + '/' + url.short_url }}</span>
+                    <span class="font-mono text-sm truncate" :title="baseUrl.replace(/\/$/, '') + '/' + url.short_url">{{ baseUrl.replace(/\/$/, '') + '/' + url.short_url }}</span>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-2 max-w-md">
                     <Globe class="w-4 h-4 text-muted-foreground" />
-                    <span class="font-mono text-sm truncate">{{ truncateText(url.original_url, 50) }}</span>
+                    <span class="font-mono text-sm truncate" :title="url.original_url">{{ truncateText(url.original_url, 50) }}</span>
                   </div>
                 </TableCell>
                 <TableCell>

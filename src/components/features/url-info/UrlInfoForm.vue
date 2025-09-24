@@ -1,5 +1,6 @@
 <template>
-  <Card>
+  <TooltipProvider>
+    <Card>
     <CardHeader>
       <CardTitle class="flex items-center gap-3">
         <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -47,15 +48,21 @@
         <div class="space-y-4">
           <div>
             <Label class="text-sm font-medium">URL Original</Label>
-            <div class="flex items-center space-x-2 mt-1">
+              <div class="flex items-center space-x-2 mt-1">
               <Input 
-                :value="urlInfo.original_url"
+                :modelValue="urlInfo.original_url"
                 readonly
                 class="flex-1"
               />
-              <Button @click="copyOriginalUrl()" variant="outline" size="sm">
-                <Copy class="w-4 h-4" />
-              </Button>
+
+              <Tooltip>
+                <TooltipTrigger :asChild="true">
+                  <Button @click="copyOriginalUrl()" variant="outline" size="sm">
+                    <Copy class="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Copiar URL original</TooltipContent>
+              </Tooltip>
             </div>
           </div>
 
@@ -78,7 +85,8 @@
         </div>
       </div>
     </CardContent>
-  </Card>
+    </Card>
+  </TooltipProvider>
 </template>
 
 <script setup lang="ts">
@@ -99,6 +107,12 @@ import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { formatDate } from "@/lib/utils";
 import type { UrlInfoResponse } from "@/api/types";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 // Composables
 const { copyToClipboard } = useCopyToClipboard();

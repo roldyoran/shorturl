@@ -39,8 +39,8 @@
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>URL Corta</TableHead>
                 <TableHead>URL Original</TableHead>
-                <TableHead>Código Corto</TableHead>
                 <TableHead>Fecha</TableHead>
                 <TableHead class="text-right">Acciones</TableHead>
               </TableRow>
@@ -48,15 +48,15 @@
             <TableBody>
               <TableRow v-for="url in paginatedUrls" :key="`${url.original}-${url.short}`">
                 <TableCell>
-                  <div class="flex items-center gap-2">
-                    <Globe class="w-4 h-4 text-muted-foreground" />
-                    <span class="font-mono text-sm">{{ truncateText(url.original, 40) }}</span>
+                  <div class="flex items-center gap-2 max-w-md">
+                    <Hash class="w-4 h-4 text-muted-foreground" />
+                    <span class="font-mono text-sm truncate" :title="getFullShortUrl(url.short)">{{ getFullShortUrl(url.short) }}</span>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div class="flex items-center gap-2">
-                    <Hash class="w-4 h-4 text-muted-foreground" />
-                    <span class="font-mono">{{ url.short }}</span>
+                  <div class="flex items-center gap-2 max-w-md">
+                    <Globe class="w-4 h-4 text-muted-foreground" />
+                    <span class="font-mono text-sm truncate" :title="url.original">{{ truncateText(url.original, 40) }}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -106,18 +106,18 @@
             <CardContent class="p-4 space-y-3">
               <div class="space-y-2">
                 <div class="flex items-start gap-2">
+                  <Hash class="w-4 h-4 text-muted-foreground mt-0.5" />
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs text-muted-foreground">URL Corta:</p>
+                    <p class="font-mono text-sm break-all text-primary hover:underline" :title="getFullShortUrl(url.short)">{{ getFullShortUrl(url.short) }}</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-2">
                   <Globe class="w-4 h-4 text-muted-foreground mt-0.5" />
                   <div class="flex-1 min-w-0">
                     <p class="text-xs text-muted-foreground">URL Original:</p>
-                    <p class="font-mono text-sm break-all">{{ url.original }}</p>
-                  </div>
-                </div>
-                
-                <div class="flex items-center gap-2">
-                  <Hash class="w-4 h-4 text-muted-foreground" />
-                  <div>
-                    <p class="text-xs text-muted-foreground">Código:</p>
-                    <p class="font-mono">{{ url.short }}</p>
+                    <p class="text-sm break-all" :title="url.original">{{ truncateText(url.original, 60) }}</p>
                   </div>
                 </div>
                 

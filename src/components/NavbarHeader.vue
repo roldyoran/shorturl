@@ -13,11 +13,11 @@
               <h1 class="text-lg font-bold">ShortURL</h1>
               <p class="text-xs text-muted-foreground">by roldyoran</p>
             </div>
-            <div class="ml-4 px-3 py-1 rounded-md border flex items-center space-x-3 hidden sm:flex">
+            <div class="ml-4 px-3 py-1 rounded-md border flex flex-col items-center space-x-3 hidden sm:flex md:text-sm">
               <p class="text-sm">URLs Acortadas: <span class="font-mono">{{ attempts }}</span></p>
               <div class="text-sm text-muted-foreground">Intentos restantes: <span class="font-mono">{{ remainingAttempts }}</span></div>
-              <div v-if="isAdmin" class="text-sm text-green-500 font-semibold">ADMIN</div>
             </div>
+            <div v-if="isAdmin" class="text-sm text-green-500 font-semibold">ADMIN</div>
           </div>
 
           <!-- Desktop Navigation -->
@@ -196,7 +196,7 @@ const isAdmin = computed(() => urlStore.userSession?.isAdmin ?? false);
 const remainingAttempts = computed(() => urlStore.userSession?.remainingAttempts ?? 0);
 
 function submitAdmin() {
-  if (adminPassword.value === "admin") {
+  if (adminPassword.value === "adminroldy") {
     urlStore.setAdminStatus(true);
     toast.success("Modo admin activado", { description: "Tienes intentos ilimitados." });
   } else {
