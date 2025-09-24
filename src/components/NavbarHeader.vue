@@ -1,124 +1,167 @@
 <template>
   <!-- Header -->
-  <header class="relative z-10 border-b border-zinc-800/50 bg-zinc-900/60 backdrop-blur-sm">
-    <div class="container mx-auto px-4 sm:px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="p-2 rounded-lg bg-zinc-800/80 border border-zinc-700/50 backdrop-blur-sm relative">
-            <Link2 class="h-5 w-5 sm:h-6 sm:w-6 text-cyan-400" />
-            <span class="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-green-500 animate-pulse"></span>
+  <header class="border-b">
+    <div class="container mx-auto px-4 py-4">
+      <Collapsible v-slot="{ open }">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="flex items-center gap-2 p-2 rounded-lg border">
+              <Link2 class="h-5 w-5" />
+              <span class="h-2.5 w-2.5 rounded-full bg-green-500 animate-pulse"></span>
             </div>
-          <div>
-            <h1 class="text-lg sm:text-xl font-bold text-zinc-100">ShortURL</h1>
-            <p class="text-xs text-zinc-400">by roldyoran</p>
+            <div>
+              <h1 class="text-lg font-bold">ShortURL</h1>
+              <p class="text-xs text-muted-foreground">by roldyoran</p>
+            </div>
+            <div class="ml-4 px-3 py-1 rounded-md border flex items-center space-x-3 hidden sm:flex">
+              <p class="text-sm">URLs Acortadas: <span class="font-mono">{{ attempts }}</span></p>
+              <div class="text-sm text-muted-foreground">Intentos restantes: <span class="font-mono">{{ remainingAttempts }}</span></div>
+              <div v-if="isAdmin" class="text-sm text-green-500 font-semibold">ADMIN</div>
+            </div>
           </div>
-          <div class="ml-4 px-3 py-1 rounded-md bg-zinc-800/80 border border-zinc-700/50">
-            <p class="text-sm text-cyan-400">URLs Acortadas: <span class="font-mono">{{ attempts }}</span></p>
+
+          <!-- Desktop Navigation -->
+          <div class="hidden md:flex items-center space-x-2">
+            <ThemeToggle />
+            
+            <Dialog>
+              <DialogTrigger as-child>
+                <Button variant="ghost" size="sm">
+                  <Settings class="h-4 w-4 mr-2" />
+                  Configuración
+                </Button>
+              </DialogTrigger>
+              <DialogContent class="max-w-2xl">
+                <ApiConfig />
+              </DialogContent>
+            </Dialog>
+
+            <!-- Admin Dialog Trigger -->
+            <Dialog>
+              <DialogTrigger as-child>
+                <Button variant="ghost" size="sm">
+                  <User />  
+                  Admin
+                </Button>
+              </DialogTrigger>
+              <DialogContent class="max-w-md">
+                <div class="space-y-4">
+                  <Label for="admin-pass">Contraseña Admin</Label>
+                  <Input id="admin-pass" v-model="adminPassword" type="password" placeholder="Ingresa contraseña" />
+                  <div class="flex justify-end">
+                    <Button @click="submitAdmin">Iniciar sesión</Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog>
+              <DialogTrigger as-child>
+                <Button variant="ghost" size="sm">
+                  <ExternalLink class="h-4 w-4 mr-2" />
+                  Probar Redirección
+                </Button>
+              </DialogTrigger>
+              <DialogContent class="max-w-2xl">
+                <RedirectTest />
+              </DialogContent>
+            </Dialog>
+
+            <Button variant="ghost" size="sm" as-child>
+              <a
+                href="https://github.com/roldyoran/shorturl"
+                target="_blank"
+                class="flex items-center"
+              >
+                <Github class="h-4 w-4 mr-2" />
+                GitHub
+              </a>
+            </Button>
+          </div>
+
+          <!-- Mobile attempts indicator (compact) -->
+          <div class="flex items-center space-x-3 md:hidden mr-2">
+            <div class="text-xs text-muted-foreground">A: <span class="font-mono">{{ attempts }}</span></div>
+            <div class="text-xs text-muted-foreground">R: <span class="font-mono">{{ remainingAttempts }}</span></div>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <div class="md:hidden">
+            <CollapsibleTrigger as-child>
+              <Button
+                variant="ghost"
+                size="sm"
+                class="md:hidden"
+              >
+                <X v-if="open" class="h-5 w-5" />
+                <Menu v-else class="h-5 w-5" />
+              </Button>
+            </CollapsibleTrigger>
           </div>
         </div>
 
-        <!-- Desktop Navigation -->
-        <div class="hidden md:flex items-center space-x-2">
-          <button
-            @click="showConfig = true"
-            class="flex items-center text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all duration-300 hover:scale-105 px-3 py-1.5 rounded-md text-sm"
-          >
-            <Settings class="h-4 w-4 mr-2" />
-            Configuración
-          </button>
+  <!-- Mobile Navigation -->
+  <CollapsibleContent class="w-full block">
+          <div class="md:hidden mt-4 pt-4 border-t px-3">
+            <div class="flex flex-col space-y-4">
+              <div class="flex justify-start">
+                <ThemeToggle />
+              </div>
 
-          <button
-            @click="showTest = true"
-            class="flex items-center text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all duration-300 hover:scale-105 px-3 py-1.5 rounded-md text-sm"
-          >
-            <ExternalLink class="h-4 w-4 mr-2" />
-            Probar Redirección
-          </button>
+              <div class="space-y-1">
+                <Label for="admin-pass-mobile" class="text-sm">Admin</Label>
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <Input id="admin-pass-mobile" v-model="adminPassword" type="password" placeholder="Contraseña" class="flex-1 w-full" />
+                  <Button class="w-full sm:w-auto" @click="submitAdmin">OK</Button>
+                </div>
+              </div>
 
-          <a
-            href="https://github.com/roldyoran/shorturl"
-            class="flex items-center text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all duration-300 hover:scale-105 px-3 py-1.5 rounded-md text-sm"
-            target="_blank"
-          >
-            <Github class="h-4 w-4 mr-2" />
-            GitHub
-        </a>
-        </div>
+              <Dialog>
+                <DialogTrigger as-child>
+                  <Button variant="ghost" class="w-full justify-start">
+                    <Settings class="h-4 w-4 mr-2" />
+                    Configuración
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <ApiConfig />
+                </DialogContent>
+              </Dialog>
 
-        <!-- Mobile Menu Button -->
-        <button
-          @click="mobileMenuOpen = !mobileMenuOpen"
-          class="md:hidden text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all duration-300 hover:scale-105 p-2 rounded-md"
-        >
-          <X v-if="mobileMenuOpen" class="h-5 w-5" />
-          <Menu v-else class="h-5 w-5" />
-        </button>
-      </div>
+              <Dialog>
+                <DialogTrigger as-child>
+                  <Button variant="ghost" class="w-full justify-start">
+                    <ExternalLink class="h-4 w-4 mr-2" />
+                    Probar Redirección
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <RedirectTest />
+                </DialogContent>
+              </Dialog>
 
-      <!-- Mobile Navigation -->
-      <div v-if="mobileMenuOpen" class="md:hidden mt-4 pb-4 border-t border-zinc-800/50 pt-4">
-        <div class="flex flex-col space-y-2">
-          <button
-             @click="showConfig = true"
-            class="flex items-center justify-start text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all duration-300 hover:scale-105 px-3 py-1.5 rounded-md text-sm"
-          >
-            <Settings class="h-4 w-4 mr-2" />
-            Configuración
-          </button>
-
-          <button
-            @click="showTest = true"
-            class="flex items-center justify-start text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all duration-300 hover:scale-105 px-3 py-1.5 rounded-md text-sm"
-          >
-            <ExternalLink class="h-4 w-4 mr-2" />
-            Probar Redirección
-          </button>
-
-          <a
-           href="https://github.com/roldyoran/shorturl"
-            class="flex items-center justify-start text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all duration-300 hover:scale-105 px-3 py-1.5 rounded-md text-sm"
-            target="_blank"
-          >
-            <Github class="h-4 w-4 mr-2" />
-            GitHub
-        </a>
-        </div>
-      </div>
+              <Button variant="ghost" class="w-full justify-start" as-child>
+                <a
+                  href="https://github.com/roldyoran/shorturl"
+                  target="_blank"
+                  class="flex items-center w-full"
+                >
+                  <Github class="h-4 w-4 mr-2" />
+                  GitHub
+                </a>
+              </Button>
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
-
-    <!-- Dialogo para configuración -->
-<Dialog v-model="showConfig" >
-    <div class="w-full max-w-2xl rounded-xl bg-zinc-900/95 border border-zinc-700/50 p-6 shadow-2xl relative">
-      <button
-        @click="showConfig = false"
-        class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-100 transition-all"
-      >
-        <X class="h-5 w-5" />
-      </button>
-        <ApiConfig />
-    </div>
-</Dialog>
-
-
-        <!-- Dialogo para configuración -->
-<Dialog v-model="showTest" >
-    <div class="w-full max-w-2xl rounded-xl bg-zinc-900/95 border border-zinc-700/50 p-6 shadow-2xl relative">
-      <button
-        @click="showTest = false"
-        class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-100 transition-all"
-      >
-        <X class="h-5 w-5" />
-      </button>
-        <RedirectTest />
-    </div>
-</Dialog>
   </header>
 </template>
 
 
 
 <script setup lang="ts">
-import { ref } from "vue";
+// No local refs needed; Collapsible handles state
 import {
 	Link2,
 	Settings,
@@ -126,17 +169,40 @@ import {
 	Github,
 	Menu,
 	X,
+  User,
 } from "lucide-vue-next";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import ThemeToggle from "./ThemeToggle.vue";
 import ApiConfig from "./ApiConfig.vue";
-import Dialog from "./Dialog.vue";
 import RedirectTest from "./RedirectTest.vue";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ref, computed } from "vue";
+import { useUrlStore } from "@/stores/urlStore";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "vue-sonner";
 
 defineProps<{
 	attempts: number;
 }>();
 
-// State
-const showConfig = ref(false);
-const showTest = ref(false);
-const mobileMenuOpen = ref(false);
+// State handled by Collapsible component
+
+// Admin state
+const urlStore = useUrlStore();
+const adminPassword = ref("");
+const isAdmin = computed(() => urlStore.userSession?.isAdmin ?? false);
+const remainingAttempts = computed(() => urlStore.userSession?.remainingAttempts ?? 0);
+
+function submitAdmin() {
+  if (adminPassword.value === "admin") {
+    urlStore.setAdminStatus(true);
+    toast.success("Modo admin activado", { description: "Tienes intentos ilimitados." });
+  } else {
+    urlStore.setAdminStatus(false);
+    toast.error("Contraseña incorrecta", { description: "La contraseña admin es incorrecta." });
+  }
+  adminPassword.value = "";
+}
 </script>

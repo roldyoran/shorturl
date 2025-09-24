@@ -1,21 +1,24 @@
 import axios from "axios";
 
-// Obtiene la URL base y la API Key desde localStorage
+// Devuelve la URL base de la API, preferencia: env VITE_API_BASE_URL -> localStorage apiUrl -> fallback
+export function getApiBaseUrl(): string {
+  const envUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;
+  const stored = localStorage.getItem("apiUrl");
+  return (envUrl && envUrl.length > 0 ? envUrl : stored) || "https://shorturl.roldyoran.workers.dev";
+}
+
+// Obtiene la instancia de axios configurada
 export function getAxiosInstance() {
-	const baseURL =
-		localStorage.getItem("apiUrl") || "https://shorturl.roldyoran.workers.dev";
-	const apiKey = import.meta.env.VITE_API_KEY || "";
+  const baseURL = getApiBaseUrl();
+  const apiKey = import.meta.env.VITE_API_KEY || "";
 
-	//   console.log('Base URL:', baseURL)
-	//   console.log('API Key:', apiKey)
-
-	return axios.create({
-		baseURL,
-		headers: {
-			"Content-Type": "application/json",
-			"x-api-key": apiKey,
-		},
-	});
+  return axios.create({
+    baseURL,
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+    },
+  });
 }
 
 // Función para acortar URL

@@ -1,75 +1,121 @@
 <template>
+  <div>
+    <DialogHeader>
+      <DialogTitle class="flex items-center gap-3">
+        <ExternalLink class="w-6 h-6" />
+        Probar Redirección
+      </DialogTitle>
+      <DialogDescription>
+        Ingresa el código de una URL corta para probar la redirección a la URL original
+      </DialogDescription>
+    </DialogHeader>
 
-      <div class="flex items-center gap-3 mb-6">
-        <svg class="w-7 h-7 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-        <h2 class=" text-2xl text-white font-bold">Probar Redirección</h2>
+    <div class="space-y-6 mt-6">
+      <div class="space-y-2">
+        <Label for="redirect-url">Código de URL Corta</Label>
+        <Input 
+          id="redirect-url"
+          v-model="shortCode"
+          placeholder="Ej: abc123xyz"
+          type="text"
+        />
       </div>
 
-      <div class="space-y-6 min-w-xl">
-        <div>
-          <label for="redirect-url" class="block text-sm font-medium text-cyan-100 mb-2">Código de URL Corta</label>
-          <input 
-            type="text" 
-            id="redirect-url" 
-            v-model="shortCode" 
-            placeholder="Ej: abc123xyz"
-            class="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 text-white placeholder-cyan-200/70 transition-all duration-200 shadow-lg hover:bg-white/10"
-          >
-        </div>
-        <button 
+      <div class="space-y-4">
+        <Button 
           @click="redirectToUrl"
-          class="w-full flex items-center justify-center px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105  disabled:opacity-50 disabled:cursor-not-allowed"
           :disabled="!shortCode.trim()"
+          class="w-full"
         >
+          <ExternalLink class="w-4 h-4 mr-2" />
           Ir a URL Original
-        </button>
-        <p v-if="error" class="text-cyan-300 text-sm">{{ error }}</p>
+        </Button>
+
+        <!-- Mostrar la URL completa que se abrirá -->
+        <div v-if="shortCode.trim()" class="p-3 rounded-lg border bg-muted/50">
+          <p class="text-sm text-muted-foreground mb-1">URL de redirección:</p>
+          <p class="font-mono text-sm break-all">{{ getRedirectUrl() }}</p>
+        </div>
       </div>
-   
 
+      <Alert v-if="error" variant="destructive">
+        <AlertCircle class="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>{{ error }}</AlertDescription>
+      </Alert>
+
+      <Alert>
+        <Info class="h-4 w-4" />
+        <AlertTitle>¿Cómo funciona?</AlertTitle>
+        <AlertDescription>
+          Este probador abre la URL corta en una nueva pestaña. Si el código existe, serás redirigido automáticamente a la URL original.
+        </AlertDescription>
+      </Alert>
+    </div>
+  </div>
 </template>
-
-
 
 <script setup lang="ts">
 import { ref } from "vue";
-// Asumimos que getUrlInfoRequest ahora podría devolver la URL completa o solo la original.
-// Si la API devuelve la URL completa para redirección, no necesitamos construirla aquí.
+import { ExternalLink, AlertCircle, Info } from "lucide-vue-next";
+import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { toast } from "vue-sonner";
+import { getApiBaseUrl } from "@/api/http";
 
-const shortCode = ref<string>("");
-const error = ref<string>("");
+// Estado reactivo
+const shortCode = ref<string>("")
+const error = ref<string>("")
 
-async function redirectToUrl() {
-	error.value = "";
-	if (!shortCode.value.trim()) {
-		error.value = "Por favor ingresa el código de la URL corta.";
-		return;
-	}
+// Methods
+const getRedirectUrl = (): string => {
+  if (!shortCode.value.trim()) return ""
+  
+  const base = getApiBaseUrl().replace(/\/$/, "");
+  return `${base}/${shortCode.value.trim()}`
+}
 
-	// Construir la URL de redirección. Asumimos que la API base está configurada y es accesible.
-	// Y que el shortCode es solo el path.
-	let baseUrl = localStorage.getItem("apiUrl") || window.location.origin;
-	if (baseUrl.endsWith("/")) {
-		baseUrl = baseUrl.slice(0, -1);
-	}
-	const redirectUrl = `${baseUrl}/${shortCode.value.trim()}`;
+const redirectToUrl = async () => {
+  error.value = ""
+  
+  if (!shortCode.value.trim()) {
+    error.value = "Por favor ingresa el código de la URL corta."
+    return
+  }
 
-	try {
-		// No necesitamos llamar a getUrlInfoRequest si la URL corta ya es la URL de redirección completa.
-		// Simplemente abrimos la URL construida.
-		// Si la API requiere una verificación antes de redirigir, entonces sí se necesitaría una llamada.
-		// Por simplicidad, asumimos que el short code se anexa a la base URL de la API para la redirección.
-		window.open(redirectUrl, "_blank");
-	} catch (e: any) {
-		console.error("Error al intentar abrir la URL:", e);
-		error.value =
-			"Error al intentar abrir la URL. Verifica la consola para más detalles.";
-	}
+  try {
+    const redirectUrl = getRedirectUrl()
+    
+    // Abrir en nueva pestaña
+    const newWindow = window.open(redirectUrl, "_blank")
+    
+    if (newWindow) {
+      toast.success(
+        "Redirección iniciada", 
+        {
+          description: "Se ha abierto una nueva pestaña con la URL corta",
+        }
+      )
+      
+      // Limpiar el campo después de la redirección exitosa
+      setTimeout(() => {
+        shortCode.value = ""
+      }, 1000)
+    } else {
+      error.value = "No se pudo abrir la nueva pestaña. Verifica que no esté bloqueada por el navegador."
+    }
+  } catch (e: any) {
+    console.error("Error al intentar abrir la URL:", e)
+    error.value = "Error al intentar abrir la URL. Verifica la consola para más detalles."
+    toast.error(
+      "Error de redirección",
+      {
+        description: "No se pudo abrir la URL de redirección",
+      }
+    )
+  }
 }
 </script>
-
-<style scoped>
-/* Estilos específicos del componente si son necesarios, aunque Tailwind debería cubrir la mayoría */
-</style>

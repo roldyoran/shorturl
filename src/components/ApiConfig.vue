@@ -1,48 +1,57 @@
 <template>
-  
-    <div class="mb-4">
-      <div class="flex items-center gap-3 mb-6">
-        <svg class="w-7 h-7 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-        </svg>
-        <h2 class=" text-2xl text-white font-bold">Configuración de API</h2>
-      </div>
+  <div>
+    <DialogHeader>
+      <DialogTitle class="flex items-center gap-3">
+        <Settings class="w-6 h-6" />
+        Configuración de API
+      </DialogTitle>
+      <DialogDescription>
+        Configura la URL base de la API para el acortador de URLs
+      </DialogDescription>
+    </DialogHeader>
 
-      <div class="space-y-8">
-          <div class="flex p-4 rounded-lg border border-yellow-500/50 bg-yellow-600/10 shadow-inner">
-            <Info class="w-6 h-6 text-yellow-200" />
-            <div class="ml-4">  
-              <p class="text-yellow-300/90 text-sm leading-relaxed">
-                El acortador de urls utiliza una clave de API para autenticarse. 
-              </p>
-                <span class="text-yellow-300 font-bold">Puede probar el acortador un máximo de 3 veces.</span>
-            </div>
-        </div>
+    <div class="space-y-6 mt-6">
+      <Alert>
+        <Info class="w-4 h-4" />
+        <AlertTitle>Información</AlertTitle>
+        <AlertDescription>
+          El acortador de urls utiliza una clave de API para autenticarse. 
+          <strong>Puede probar el acortador un máximo de 3 veces.</strong>
+        </AlertDescription>
+      </Alert>
 
-        <div>
-          <label for="api-url" class="block text-sm font-medium text-cyan-100 mb-2">URL Base de la API</label>
-          <input 
-            type="url" 
-            id="api-url" 
-            v-model="apiUrl" 
-            placeholder="https://tu-worker.workers.dev"
-            class="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 text-white placeholder-cyan-200/70 transition-all duration-200 shadow-lg hover:bg-white/10"
-          >
-        </div>
-        <!-- <p class="text-xs text-cyan-200/80 italic">Estos datos se guardan localmente en tu navegador.</p> -->
+      <div class="space-y-2">
+        <Label for="api-url">URL Base de la API</Label>
+        <Input 
+          id="api-url"
+          v-model="apiUrl" 
+          placeholder="https://tu-worker.workers.dev"
+          type="url"
+          readonly
+        />
+        <p class="text-xs text-muted-foreground">
+          URL configurada para el acortador de enlaces
+        </p>
       </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { Info } from "lucide-vue-next";
+import { Settings, Info } from "lucide-vue-next";
+import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const apiKey = ref<string>(
 	import.meta.env.VITE_API_KEY || localStorage.getItem("apiKey") || "",
 );
 
-const apiUrl = "https://shorturl.roldyoran.workers.dev/";
+import { getApiBaseUrl } from "@/api/http";
+
+const apiUrl = ref<string>(getApiBaseUrl());
 
 watch(apiKey, (val) => {
 	try {
@@ -52,7 +61,3 @@ watch(apiKey, (val) => {
 	}
 });
 </script>
-
-<style scoped>
-/* Estilos específicos del componente si son necesarios, aunque Tailwind debería cubrir la mayoría */
-</style>
