@@ -128,6 +128,15 @@
                     </TooltipTrigger>
                     <TooltipContent>Copiar código</TooltipContent>
                   </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger :asChild="true">
+                      <Button @click="generateQR(url.short_url)" variant="outline" size="sm">
+                        <QrCode class="w-4 h-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Generar QR</TooltipContent>
+                  </Tooltip>
                 </div>
 
                 <Tooltip>
@@ -152,8 +161,7 @@
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>URL Corta</TableHead>
-                <TableHead>URL Original</TableHead>
+                <TableHead>URLs</TableHead>
                 <TableHead>Código</TableHead>
                 <TableHead>Clicks</TableHead>
                 <TableHead>Creada</TableHead>
@@ -166,15 +174,15 @@
                 :key="`${url.short_url}-${url.original_url}`"
               >
                 <TableCell>
-                  <div class="flex items-center gap-2 max-w-md">
-                    <Hash class="w-4 h-4 text-muted-foreground" />
-                    <span class="font-mono text-sm truncate" :title="baseUrl.replace(/\/$/, '') + '/' + url.short_url">{{ baseUrl.replace(/\/$/, '') + '/' + url.short_url }}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div class="flex items-center gap-2 max-w-md">
-                    <Globe class="w-4 h-4 text-muted-foreground" />
-                    <span class="font-mono text-sm truncate" :title="url.original_url">{{ truncateText(url.original_url, 50) }}</span>
+                  <div class="space-y-1 max-w-md">
+                    <div class="flex items-center gap-2">
+                      <Hash class="w-4 h-4 text-muted-foreground" />
+                      <span class="font-mono text-sm truncate text-primary" :title="baseUrl.replace(/\/$/, '') + '/' + url.short_url">{{ baseUrl.replace(/\/$/, '') + '/' + url.short_url }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <Globe class="w-4 h-4 text-muted-foreground" />
+                      <span class="font-mono text-sm truncate text-muted-foreground" :title="url.original_url">{{ truncateText(url.original_url, 50) }}</span>
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -217,6 +225,15 @@
 
                       <Tooltip>
                         <TooltipTrigger :asChild="true">
+                          <Button @click="generateQR(url.short_url)" variant="outline" size="sm">
+                            <QrCode class="w-4 h-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Generar QR</TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger :asChild="true">
                           <Button 
                             @click="openExternal(baseUrl.replace(/\/$/, '') + '/' + url.short_url)"
                             variant="outline" 
@@ -234,6 +251,27 @@
           </Table>
         </div>
       </div>
+
+      <!-- QR Modal -->
+      <Dialog :open="showQRModal" @update:open="showQRModal = $event">
+        <DialogContent class="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Código QR</DialogTitle>
+            <DialogDescription>
+              Escanea este código para acceder a: {{ currentQRUrl }}
+            </DialogDescription>
+          </DialogHeader>
+          <div class="flex items-center justify-center py-4">
+            <canvas ref="qrCanvas" class="border rounded-lg"></canvas>
+          </div>
+          <div class="flex justify-center">
+            <Button @click="downloadQR" variant="outline">
+              <Download class="w-4 h-4 mr-2" />
+              Descargar QR
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </CardContent>
     </Card>
   </TooltipProvider>
@@ -249,6 +287,8 @@ import {
 	MousePointer,
 	Copy,
 	Hash,
+	QrCode,
+	Download,
 } from "lucide-vue-next";
 import {
 	Card,
@@ -267,6 +307,13 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+} from "@/components/ui/dialog";
 import { getUrlsRequest, getApiBaseUrl } from "@/api/http";
 import {
   Tooltip,
@@ -274,6 +321,7 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import QRCode from "qrcode-generator";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { formatDate, truncateText } from "@/lib/utils";
@@ -288,6 +336,11 @@ const shortUrls = ref<UrlInfoResponse[]>([]);
 const searchQuery = ref<string>("");
 const isLoading = ref<boolean>(false);
 const baseUrl = getApiBaseUrl();
+
+// Estado del modal QR
+const showQRModal = ref(false);
+const qrCanvas = ref<HTMLCanvasElement>();
+const currentQRUrl = ref<string>("");
 
 // Computed
 const filteredUrls = computed(() => {
@@ -311,6 +364,92 @@ const copyFullUrl = (shortCode: string) => {
 
 const copyCode = (shortCode: string) => {
 	copyToClipboard(shortCode, "Código copiado");
+};
+
+// QR Code functions
+const generateQR = (shortCode: string) => {
+	const fullUrl = baseUrl.replace(/\/$/, "") + '/' + shortCode;
+	currentQRUrl.value = fullUrl;
+	showQRModal.value = true;
+
+	// Esperar a que el modal se renderice
+	setTimeout(() => {
+		createQRCode(fullUrl);
+	}, 100);
+};
+
+const createQRCode = (url: string) => {
+	if (!qrCanvas.value) return;
+
+	const qr = QRCode(0, "M");
+	qr.addData(url);
+	qr.make();
+
+	const canvas = qrCanvas.value;
+	const ctx = canvas.getContext("2d");
+
+	if (!ctx) return;
+
+	const moduleCount = qr.getModuleCount();
+	const moduleSize = 6;
+	const margin = 4;
+	canvas.width = canvas.height = moduleCount * moduleSize + margin * 2;
+
+	// Fondo blanco
+	ctx.fillStyle = "#ffffff";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	// Dibujar el QR
+	ctx.fillStyle = "#000000";
+	const offset = margin;
+
+	for (let y = 0; y < moduleCount; y++) {
+		for (let x = 0; x < moduleCount; x++) {
+			if (qr.isDark(y, x)) {
+				ctx.fillRect(
+					offset + x * moduleSize,
+					offset + y * moduleSize,
+					moduleSize,
+					moduleSize,
+				);
+			}
+		}
+	}
+};
+
+const downloadQR = () => {
+	if (!qrCanvas.value) {
+		notificationStore.showError("Error", "No se encontró el código QR");
+		return;
+	}
+
+	try {
+		const dataUrl = qrCanvas.value.toDataURL("image/png");
+		const cleanUrl = currentQRUrl.value
+			.replace(/^https?:\/\//, "")
+			.replace(/\//g, "-")
+			.slice(0, 50);
+
+		const fileName = `qr-${cleanUrl || "codigo"}.png`;
+		const link = document.createElement("a");
+		link.download = fileName;
+		link.href = dataUrl;
+
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+
+		notificationStore.showSuccess(
+			"QR descargado",
+			"El código QR se ha descargado correctamente",
+		);
+	} catch (error) {
+		console.error("Error al descargar el QR:", error);
+		notificationStore.showError(
+			"Error al descargar",
+			"No se pudo descargar el código QR",
+		);
+	}
 };
 
 const loadUrls = async () => {
