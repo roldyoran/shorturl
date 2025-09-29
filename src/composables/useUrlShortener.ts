@@ -12,7 +12,7 @@ export const useUrlShortener = () => {
 	const shortenUrl = async (
 		originalUrl: string,
 		customHash?: string,
-	): Promise<boolean> => {
+	): Promise<{ success: boolean; shortUrl?: string }> => {
 		// Verificar si puede usar el servicio
 		if (!urlStore.canUseService) {
 			toast.error(
@@ -21,7 +21,7 @@ export const useUrlShortener = () => {
 					description: "Ha alcanzado el límite máximo de 3 intentos. Los intentos se reinician cada 24 horas.",
 				}
 			);
-			return false;
+			return { success: false };
 		}
 
 		try {
@@ -35,7 +35,7 @@ export const useUrlShortener = () => {
 						description: "El hash personalizado solo puede contener letras, números, guiones y guiones bajos.",
 					}
 				);
-				return false;
+				return { success: false };
 			}
 
 			// Realizar petición a la API
@@ -59,12 +59,12 @@ export const useUrlShortener = () => {
 					}
 				);
 
-				return true;
+				return { success: true, shortUrl: data.short_url };
 			} else {
 				toast.error("Respuesta inválida", {
 					description: "La respuesta de la API no es válida."
 				});
-				return false;
+				return { success: false };
 			}
 		} catch (error: any) {
 			const errorMessage =
@@ -72,7 +72,7 @@ export const useUrlShortener = () => {
 			toast.error("Error en el servidor", {
 				description: errorMessage
 			});
-			return false;
+			return { success: false };
 		} finally {
 			urlStore.isLoading = false;
 		}

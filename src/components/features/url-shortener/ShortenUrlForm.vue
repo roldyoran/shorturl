@@ -13,6 +13,18 @@
     </CardHeader>
 
     <CardContent class="space-y-6">
+      <!-- Alerta cuando no puede usar el servicio -->
+      <Alert v-if="!urlStore.canUseService && !urlStore.userSession.isAdmin" variant="destructive" class="bg-red-900/20">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="15" y1="9" x2="9" y2="15"/>
+          <line x1="9" y1="9" x2="15" y2="15"/>
+        </svg>
+        <AlertTitle class="!text-red-500">Límite alcanzado</AlertTitle>
+        <AlertDescription class="!text-red-500">
+          Has utilizado todos los intentos disponibles (3/3). Gracias por visitar la pagina.
+        </AlertDescription>
+      </Alert>
       <!-- Form -->
       <form @submit="handleSubmit" class="space-y-4">
         <!-- URL Input -->
@@ -76,21 +88,23 @@
       </form>
 
       <!-- Result -->
-      <div v-if="shortUrl" class="space-y-4">
+      <div v-if="shortUrl && shortUrl.length > 0" class="space-y-4">
         <Label>URL Acortada:</Label>
         
-        <div class="flex items-center space-x-2">
-          <Input 
-            :value="`${urlBase.replace(/\/$/, '')}/${shortUrl}`"
-            readonly
-            class="flex-1"
-          />
-          <Button @click="copyUrl()" variant="outline" size="sm">
-            <Copy class="w-4 h-4 mr-1" />
-            Copiar
-          </Button>
-        </div>
+            <div class="flex items-center">
+              <div class="flex-1 min-w-0">
+                <code class=" font-mono break-all transition-all hover:underline cursor-pointer" @click="copyUrl()">
+                  {{ urlBase.replace(/\/$/, '') + '/' + shortUrl }}
+                </code>
+              </div>
+              <Button @click="copyUrl()" variant="outline" size="sm" class="shrink-0">
+                <Copy class="w-4 h-4 mr-2" />
+                Copiar
+              </Button>
+            </div>
       </div>
+      
+
     </CardContent>
   </Card>
 </template>
@@ -108,6 +122,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+	Alert,
+	AlertDescription,
+	AlertTitle,
+} from "@/components/ui/alert";
 import { useUrlStore } from "@/stores/urlStore";
 import { useUrlShortener } from "@/composables/useUrlShortener";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
@@ -145,23 +164,20 @@ const handleSubmit = async (event: Event) => {
 	}
 
 	try {
-		const success = await shortenUrl(
+		const result = await shortenUrl(
 			originalUrl.value,
 			customHash.value || undefined,
 		);
 
-		if (success) {
-			// Obtener la última URL agregada al store
-			const lastUrl = urlStore.savedUrls[0];
-			if (lastUrl) {
-				shortUrl.value = lastUrl.short;
-				emit("url-shortened");
+		if (result.success && result.shortUrl) {
+			// Usar directamente la URL corta devuelta por la API
+			shortUrl.value = result.shortUrl;
+			emit("url-shortened");
 
-				// Limpiar formulario
-				originalUrl.value = "";
-				customHash.value = "";
-				showHashField.value = false;
-			}
+			// Limpiar formulario
+			originalUrl.value = "";
+			customHash.value = "";
+			showHashField.value = false;
 		}
 	} catch (err: any) {
 		error.value = err.message || "Error inesperado al acortar la URL";
