@@ -55,8 +55,8 @@
 
       <!-- Lista de URLs -->
       <div v-else class="space-y-6">
-        <!-- Vista móvil: Cards -->
-        <div class="block sm:hidden space-y-3">
+        <!-- Vista móvil: Cards con scroll -->
+        <div class="block sm:hidden max-h-[70vh] overflow-y-auto space-y-3 pr-1 scroll-smooth scroll-container">
           <Card 
             v-for="url in filteredUrls" 
             :key="`${url.short_url}-${url.original_url}`"
@@ -156,10 +156,10 @@
           </Card>
         </div>
 
-        <!-- Vista desktop: Table -->
-        <div class="hidden sm:block">
+        <!-- Vista desktop: Table con scroll -->
+        <div class="hidden sm:block max-h-[60vh] overflow-y-auto border rounded-lg scroll-smooth scroll-container">
           <Table>
-            <TableHeader>
+            <TableHeader class="sticky top-0 bg-background z-10 sticky-header">
               <TableRow>
                 <TableHead>URLs</TableHead>
                 <TableHead>Código</TableHead>
@@ -493,3 +493,123 @@ const openExternal = (url: string) => {
   window.open(url, "_blank");
 };
 </script>
+
+<style scoped>
+/* Estilos personalizados para scrollbar en navegadores webkit */
+.scroll-smooth::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-smooth::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.scroll-smooth::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.scroll-smooth::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* Para dispositivos móviles - scrollbar más fino */
+@media (max-width: 640px) {
+  .scroll-smooth::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scroll-smooth::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+  }
+  
+  .scroll-smooth::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* Soporte para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .scroll-smooth::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .scroll-smooth::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .scroll-smooth::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  @media (max-width: 640px) {
+    .scroll-smooth::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .scroll-smooth::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+  }
+}
+
+/* Animación suave para el scroll */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+/* Efecto de fade en los bordes para indicar scroll */
+.scroll-container {
+  position: relative;
+}
+
+.scroll-container::before,
+.scroll-container::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 20px;
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 0.3s ease;
+}
+
+/* Gradientes para modo claro */
+.scroll-container::before {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, transparent 100%);
+}
+
+.scroll-container::after {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, transparent 100%);
+}
+
+/* Gradientes para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .scroll-container::before {
+    background: linear-gradient(to bottom, rgba(15, 15, 15, 1) 0%, transparent 100%);
+  }
+
+  .scroll-container::after {
+    background: linear-gradient(to top, rgba(15, 15, 15, 1) 0%, transparent 100%);
+  }
+}
+
+/* Mejorar la visibilidad del header sticky */
+.sticky-header {
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .sticky-header {
+    background: rgba(15, 15, 15, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+</style>

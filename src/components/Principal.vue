@@ -1,9 +1,26 @@
 <template>
   <!-- Hero Section -->
-  <section class="text-center mb-12">
-    <Card class="p-8">
-      <CardContent class="space-y-6">
-        <div class="space-y-4">
+  <section class="text-center mb-8 md:mb-12">
+    <Card class="p-4 md:p-8">
+      <CardContent class="space-y-4 md:space-y-6">
+        <!-- Mobile: Simplified header -->
+        <div class="block md:hidden space-y-3">
+          <Badge variant="secondary" class="text-xs">
+            <Zap class="w-3 h-3 mr-1" />
+            Cloudflare Workers
+          </Badge>
+
+          <h1 class="text-2xl font-bold">
+            ShortURL
+          </h1>
+
+          <p class="text-sm text-muted-foreground leading-relaxed">
+            Acortador de URLs rápido y seguro
+          </p>
+        </div>
+
+        <!-- Desktop: Full header -->
+        <div class="hidden md:block space-y-4">
           <Badge variant="secondary" class="mb-4">
             <Zap class="w-3 h-3 mr-1" />
             Powered by Cloudflare Workers
@@ -21,73 +38,109 @@
 
         <Separator />
 
-        <div class="space-y-4">
+        <!-- Service URL section - simplified on mobile -->
+        <div class="space-y-3 md:space-y-4">
           <div class="flex items-center justify-center gap-2">
-            <Globe class="w-5 h-5 text-primary" />
-            <span class="font-semibold">Servicio Principal</span>
+            <Globe class="w-4 h-4 md:w-5 md:h-5 text-primary" />
+            <span class="text-sm md:text-base font-semibold">Servicio Principal</span>
           </div>
 
           <div class="max-w-3xl mx-auto w-full">
-            <div class="flex flex-col md:flex-row items-center md:items-stretch gap-3 p-3 rounded-lg border bg-muted/50">
-              <!-- URL area (looks like an input, selectable, tappable to copy) -->
-              <label
-                class="flex-1 min-w-0 font-mono text-sm md:text-base truncate text-center md:text-left px-3 py-2 bg-card rounded-md cursor-pointer select-all"
-                :title="SERVICE_URL"
-                role="button"
-                tabindex="0"
-                @click="copyServiceUrl"
-                @keydown.enter.prevent="copyServiceUrl"
-              >
-                {{ SERVICE_URL }}
-              </label>
-
-              <!-- Buttons: stacked on mobile, inline on desktop -->
-              <div class="flex w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2 flex-col md:flex-row">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  class="w-full md:w-auto"
-                  @click="openServiceUrl"
-                  aria-label="Abrir servicio en nueva pestaña"
+            <!-- Mobile: Simplified URL display -->
+            <div class="block md:hidden">
+              <div class="flex flex-col gap-2 p-2 rounded-lg border bg-muted/50">
+                <label
+                  class="font-mono text-xs truncate text-center px-2 py-2 bg-card rounded-md cursor-pointer select-all"
+                  :title="SERVICE_URL"
+                  role="button"
+                  tabindex="0"
+                  @click="copyServiceUrl"
+                  @keydown.enter.prevent="copyServiceUrl"
                 >
-                  <ExternalLink class="w-4 h-4 mr-1" />
-                  Abrir
-                </Button>
-
+                  {{ SERVICE_URL }}
+                </label>
+                
                 <Button
                   variant="outline"
                   size="sm"
-                  class="w-full md:w-auto"
+                  class="w-full text-xs"
                   @click="copyServiceUrl"
                   aria-label="Copiar URL del servicio"
                 >
-                  <Copy class="w-4 h-4 mr-1" />
-                  Copiar
+                  <Copy class="w-3 h-3 mr-1" />
+                  Copiar URL
                 </Button>
+              </div>
+            </div>
+
+            <!-- Desktop: Full URL display -->
+            <div class="hidden md:block">
+              <div class="flex flex-col md:flex-row items-center md:items-stretch gap-3 p-3 rounded-lg border bg-muted/50">
+                <label
+                  class="flex-1 min-w-0 font-mono text-sm md:text-base truncate text-center md:text-left px-3 py-2 bg-card rounded-md cursor-pointer select-all"
+                  :title="SERVICE_URL"
+                  role="button"
+                  tabindex="0"
+                  @click="copyServiceUrl"
+                  @keydown.enter.prevent="copyServiceUrl"
+                >
+                  {{ SERVICE_URL }}
+                </label>
+
+                <div class="flex w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2 flex-col md:flex-row">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    class="w-full md:w-auto"
+                    @click="openServiceUrl"
+                    aria-label="Abrir servicio en nueva pestaña"
+                  >
+                    <ExternalLink class="w-4 h-4 mr-1" />
+                    Abrir
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    class="w-full md:w-auto"
+                    @click="copyServiceUrl"
+                    aria-label="Copiar URL del servicio"
+                  >
+                    <Copy class="w-4 h-4 mr-1" />
+                    Copiar
+                  </Button>
+                </div>
               </div>
             </div>
 
             <p class="text-xs text-muted-foreground text-center mt-2">
               Toca la URL para copiar rápidamente.
             </p>
-            
-            <!-- Botón temporal para pruebas -->
-            <!-- <div class="text-center mt-4">
-              <Button 
-                variant="secondary" 
-                size="sm"
-                @click="testToast"
-                class="text-xs"
-              >
-                🧪 Test Toast
-              </Button>
-            </div> -->
           </div>
         </div>
 
-        <Separator />
+        <Separator class="hidden md:block" />
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <!-- Features section - simplified on mobile -->
+        <div class="block md:hidden mt-4">
+          <div class="flex justify-center gap-4 text-center">
+            <div class="flex flex-col items-center space-y-1">
+              <Zap class="w-5 h-5 text-primary" />
+              <span class="text-xs font-medium">Rápido</span>
+            </div>
+            <div class="flex flex-col items-center space-y-1">
+              <Brush class="w-5 h-5 text-primary" />
+              <span class="text-xs font-medium">Personalizable</span>
+            </div>
+            <div class="flex flex-col items-center space-y-1">
+              <BarChart3 class="w-5 h-5 text-primary" />
+              <span class="text-xs font-medium">Analytics</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop: Full features -->
+        <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
           <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card">
             <Zap class="w-8 h-8 text-primary" />
             <h3 class="font-semibold">Súper Rápido</h3>
@@ -96,14 +149,14 @@
             </p>
           </div>
           
-            <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card">
-              <Brush class="w-8 h-8 text-primary" />
-              <h3 class="font-semibold">Personalizable</h3>
-              <p class="text-sm text-muted-foreground text-center">
-                Elige un hash personalizado para tu enlace (ej: <span class="font-mono">mi-enlace</span>).
-                Esta opción permite URLs más legibles y memorables.
-              </p>
-            </div>
+          <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card">
+            <Brush class="w-8 h-8 text-primary" />
+            <h3 class="font-semibold">Personalizable</h3>
+            <p class="text-sm text-muted-foreground text-center">
+              Elige un hash personalizado para tu enlace (ej: <span class="font-mono">mi-enlace</span>).
+              Esta opción permite URLs más legibles y memorables.
+            </p>
+          </div>
           
           <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card">
             <BarChart3 class="w-8 h-8 text-primary" />
