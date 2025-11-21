@@ -125,7 +125,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watchEffect } from "vue";
 import { Info, Link, Database, List } from "lucide-vue-next";
 import { useColorMode } from "@vueuse/core";
 import { useUrlStore } from "@/stores/urlStore";
@@ -141,6 +141,17 @@ import UrlInfoForm from "@/components/features/url-info/UrlInfoForm.vue";
 import MyUrlsList from "@/components/features/my-urls/MyUrlsList.vue";
 import PublicUrlsList from "@/components/features/url-list/PublicUrlsList.vue";
 // Removed unused test components (were causing TS6133)
+const mode = useColorMode()
+
+// Apply the theme class to the document element
+watchEffect(() => {
+  if (mode.value === 'dark') {
+    document.documentElement.classList.add('dark')
+  } else {
+    document.documentElement.classList.remove('dark')
+  }
+})
+
 
 type Tab = "shorten" | "info" | "myurls" | "list";
 
@@ -168,3 +179,24 @@ onMounted(() => {
 	attempts.value = urlStore.urlCount;
 });
 </script>
+
+
+<style scoped>
+@keyframes gentle-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.github-bounce {
+  animation: gentle-bounce 3s ease-in-out infinite;
+}
+
+.github-bounce:hover {
+  animation: none;
+}
+</style>

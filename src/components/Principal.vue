@@ -1,10 +1,10 @@
 <template>
   <!-- Hero Section -->
-  <section class="text-center mb-8 md:mb-12">
+  <section class="text-center mb-8 md:mb-12 fade-up" :style="{ animationDelay: '0ms' }">
     <Card class="p-4 md:p-8">
       <CardContent class="space-y-4 md:space-y-6">
         <!-- Mobile: Simplified header -->
-        <div class="block md:hidden space-y-3">
+        <div class="block md:hidden space-y-3 fade-up" :style="{ animationDelay: '100ms' }">
           <Badge variant="secondary" class="text-xs">
             <Zap class="w-3 h-3 mr-1" />
             Cloudflare Workers
@@ -20,7 +20,7 @@
         </div>
 
         <!-- Desktop: Full header -->
-        <div class="hidden md:block space-y-4">
+        <div class="hidden md:block space-y-4 fade-up" :style="{ animationDelay: '100ms' }">
           <Badge variant="secondary" class="mb-4">
             <Zap class="w-3 h-3 mr-1" />
             Powered by Cloudflare Workers
@@ -39,7 +39,7 @@
         <Separator />
 
         <!-- Service URL section - simplified on mobile -->
-        <div class="space-y-3 md:space-y-4">
+        <div class="space-y-3 md:space-y-4 fade-up" :style="{ animationDelay: '200ms' }">
           <div class="flex items-center justify-center gap-2">
             <Globe class="w-4 h-4 md:w-5 md:h-5 text-primary" />
             <span class="text-sm md:text-base font-semibold">Servicio Principal</span>
@@ -74,7 +74,7 @@
             </div>
 
             <!-- Desktop: Full URL display -->
-            <div class="hidden md:block">
+            <div class="hidden md:block fade-up" :style="{ animationDelay: '200ms' }">
               <div class="flex flex-col md:flex-row items-center md:items-stretch gap-3 p-3 rounded-lg border bg-muted/50">
                 <label
                   class="flex-1 min-w-0 font-mono text-sm md:text-base truncate text-center md:text-left px-3 py-2 bg-card rounded-md cursor-pointer select-all"
@@ -122,7 +122,7 @@
         <Separator class="hidden md:block" />
 
         <!-- Features section - simplified on mobile -->
-        <div class="block md:hidden mt-4">
+        <div class="block md:hidden mt-4 fade-up" :style="{ animationDelay: '300ms' }">
           <div class="flex justify-center gap-4 text-center">
             <div class="flex flex-col items-center space-y-1">
               <Zap class="w-5 h-5 text-primary" />
@@ -140,8 +140,8 @@
         </div>
 
         <!-- Desktop: Full features -->
-        <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card">
+        <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 fade-up" :style="{ animationDelay: '300ms' }">
+          <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card fade-up" :style="{ animationDelay: '350ms' }">
             <Zap class="w-8 h-8 text-primary" />
             <h3 class="font-semibold">Súper Rápido</h3>
             <p class="text-sm text-muted-foreground text-center">
@@ -149,7 +149,7 @@
             </p>
           </div>
           
-          <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card">
+          <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card fade-up" :style="{ animationDelay: '400ms' }">
             <Brush class="w-8 h-8 text-primary" />
             <h3 class="font-semibold">Personalizable</h3>
             <p class="text-sm text-muted-foreground text-center">
@@ -158,7 +158,7 @@
             </p>
           </div>
           
-          <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card">
+          <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card fade-up" :style="{ animationDelay: '450ms' }">
             <BarChart3 class="w-8 h-8 text-primary" />
             <h3 class="font-semibold">Analytics</h3>
             <p class="text-sm text-muted-foreground text-center">
@@ -199,5 +199,25 @@ const copyServiceUrl = () => {
   copyToClipboard(SERVICE_URL, 'URL del servicio copiada')
 }
 
-// Note: removed unused test helper `testToast` and `Input` import
 </script>
+
+<style scoped>
+/* Fade-up animation used to give a subtle entrance effect on page load. */
+.fade-up{
+  opacity: 0;
+  transform: translateY(12px);
+  /* animationDelay can be set inline per-element via :style */
+  animation: fadeUp 1s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+@keyframes fadeUp{
+  from{
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
