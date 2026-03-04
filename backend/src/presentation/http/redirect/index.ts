@@ -22,7 +22,9 @@ redirectRoutes.get(
 		const useCase = new RedirectUrlUseCase(repo);
 		const url = await useCase.execute(shortCode);
 		if (!url) {
-			throw new NotFoundError(`No existe una URL para el código "${shortCode}"`);
+			throw new NotFoundError(
+				`No existe una URL para el código "${shortCode}"`,
+			);
 		}
 		return c.redirect(url.originalUrl, 302);
 	},

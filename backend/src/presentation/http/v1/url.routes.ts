@@ -24,14 +24,18 @@ urlRoutes.get("/", async (c) => {
 
 // POST /v1/urls — crea una nueva URL corta
 // Body: { originalUrl: string, shortCode?: string }
-urlRoutes.post("/", zValidator("json", createUrlSchema, validationHook), async (c) => {
-	const { originalUrl, shortCode } = c.req.valid("json");
-	const db = createDb(c.env.DB);
-	const repo = new UrlRepository(db);
-	const useCase = new CreateUrlUseCase(repo);
-	const created = await useCase.execute({ originalUrl, shortCode });
-	return c.json(created, 201);
-});
+urlRoutes.post(
+	"/",
+	zValidator("json", createUrlSchema, validationHook),
+	async (c) => {
+		const { originalUrl, shortCode } = c.req.valid("json");
+		const db = createDb(c.env.DB);
+		const repo = new UrlRepository(db);
+		const useCase = new CreateUrlUseCase(repo);
+		const created = await useCase.execute({ originalUrl, shortCode });
+		return c.json(created, 201);
+	},
+);
 
 // GET /v1/urls/:shortCode — obtiene una URL por su código corto
 urlRoutes.get(
