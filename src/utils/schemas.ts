@@ -1,0 +1,31 @@
+import { z } from "zod";
+
+// shortCode: máximo 6 caracteres, solo letras minúsculas y números
+export const shortCodeSchema = z.object({
+	shortCode: z
+		.string()
+		.min(1, "El shortCode no puede estar vacío")
+		.max(6, "El shortCode no puede tener más de 6 caracteres")
+		.regex(
+			/^[a-z0-9]+$/,
+			"El shortCode solo puede contener letras minúsculas y números",
+		),
+});
+
+const shortCodeField = z
+	.string()
+	.min(1, "El shortCode no puede estar vacío")
+	.max(6, "El shortCode no puede tener más de 6 caracteres")
+	.regex(
+		/^[a-z0-9]+$/,
+		"El shortCode solo puede contener letras minúsculas y números",
+	);
+
+// Schema para el body del POST /urls
+export const createUrlSchema = z.object({
+	originalUrl: z.string().url("Debe ser una URL válida"),
+	// shortCode es opcional: si no se provee, se genera automáticamente
+	shortCode: shortCodeField.optional(),
+});
+
+export type CreateUrlBody = z.infer<typeof createUrlSchema>;

@@ -1,0 +1,308 @@
+# AGENTS.md — shorturl_v2
+
+Guía de arquitectura y estructura del proyecto para agentes de IA y desarrolladores.
+
+---
+
+## ¿Qué hace este proyecto?
+
+API REST de acortador de URLs construida con **Hono** sobre **Cloudflare Workers**.
+Permite crear URLs cortas con un `shortCode` de máximo 6 caracteres alfanuméricos en minúsculas (auto-generado o personalizado), listar todas las URLs, buscar por código corto, redirigir a la URL original (incrementando el contador de visitas) y administrar registros mediante endpoints protegidos por API key.
+La base de datos es **Cloudflare D1** (SQLite serverless), gestionada con **Drizzle ORM**.
+
+---
+
+## Stack tecnológico
+
+| Capa               | Tecnología                        |
+|--------------------|-----------------------------------|
+| Runtime            | Cloudflare Workers                |
+| Framework HTTP     | Hono v4                           |
+| Base de datos      | Cloudflare D1 (SQLite)            |
+| ORM                | Drizzle ORM                       |
+| Validación         | Zod + @hono/zod-validator         |
+| Lenguaje           | TypeScript (ESNext, Bundler)      |
+| Gestor de paquetes | Bun                               |
+| CLI despliegue     | Wrangler                          |
+| Testing            | Bun test runner (built-in)        |
+
+---
+
+## Arquitectura: Hexagonal (Ports & Adapters)
+
+El proyecto sigue **Arquitectura Hexagonal**, separando el núcleo de negocio de los detalles de infraestructura y transporte. El dominio no importa nada de Hono, Drizzle ni Workers.
+
+```
+src/
+├── domain/                          ← Núcleo (sin dependencias externas)
+│   └── url/
+│       ├── url.entity.ts            ← Entidad UrlEntity + CreateUrlInput
+│       └── url.repository.port.ts  ← Puerto (interfaz del repositorio)
+│
+├── application/                     ← Casos de uso
+│   └── url/
+│       ├── create-url.usecase.ts            ← Crear URL + ShortCodeAlreadyExistsError
+│       ├── get-all-urls.usecase.ts
+│       ├── get-url-by-shortcode.usecase.ts
+│       ├── redirect-url.usecase.ts          ← Redirigir + incrementar visitas
+│       ├── delete-url.usecase.ts            ← Eliminar por shortCode + UrlNotFoundError
+│       └── delete-all-urls.usecase.ts       ← Eliminar todas las URLs
+│
+├── infrastructure/                  ← Adaptadores secundarios
+│   └── persistence/
+│       └── url.repository.impl.ts  ← Implementación Drizzle + D1
+│
+├── presentation/                    ← Adaptadores primarios (HTTP)
+│   └── http/
+│       ├── redirect/               ← Redirección directa por shortCode
+│       │   └── index.ts            ← GET /:shortCode → redirect 302
+│       └── v1/                     ← Versión 1 de la API REST
+│           ├── index.ts            ← Router agregador de v1
+│           ├── url.routes.ts       ← Rutas públicas de URLs
+│           └── admin.routes.ts     ← Rutas protegidas por API key
+│
+├── db/
+│   ├── index.ts                    ← createDb(d1Binding) → instancia Drizzle
+│   └── schema.ts                   ← Definición de tabla `urls`
+│
+├── utils/
+│   ├── context.ts                  ← Tipo Bindings + checkEnvMiddleware
+│   ├── schemas.ts                  ← Esquemas Zod (shortCodeSchema, createUrlSchema)
+│   ├── app-error.ts                ← AppError base + errores genéricos reutilizables
+│   └── error-handler.ts            ← onError global + errorResponse() + validationHook
+│
+└── index.ts                         ← Bootstrap: app Hono + middlewares + rutas + onError
+
+tests/
+├── tsconfig.json                    ← Extiende tsconfig raíz, añade bun-types
+├── __mocks__/
+│   └── url.repository.mock.ts      ← MockedRepository + urlFixture
+└── unit/
+    ├── application/url/
+    │   ├── create-url.usecase.test.ts
+    │   ├── get-all-urls.usecase.test.ts
+    │   ├── get-url-by-shortcode.usecase.test.ts
+    │   ├── redirect-url.usecase.test.ts
+    │   ├── delete-url.usecase.test.ts
+    │   └── delete-all-urls.usecase.test.ts
+    └── utils/
+        ├── app-error.test.ts
+        └── schemas.test.ts
+```
+
+---
+
+## Capas en detalle
+
+### `domain/` — Dominio
+- **`url.entity.ts`**: interfaz `UrlEntity` (`id`, `originalUrl`, `shortCode`, `createdAt`, `visits`) e interfaz `CreateUrlInput`. No depende de ningún framework.
+- **`url.repository.port.ts`**: interfaz `UrlRepositoryPort` con los métodos:
+  - `findAll()` → `UrlEntity[]`
+  - `findByShortCode(shortCode)` → `UrlEntity | null`
+  - `findByOriginalUrl(originalUrl)` → `UrlEntity | null`
+  - `create(input)` → `UrlEntity`
+  - `deleteByShortCode(shortCode)` → `UrlEntity | null`
+  - `deleteAll()` → `void`
+  - `incrementVisits(shortCode)` → `UrlEntity | null`
+
+### `application/` — Casos de uso
+Orquestan la lógica de negocio recibiendo el puerto como dependencia (inyección de dependencias manual). **Nunca** importan Hono, Drizzle ni D1.
+
+- **`CreateUrlUseCase`**: primero verifica si `originalUrl` ya existe (devuelve la existente si es así). Si se provee `shortCode`, verifica que no esté en uso — lanza `ShortCodeAlreadyExistsError` (409) si ya existe. Si no, genera uno automáticamente.
+- **`GetAllUrlsUseCase`**: retorna todas las URLs.
+- **`GetUrlByShortCodeUseCase`**: busca por código corto, retorna `null` si no existe.
+- **`RedirectUrlUseCase`**: busca la URL por `shortCode`; si existe, llama a `incrementVisits` y retorna la entidad actualizada. Retorna `null` si no existe.
+- **`DeleteUrlUseCase`**: elimina por `shortCode` — lanza `UrlNotFoundError` (404) si no existe.
+- **`DeleteAllUrlsUseCase`**: elimina todos los registros de la tabla.
+
+### `infrastructure/` — Adaptadores secundarios
+- **`UrlRepository`**: implementa `UrlRepositoryPort` usando Drizzle ORM sobre D1. Contiene `generateShortCode()` para crear códigos aleatorios de 6 chars `[a-z0-9]`. Implementa `incrementVisits` con un `UPDATE ... SET visits = visits + 1 ... RETURNING` atómico.
+
+### `presentation/` — Adaptadores primarios
+- **`redirect/index.ts`**: router de redirección montado en `/` (raíz). `GET /:shortCode` valida el param con `shortCodeSchema`, ejecuta `RedirectUrlUseCase` y responde con `302` a `originalUrl`. Lanza `NotFoundError` si el código no existe.
+- **`v1/index.ts`**: router agregador de la versión 1. Monta `urlRoutes` en `/urls` y `adminRoutes` en `/admin`.
+- **`v1/url.routes.ts`**: rutas públicas montadas en `/v1/urls`. Aplica `validationHook` en todos los `zValidator`.
+- **`v1/admin.routes.ts`**: rutas protegidas montadas en `/v1/admin`. Middleware de autenticación que valida `Authorization: Bearer <SERVICE_ADMIN_API_KEY>` — lanza `UnauthorizedError` si falla.
+
+### `utils/` — Utilidades transversales
+- **`app-error.ts`**: clase base `AppError` (con `message`, `statusCode`, `code`) y subclases genéricas:
+  - `UnauthorizedError` — 401, `UNAUTHORIZED`
+  - `NotFoundError` — 404, `NOT_FOUND`
+  - `ValidationError` — 400, `VALIDATION_ERROR`
+  - Los errores de dominio (`ShortCodeAlreadyExistsError`, `UrlNotFoundError`) también extienden `AppError`.
+- **`error-handler.ts`**: **punto único de control de errores**.
+  - `ApiErrorResponse` — tipo del formato estándar de respuesta de error.
+  - `errorResponse(c, error)` — construye la respuesta JSON con el formato estándar.
+  - `onError(error, c)` — handler global registrado en `app.onError()`. Los `AppError` se formatean con `errorResponse`; cualquier otro error se convierte en 500.
+  - `validationHook` — hook para `zValidator` que estandariza errores de Zod al mismo formato.
+- **`context.ts`**: tipo `Bindings` y middleware `checkEnvMiddleware`.
+- **`schemas.ts`**: `shortCodeSchema` y `createUrlSchema`.
+
+**Formato estándar de errores:**
+```json
+{
+  "success": false,
+  "error": {
+    "code": "SHORT_CODE_ALREADY_EXISTS",
+    "message": "El shortCode \"ggl\" ya está en uso",
+    "statusCode": 409
+  }
+}
+```
+Para cambiar el formato de todos los errores de la API, modificar únicamente `ApiErrorResponse` y `errorResponse()` en `src/utils/error-handler.ts`.
+
+### `index.ts` — Entry point
+Bootstrap: instancia Hono, registra `checkEnvMiddleware`, `cors`, el router `/v1`, el router de redirección `/` y `app.onError(onError)`. El router de redirección se monta **después** de `/v1` para evitar colisiones.
+
+---
+
+## Endpoints
+
+### Redirección (raíz)
+
+| Método | Ruta           | Descripción                                                     |
+|--------|----------------|-----------------------------------------------------------------|
+| GET    | `/:shortCode`  | Redirige (302) a la URL original e incrementa el contador de visitas |
+
+### Rutas públicas v1
+
+| Método | Ruta                  | Descripción                                              |
+|--------|-----------------------|----------------------------------------------------------|
+| GET    | `/v1/urls`            | Lista todas las URLs almacenadas                         |
+| POST   | `/v1/urls`            | Crea una URL corta (shortCode opcional)                  |
+| GET    | `/v1/urls/:shortCode` | Obtiene una URL por su código corto                      |
+
+**POST `/v1/urls` — body:**
+```json
+{ "originalUrl": "https://...", "shortCode": "abc12" }
+```
+- `shortCode` es opcional. Si se omite, se genera automáticamente.
+- Si `originalUrl` ya existe en la BD, devuelve la entrada existente (no crea duplicados).
+- Responde `409` si el `shortCode` personalizado ya está en uso.
+
+### Rutas de administración (requieren auth)
+
+| Método | Ruta                         | Descripción                         |
+|--------|------------------------------|-------------------------------------|
+| DELETE | `/v1/admin/urls/:shortCode`  | Elimina una URL por su código corto |
+| DELETE | `/v1/admin/urls`             | Elimina todas las URLs              |
+
+**Autenticación:** header `Authorization: Bearer <SERVICE_ADMIN_API_KEY>`. Sin él o con key incorrecta devuelve `401`.
+
+---
+
+## Flujo de una request
+
+```
+HTTP GET /c04jzv
+  → redirect/index.ts             (valida param con shortCodeSchema + validationHook)
+  → RedirectUrlUseCase.execute("c04jzv")
+      → UrlRepository.findByShortCode()     → null si no existe → NotFoundError
+      → UrlRepository.incrementVisits()     → UPDATE visits + 1 RETURNING
+  → Drizzle → D1 SQLite
+  ← UrlEntity actualizada
+  ← 302 Location: https://www.epicgames.com | 404
+
+HTTP POST /v1/urls  { originalUrl, shortCode? }
+  → v1/url.routes.ts              (valida body con Zod + validationHook)
+  → CreateUrlUseCase.execute()
+      → UrlRepository.findByOriginalUrl()   → devuelve existente si ya existe
+      → UrlRepository.findByShortCode()     → solo si shortCode fue provisto
+      → UrlRepository.create()
+  → Drizzle → D1 SQLite
+  ← UrlEntity
+  ← JSON 200 (existente) | 201 (nueva) | 400 | 409
+
+HTTP DELETE /v1/admin/urls/ggl
+  → adminRoutes middleware       (verifica Authorization header)
+  → v1/admin.routes.ts           (valida param con Zod + validationHook)
+  → DeleteUrlUseCase.execute("ggl")
+  → UrlRepository.deleteByShortCode("ggl")
+  → Drizzle → D1 SQLite
+  ← UrlEntity | UrlNotFoundError
+  ← JSON 200 | 401 | 404
+```
+
+Todos los errores no capturados en rutas llegan a `app.onError(onError)` en `index.ts`.
+
+---
+
+## Tests unitarios
+
+Los tests están en `tests/unit/` y usan el **test runner built-in de Bun** (API compatible con Jest).
+
+```bash
+bun test                  # todos los tests
+bun run test:watch        # modo watch
+bun run test:unit         # solo tests/unit/
+bun run test:app          # solo tests de application/
+bun run test:utils        # solo tests de utils/
+bun run test:coverage     # con reporte de cobertura
+bun run test:bail         # aborta al primer fallo (útil en CI)
+
+bun test -t "CreateUrl"   # filtrar por nombre de test
+bun test usecase          # filtrar por nombre de archivo
+```
+
+**Convenciones:**
+- Los mocks del repositorio están en `tests/__mocks__/url.repository.mock.ts` y exportan `createMockRepository()` y el fixture `urlFixture`.
+- El tipo `MockedRepository` usa `Mock<FunctionType>` explícito por cada método para preservar inferencia de tipos en `toHaveBeenCalledWith`.
+- Los tests son completamente unitarios — no tocan D1, Wrangler ni red.
+- La configuración del runner está en `bunfig.toml`.
+- `tests/tsconfig.json` extiende el raíz y añade `bun-types` para que VS Code resuelva `bun:test` sin errores.
+
+---
+
+## Archivos de configuración raíz
+
+| Archivo             | Propósito                                                         |
+|---------------------|-------------------------------------------------------------------|
+| `wrangler.jsonc`    | Binding D1, nombre del Worker, fecha de compatibilidad            |
+| `drizzle.config.ts` | Config de drizzle-kit para generar y aplicar migraciones          |
+| `tsconfig.json`     | Target ESNext, alias `@/*` → `src/*`, types Workers + Node. Solo incluye `src/` |
+| `bunfig.toml`       | Configuración del test runner de Bun (timeout, retry, coverageDir) |
+| `biome.json`        | Formatter/linter                                                  |
+| `.env`              | Variables locales (IDs de D1, API keys, tokens)                   |
+| `drizzle/`          | Migraciones SQL generadas por drizzle-kit                         |
+
+---
+
+## Comandos principales
+
+```bash
+# Desarrollo
+bun dev                    # Servidor local con wrangler dev
+bun deploy                 # Deploy a Cloudflare Workers
+
+# Base de datos
+bun run db:generate        # Genera SQL de migración desde el schema
+bun run db:migrate:local   # Aplica migraciones en D1 local (.wrangler/state)
+bun run db:migrate:remote  # Aplica migraciones en D1 remoto (producción)
+bun run db:push            # Push directo del schema al D1 remoto vía drizzle-kit
+
+# Tests
+bun test                   # Todos los tests
+bun run test:watch         # Modo watch
+bun run test:coverage      # Con cobertura
+
+# Formato
+bun format                 # Formatea el código con Biome
+```
+
+---
+
+## Convenciones para agentes
+
+- **Nuevas entidades de dominio**: crear en `src/domain/<entidad>/`.
+- **Nuevos casos de uso**: crear en `src/application/<entidad>/`, inyectar el puerto en el constructor. Los errores del caso de uso deben extender `AppError` de `src/utils/app-error.ts`.
+- **Nueva tabla**: añadir en `src/db/schema.ts`, luego `bun run db:generate` y `bun run db:migrate:local`.
+- **Nuevas rutas públicas**: crear archivo en `src/presentation/http/v1/` y registrarlo en `src/presentation/http/v1/index.ts` con `v1Router.route()`.
+- **Nuevas rutas protegidas**: añadirlas a `src/presentation/http/v1/admin.routes.ts` o crear un nuevo router de admin si corresponde a otra entidad.
+- **Nueva versión de API**: crear carpeta `src/presentation/http/v2/` con su propio `index.ts` y montarla en `src/index.ts` con `app.route("/v2", v2Router)`.
+- **Validaciones Zod**: definir en `src/utils/schemas.ts` y aplicar con `zValidator(target, schema, validationHook)`. Siempre pasar `validationHook` como tercer argumento.
+- **Manejo de errores en rutas**: las rutas no usan `try/catch`. Hacer `throw` de un `AppError`; el handler global `onError` lo captura y formatea.
+- **Nuevos tests**: crear en `tests/unit/<capa>/<entidad>/`. Usar `createMockRepository()` del mock existente.
+- **Nuevo método en el puerto**: añadirlo a `UrlRepositoryPort`, implementarlo en `UrlRepository`, añadirlo al tipo `MockedRepository` y a `createMockRepository()` en el mock.
+- **Rutas de redirección** (no versionadas): añadirlas en `src/presentation/http/redirect/index.ts` y montarlas en `src/index.ts` con `app.route("/", redirectRoutes)` **después** de las rutas versionadas.
+- **Nunca** importar Drizzle, D1 o Hono desde `domain/` ni `application/`.
+- El alias `@/` apunta a `src/` (definido en `tsconfig.json` `paths`).

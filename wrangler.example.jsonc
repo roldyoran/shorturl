@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "shorturl",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-03-03",
+  "d1_databases": [
+    {
+      // Nombre del binding: cómo se accede en el Worker (env.DB)
+      "binding": "DB",
+      // Nombre de la base de datos en Cloudflare D1
+      // Reemplaza con el nombre real tras ejecutar: bunx wrangler d1 create <nombre>
+      "database_name": "YOUR_DATABASE_NAME",
+      // ID obtenido al crear la DB con wrangler d1 create
+      // Reemplaza con el ID real
+      "database_id": "YOUR_DATABASE_ID",
+      // Carpeta donde drizzle-kit guardará las migraciones
+      "migrations_dir": "drizzle"
+    }
+  ]
+}
