@@ -14,11 +14,15 @@ dist/
 # deps
 node_modules/
 .wrangler
+backend/.wrangler
 
 # env
 .env
 .env.production
 .dev.vars
+backend/.env
+backend/.env.production
+backend/.dev.vars
 
 # logs
 logs/
@@ -33,4 +37,4 @@ lerna-debug.log*
 .DS_Store
 
 
-wrangler.jsonc
+backend/wrangler.jsonc

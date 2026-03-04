@@ -1,5 +1,5 @@
 {
-  "name": "shorturl_v2",
+  "name": "backend",
   "type": "module",
   "scripts": {
     "test": "bun test",
