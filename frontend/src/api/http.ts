@@ -48,6 +48,6 @@ export async function getUrlInfoRequest(shortCode: string) {
 // Funcion para obtener todas las URLs
 export async function getUrlsRequest() {
 	const axiosInstance = getAxiosInstance();
-	const response = await axiosInstance.get("/urls");
+	const response = await axiosInstance.get("/v1/urls");
 	return response;
 }
