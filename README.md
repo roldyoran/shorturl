@@ -1,135 +1,165 @@
-# Acortador de URLs con Cloudflare Workers
+# shorturl
 
-Este proyecto es un servicio de acortamiento de URLs implementado con Cloudflare Workers y D1 Database. Permite crear URLs cortas a partir de URLs largas y redirigir a los usuarios a las URLs originales.
+Acortador de URLs construido con **Hono** sobre **Cloudflare Workers**, **Cloudflare D1** (SQLite serverless) y **Drizzle ORM**. Arquitectura Hexagonal (Ports & Adapters).
 
-## Características
+---
 
-- Creación de URLs cortas a partir de URLs largas
-- Redirección a URLs originales
-- Seguimiento de clics en URLs cortas
-- API protegida con clave de API
-- Validación de formato de URL
+## Requisitos previos
 
-## Estructura del Proyecto (Patrón MVC)
+- [Bun](https://bun.sh) ≥ 1.0
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) ≥ 4.0 (incluido como devDependency)
+- Cuenta de Cloudflare con una base de datos D1 creada
 
-Este proyecto ha sido reorganizado siguiendo el patrón Modelo-Vista-Controlador (MVC) para mejorar la separación de responsabilidades y hacer el código más mantenible.
+---
 
-```
-src/
-├── controllers/          # Controladores (lógica de negocio)
-│   └── url.controller.ts # Controlador para operaciones de URL
-├── html/
-│   └── not-found.ts      # Página HTML para URLs no encontradas
-├── middlewares/
-│   ├── api-key.middleware.ts    # Middleware para validación de API key
-│   ├── cors.middleware.ts       # Middleware para configuración CORS
-│   ├── url-service.middleware.ts # Middleware para servicio de URL
-│   └── index.ts                 # Exportación de middlewares
-├── routes/
-│   └── url.routes.ts     # Definición de rutas (sin lógica de negocio)
-├── schemas/
-│   └── index.ts          # Esquemas de validación con Zod
-├── services/
-│   └── url.service.ts    # Servicio para operaciones con URLs (Modelo)
-├── types/
-│   └── index.ts          # Definiciones de tipos TypeScript
-├── utils/
-│   └── index.ts          # Funciones de utilidad
-└── index.ts              # Punto de entrada de la aplicación
+## Instalación
+
+```bash
+# 1. Clona el repositorio
+git clone git@github.com:roldyoran/shorturl.git
+cd shorturl
+
+# 2. Instala las dependencias
+bun install
 ```
 
-### Patrón MVC Implementado
-
-- **Modelo**: Representado por los servicios en la carpeta `services/` que manejan la interacción con la base de datos.
-- **Vista**: En este caso, al ser una API, las vistas son las respuestas JSON que se envían al cliente.
-- **Controlador**: Los controladores en `controllers/` contienen la lógica de negocio y conectan las rutas con los servicios.
-
-### Flujo de la Aplicación
-
-1. Las solicitudes llegan a través de las rutas definidas en `routes/`
-2. Las rutas dirigen las solicitudes a los controladores apropiados
-3. Los controladores procesan la lógica de negocio y utilizan los servicios para interactuar con los datos
-4. Los servicios realizan operaciones en la base de datos
-5. Los controladores formatean las respuestas y las envían de vuelta al cliente
-
-## Tecnologías Utilizadas
-
-- **Cloudflare Workers**: Plataforma serverless para ejecutar el servicio
-- **D1 Database**: Base de datos SQL de Cloudflare
-- **Hono**: Framework ligero para aplicaciones web
-- **TypeScript**: Lenguaje de programación tipado
-- **Zod**: Biblioteca para validación de esquemas
-
-## Endpoints de la API
-
-- `GET /`: Página de bienvenida
-- `POST /shorten`: Crear una URL corta (requiere API key)
-- `GET /info/:short_url`: Obtener información de una URL corta (requiere API key)
-- `GET /:short_url`: Redirigir a la URL original
+---
 
 ## Configuración
 
-El proyecto utiliza Wrangler para la configuración y despliegue. La configuración se encuentra en el archivo `wrangler.toml`.
+### 1. Variables de entorno (local)
 
-## Desarrollo Local
+Crea un archivo `.env` en la raíz del proyecto:
 
-1. Instalar dependencias:
-
-    ```
-    npm install
-    ```
-
-2. Iniciar el servidor de desarrollo:
-    ```
-    npm run dev
-    ```
-
-## Despliegue
-
-Para desplegar la aplicación en Cloudflare Workers:
-
+```env
+SERVICE_ADMIN_API_KEY=tu_api_key_secreta
 ```
-npm run deploy
+
+### 2. Wrangler — binding D1
+
+Edita `wrangler.jsonc` y reemplaza el `database_id` con el ID de tu base de datos D1:
+
+```jsonc
+{
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "shorturl",
+      "database_id": "<tu-database-id>"
+    }
+  ]
+}
 ```
+
+### 3. Migraciones de base de datos
+
+```bash
+# Aplicar migraciones en D1 local (desarrollo)
+bun run db:migrate:local
+
+# Aplicar migraciones en D1 remoto (producción)
+bun run db:migrate:remote
+```
+
+---
+
+## Desarrollo local
+
+```bash
+bun dev
+```
+
+El servidor arranca en `http://localhost:8787`.
+
+---
 
 ## Uso de la API
 
 ### Crear una URL corta
 
 ```bash
-curl -X POST https://tu-worker.workers.dev/shorten \
+curl -X POST http://localhost:8787/v1/urls \
   -H "Content-Type: application/json" \
-  -H "x-api-key: TU_API_KEY" \
-  -d '{"original_url": "https://ejemplo.com/pagina-muy-larga"}'
+  -d '{"originalUrl": "https://www.epicgames.com"}'
 ```
 
-### Obtener información de una URL corta
+```json
+{
+  "id": 1,
+  "originalUrl": "https://www.epicgames.com",
+  "shortCode": "c04jzv",
+  "createdAt": "2026-03-03T19:02:53.404Z",
+  "visits": 0
+}
+```
+
+### Crear una URL con shortCode personalizado
 
 ```bash
-curl -X GET https://tu-worker.workers.dev/info/abc123 \
-  -H "x-api-key: TU_API_KEY"
+curl -X POST http://localhost:8787/v1/urls \
+  -H "Content-Type: application/json" \
+  -d '{"originalUrl": "https://hono.dev", "shortCode": "hono"}'
 ```
 
-### Acceder a una URL corta
-
-```
-https://tu-worker.workers.dev/abc123
-```
-
-## D1DATABASE
+### Redirigir a la URL original
 
 ```bash
-pnpx wrangler d1 create prod-d1-shorturl
-
-pnpx wrangler d1 execute prod-d1-shorturl --local --file=./schema.sql
-
-pnpx wrangler d1 execute prod-d1-shorturl --local --command="SELECT * FROM URLS"
+curl -L http://localhost:8787/c04jzv
 ```
 
+Responde con `302 Location: https://www.epicgames.com` e incrementa el contador de visitas.
+
+### Listar todas las URLs
+
 ```bash
-pnpx wrangler d1 execute prod-d1-shorturl --remote --file=./schema.sql
+curl http://localhost:8787/v1/urls
+```
 
-pnpx wrangler d1 execute prod-d1-shorturl --remote --command="SELECT * FROM URLS"
+### Obtener una URL por shortCode
 
-pnpm run deploy
+```bash
+curl http://localhost:8787/v1/urls/c04jzv
+```
+
+### Eliminar una URL (requiere API key)
+
+```bash
+curl -X DELETE http://localhost:8787/v1/admin/urls/c04jzv \
+  -H "Authorization: Bearer tu_api_key_secreta"
+```
+
+### Eliminar todas las URLs (requiere API key)
+
+```bash
+curl -X DELETE http://localhost:8787/v1/admin/urls \
+  -H "Authorization: Bearer tu_api_key_secreta"
+```
+
+---
+
+## Tests
+
+```bash
+bun test                  # todos los tests
+bun run test:watch        # modo watch
+bun run test:coverage     # con reporte de cobertura
+bun run test:bail         # aborta al primer fallo
+```
+
+---
+
+## Deploy a Cloudflare Workers
+
+```bash
+bun deploy
+```
+
+---
+
+## Comandos útiles
+
+```bash
+bun format                 # formatea el código con Biome
+bun run db:generate        # genera SQL de migración desde el schema
+bun run db:studio          # abre Drizzle Studio para inspeccionar la BD
 ```
