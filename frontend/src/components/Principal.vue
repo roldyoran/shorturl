@@ -8,22 +8,26 @@
       <CardContent class="space-y-3 md:space-y-4 relative">
         <div class="hero-item" style="--delay: 80ms">
           <Badge variant="secondary" class="text-xs font-medium">
-            <Zap class="w-3 h-3 mr-1 inline" aria-hidden="true" />
+            <svg class="w-4 h-4 mr-1 inline" viewBox="0 0 256 231" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path fill="currentColor" d="m65.82 3.324 30.161 54.411-27.698 49.857a16.003 16.003 0 0 0 0 15.573l27.698 49.98-30.16 54.411a32.007 32.007 0 0 1-13.542-12.74L4.27 131.412a32.13 32.13 0 0 1 0-32.007l48.01-83.403a32.007 32.007 0 0 1 13.542-12.68Z"/>
+              <path fill="currentColor" d="m203.696 16.003 48.01 83.403c5.725 9.848 5.725 22.159 0 32.007l-48.01 83.402a32.007 32.007 0 0 1-27.698 16.004h-48.01l59.705-107.654a16.003 16.003 0 0 0 0-15.511L127.988 0h48.01a32.007 32.007 0 0 1 27.698 16.003Z" opacity="0.6"/>
+              <path fill="currentColor" d="M79.978 230.819c-4.924 0-9.849-1.17-14.157-3.263l59.212-106.792a11.045 11.045 0 0 0 0-10.71L65.821 3.324A32.007 32.007 0 0 1 79.978 0h48.01l59.705 107.654a16.003 16.003 0 0 1 0 15.51L127.988 230.82h-48.01Z" opacity="0.8"/>
+            </svg>
             Powered by Cloudflare Workers
           </Badge>
 
-          <h1 id="hero-title" class="mt-2 md:mt-3 text-xl md:text-2xl font-display font-semibold md:font-bold tracking-tight text-balance">
+          <h1 id="hero-title" class="mt-2 md:mt-3 text-3xl md:text-4xl font-display font-semibold md:font-bold tracking-wide text-balance">
             <span class="md:hidden">ShortURL</span>
             <span class="hidden md:inline">ShortURL: Acortador de Enlaces</span>
           </h1>
+          
+          <p class="text-xs text-muted-foreground mb-2">by roldyoran</p>
 
           <p class="mt-1 text-xs md:text-sm text-muted-foreground max-w-2xl mx-auto text-pretty">
             <span class="md:hidden">Acortador de URLs rápido y seguro</span>
             <span class="hidden md:inline">Acorta enlaces de forma rápida y profesional.</span>
           </p>
         </div>
-
-        <Separator class="opacity-50 my-2" />
 
         <!-- Servicio: una línea compacta -->
         <div class="hero-item flex flex-wrap items-center justify-center gap-2 md:gap-3" style="--delay: 160ms">
@@ -41,7 +45,7 @@
             >
               {{ SERVICE_URL }}
             </label>
-            <Button variant="outline" size="sm" class="shrink-0 h-7 text-xs" @click="copyServiceUrl" aria-label="Copiar URL del servicio">
+            <Button variant="outline" size="sm" class="shrink-0 h-7 text-xs rounded-sm" @click="copyServiceUrl" aria-label="Copiar URL del servicio">
               <Copy class="w-3 h-3 md:mr-1" aria-hidden="true" />
               <span class="hidden md:inline">Copiar</span>
             </Button>
@@ -52,19 +56,28 @@
         </div>
 
         <!-- Features: una sola fila compacta (sin cards grandes) -->
-        <div class="hero-item flex flex-wrap justify-center gap-4 md:gap-6 pt-1 text-muted-foreground" style="--delay: 220ms">
-          <span class="inline-flex items-center gap-1.5 text-xs">
-            <Zap class="w-3.5 h-3.5 text-primary" aria-hidden="true" />
-            Rápido
-          </span>
-          <span class="inline-flex items-center gap-1.5 text-xs">
-            <Brush class="w-3.5 h-3.5 text-primary" aria-hidden="true" />
-            Personalizable
-          </span>
-          <span class="inline-flex items-center gap-1.5 text-xs">
-            <BarChart3 class="w-3.5 h-3.5 text-primary" aria-hidden="true" />
-            Analytics
-          </span>
+        <div class="hero-item flex flex-wrap justify-center items-center gap-4 md:gap-6 pt-1 text-muted-foreground" style="--delay: 220ms">
+          <div class="inline-flex flex-col items-center gap-0.5 text-xs text-center">
+            <span class="inline-flex items-center gap-1.5 font-medium text-foreground">
+              <Zap class="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+              Súper Rápido
+            </span>
+            <span class="text-[10px] md:text-xs text-muted-foreground">Redirecciones instantáneas</span>
+          </div>
+          <div class="inline-flex flex-col items-center gap-0.5 text-xs text-center">
+            <span class="inline-flex items-center gap-1.5 font-medium text-foreground">
+              <Brush class="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+              Personalizable
+            </span>
+            <span class="text-[10px] md:text-xs text-muted-foreground">Elige tu propio hash</span>
+          </div>
+          <div class="inline-flex flex-col items-center gap-0.5 text-xs text-center">
+            <span class="inline-flex items-center gap-1.5 font-medium text-foreground">
+              <BarChart3 class="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+              Estadísticas
+            </span>
+            <span class="text-[10px] md:text-xs text-muted-foreground">Estadísticas detalladas</span>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -76,7 +89,6 @@ import { Zap, Globe, ExternalLink, Copy, BarChart3, Brush } from "lucide-vue-nex
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
 import { toast } from "vue-sonner";
 import { getApiBaseUrl } from "@/api/http";

@@ -44,22 +44,22 @@ export const useUrlShortener = () => {
 				customHash,
 			);
 
-			if (data && data.short_url) {
+			if (data && data.shortCode) {
 				// Decrementar intentos (solo para no-admin)
 				urlStore.decrementAttempts();
 
 				// Agregar URL al store
-				urlStore.addUrl(data.original_url, data.short_url);
+				urlStore.addUrl(data.originalUrl, data.shortCode);
 
 				// Mostrar notificación de éxito
 				toast.success(
 					"¡URL acortada exitosamente!",
 					{
-						description: `URL corta: ${getApiBaseUrl().replace(/\/$/, "")}/${data.short_url}`,
+						description: `URL corta: ${getApiBaseUrl().replace(/\/$/, "")}/${data.shortCode}`,
 					}
 				);
 
-				return { success: true, shortUrl: data.short_url };
+				return { success: true, shortUrl: data.shortCode };
 			} else {
 				toast.error("Respuesta inválida", {
 					description: "La respuesta de la API no es válida."

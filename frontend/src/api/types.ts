@@ -1,6 +1,15 @@
 export interface UrlInfoResponse {
-	clicks: number;
-	created_at: string;
-	original_url: string;
-	short_url: string;
+	visits: number;
+	createdAt: string;
+	originalUrl: string;
+	shortCode: string;
+	id: number;
+}
+
+export interface UrlItem {
+	originalUrl: string;
+	shortCode: string;
+	createdAt: string;
+	visits: number;
+	id: number;
 }

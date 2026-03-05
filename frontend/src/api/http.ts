@@ -22,17 +22,17 @@ export function getAxiosInstance() {
 }
 
 // Función para acortar URL
-export async function shortenUrlRequest(originalUrl: string, hash?: string) {
+export async function shortenUrlRequest(originalUrl: string, shortCode?: string) {
 	const axiosInstance = getAxiosInstance();
-	if (hash) {
-		const response = await axiosInstance.post("/shorten", {
-			original_url: originalUrl,
-			hash: hash,
+	if (shortCode) {
+		const response = await axiosInstance.post("/v1/urls", {
+			originalUrl: originalUrl,
+			shortCode: shortCode,
 		});
 		return response.data;
 	} else {
-		const response = await axiosInstance.post("/shorten", {
-			original_url: originalUrl,
+		const response = await axiosInstance.post("/v1/urls", {
+			originalUrl: originalUrl,
 		});
 		return response.data;
 	}
@@ -41,7 +41,7 @@ export async function shortenUrlRequest(originalUrl: string, hash?: string) {
 // Función para obtener información de una URL corta
 export async function getUrlInfoRequest(shortCode: string) {
 	const axiosInstance = getAxiosInstance();
-	const response = await axiosInstance.get(`/info/${shortCode}`);
+	const response = await axiosInstance.get(`/v1/urls/${shortCode}`);
 	return response.data;
 }
 
@@ -49,5 +49,5 @@ export async function getUrlInfoRequest(shortCode: string) {
 export async function getUrlsRequest() {
 	const axiosInstance = getAxiosInstance();
 	const response = await axiosInstance.get("/v1/urls");
-	return response;
+	return response.data;
 }

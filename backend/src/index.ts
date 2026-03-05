@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { cors } from "hono/cors";
+import { corsMiddleware } from "@/utils/cors-middleware";
 import { checkEnvMiddleware, type Bindings } from "@/utils/context";
 import { v1Router } from "@/presentation/http/v1";
 import { redirectRoutes } from "@/presentation/http/redirect";
@@ -11,18 +11,8 @@ const app = new Hono<{ Bindings: Bindings }>();
 // Middleware para verificar la presencia de variables de entorno y emitir warnings
 app.use("*", checkEnvMiddleware);
 
-// Middleware para configurar CORS, permitiendo solicitudes desde cualquier origen
-app.use(
-	"*",
-	cors({
-		origin: ["*"],
-		allowHeaders: ["X-Custom-Header", "Upgrade-Insecure-Requests"],
-		allowMethods: ["POST", "GET", "OPTIONS"],
-		exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
-		maxAge: 300,
-		credentials: true,
-	}),
-);
+// Middleware para configurar CORS
+app.use("*", corsMiddleware());
 
 app.get("/", (c) => {
 	return c.json({

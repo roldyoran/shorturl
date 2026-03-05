@@ -30,6 +30,11 @@ export const useUrlStore = defineStore("urlStore", () => {
 	const isLoading = ref(false);
 	const currentTab = ref<"shorten" | "info" | "myurls" | "list">("shorten");
 
+	// Cache para evitar llamadas excesivas a la API
+	const lastPublicListFetch = ref<string | null>(null);
+	const lastUserUrlCreated = ref<string | null>(null);
+	const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutos
+
 	// Getters computados
 	const hasRemainingAttempts = computed(
 		() => userSession.value.remainingAttempts > 0,
@@ -167,6 +172,10 @@ export const useUrlStore = defineStore("urlStore", () => {
 		// Remover duplicados
 		savedUrls.value = removeDuplicateUrls(savedUrls.value);
 
+		// Actualizar fecha de última URL creada por el usuario
+		lastUserUrlCreated.value = new Date().toISOString();
+		loadPublicListCache();
+
 		saveSavedUrls();
 	}
 
@@ -199,6 +208,59 @@ export const useUrlStore = defineStore("urlStore", () => {
 		});
 	}
 
+	// Funciones para el cache de la lista pública
+	function loadPublicListCache() {
+		try {
+			const stored = localStorage.getItem("publicListCache");
+			if (stored) {
+				const cache = JSON.parse(stored);
+				lastPublicListFetch.value = cache.lastFetch;
+				lastUserUrlCreated.value = cache.lastUserUrlCreated;
+			}
+		} catch (error) {
+			console.error("Error loading public list cache:", error);
+		}
+	}
+
+	function savePublicListCache() {
+		try {
+			localStorage.setItem(
+				"publicListCache",
+				JSON.stringify({
+					lastFetch: lastPublicListFetch.value,
+					lastUserUrlCreated: lastUserUrlCreated.value,
+				}),
+			);
+		} catch (error) {
+			console.error("Error saving public list cache:", error);
+		}
+	}
+
+	function shouldFetchPublicList(): boolean {
+		const now = new Date().getTime();
+
+		if (!lastPublicListFetch.value) {
+			return true;
+		}
+
+		const timeSinceLastFetch = now - new Date(lastPublicListFetch.value).getTime();
+		const timeSinceLastUserUrl = lastUserUrlCreated.value
+			? now - new Date(lastUserUrlCreated.value).getTime()
+			: 0;
+
+		// Fetch si han pasado más de 5 min desde la última llamada
+		// O si el usuario creó una URL hace menos de 5 min (para mostrar la nueva URL)
+		return (
+			timeSinceLastFetch >= CACHE_DURATION_MS ||
+			timeSinceLastUserUrl < CACHE_DURATION_MS
+		);
+	}
+
+	function updatePublicListFetchTime() {
+		lastPublicListFetch.value = new Date().toISOString();
+		savePublicListCache();
+	}
+
 	// Funciones de navegación
 	function setCurrentTab(tab: typeof currentTab.value) {
 		currentTab.value = tab;
@@ -208,6 +270,7 @@ export const useUrlStore = defineStore("urlStore", () => {
 	function initialize() {
 		loadUserSession();
 		loadSavedUrls();
+		loadPublicListCache();
 	}
 
 	// Funciones para debugging (solo desarrollo)
@@ -248,6 +311,10 @@ export const useUrlStore = defineStore("urlStore", () => {
 
 		// Acciones - Navegación
 		setCurrentTab,
+
+		// Acciones - Cache de lista pública
+		shouldFetchPublicList,
+		updatePublicListFetchTime,
 
 		// Inicialización
 		initialize,

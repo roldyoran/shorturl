@@ -50,7 +50,7 @@
             <Label class="text-sm font-medium">URL Original</Label>
               <div class="flex items-center space-x-2 mt-1">
               <Input 
-                :modelValue="urlInfo.original_url"
+                :modelValue="urlInfo.originalUrl"
                 readonly
                 class="flex-1"
               />
@@ -70,7 +70,7 @@
           <div class="grid grid-cols-2 gap-4">
             <Card>
               <CardContent class="p-4 text-center">
-                <div class="text-2xl font-bold">{{ urlInfo.clicks || 0 }}</div>
+                <div class="text-2xl font-bold">{{ urlInfo.visits || 0 }}</div>
                 <div class="text-sm text-muted-foreground">Clicks</div>
               </CardContent>
             </Card>
@@ -126,7 +126,7 @@ const isLoading = ref<boolean>(false);
 
 // Computed
 const formattedDate = computed(() => {
-	return urlInfo.value ? formatDate(urlInfo.value.created_at) : "";
+	return urlInfo.value ? formatDate(urlInfo.value.createdAt) : "";
 });
 
 // Methods
@@ -163,8 +163,8 @@ const handleSubmit = async (event: Event) => {
 };
 
 const copyOriginalUrl = () => {
-	if (urlInfo.value?.original_url) {
-		copyToClipboard(urlInfo.value.original_url, "URL original copiada");
+	if (urlInfo.value?.originalUrl) {
+		copyToClipboard(urlInfo.value.originalUrl, "URL original copiada");
 	}
 };
 </script>

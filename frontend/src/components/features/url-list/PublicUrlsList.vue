@@ -59,7 +59,7 @@
         <div class="block sm:hidden max-h-[70vh] overflow-y-auto space-y-3 pr-1 scroll-smooth scroll-container">
           <Card 
             v-for="url in filteredUrls" 
-            :key="`${url.short_url}-${url.original_url}`"
+            :key="`${url.shortCode}-${url.originalUrl}`"
             class="p-4"
           >
             <div class="space-y-3">
@@ -68,7 +68,7 @@
                   <Hash class="w-4 h-4 text-muted-foreground mt-0.5" />
                   <div class="flex-1 min-w-0">
                     <p class="text-xs text-muted-foreground">URL Corta:</p>
-                    <p class="font-mono text-sm break-all text-primary hover:underline" :title="baseUrl.replace(/\/$/, '') + '/' + url.short_url">{{ baseUrl.replace(/\/$/, '') + '/' + url.short_url }}</p>
+                    <p class="font-mono text-sm break-all text-primary hover:underline" :title="baseUrl.replace(/\/$/, '') + '/' + url.shortCode">{{ baseUrl.replace(/\/$/, '') + '/' + url.shortCode }}</p>
                   </div>
                 </div>
 
@@ -76,7 +76,7 @@
                   <Globe class="w-4 h-4 text-muted-foreground mt-0.5" />
                   <div class="flex-1 min-w-0">
                     <p class="text-xs text-muted-foreground">URL Original:</p>
-                    <p class="text-sm break-all" :title="url.original_url">{{ truncateText(url.original_url, 60) }}</p>
+                    <p class="text-sm break-all" :title="url.originalUrl">{{ truncateText(url.originalUrl, 60) }}</p>
                   </div>
                 </div>
 
@@ -84,7 +84,7 @@
                   <Hash class="w-4 h-4 text-muted-foreground" />
                   <div>
                     <p class="text-xs text-muted-foreground">Código:</p>
-                    <p class="font-mono">{{ url.short_url }}</p>
+                    <p class="font-mono">{{ url.shortCode }}</p>
                   </div>
                 </div>
                 
@@ -93,15 +93,15 @@
                     <Clock class="w-4 h-4 text-muted-foreground" />
                     <div>
                       <p class="text-xs text-muted-foreground">Creada:</p>
-                      <p class="text-sm">{{ formatDate(url.created_at) }}</p>
+                      <p class="text-sm">{{ formatDate(url.createdAt) }}</p>
                     </div>
                   </div>
                   
                   <div class="flex items-center gap-2">
                     <MousePointer class="w-4 h-4 text-muted-foreground" />
                     <div class="text-right">
-                      <p class="text-xs text-muted-foreground">Clicks:</p>
-                      <p class="text-sm font-semibold">{{ url.clicks || 0 }}</p>
+                      <p class="text-xs text-muted-foreground">Visitas:</p>
+                      <p class="text-sm font-semibold">{{ url.visits || 0 }}</p>
                     </div>
                   </div>
                 </div>
@@ -111,7 +111,7 @@
                 <div class="flex gap-2">
                   <Tooltip>
                     <TooltipTrigger :asChild="true">
-                      <Button @click="copyFullUrl(url.short_url)" variant="outline" size="sm">
+                      <Button @click="copyFullUrl(url.shortCode)" variant="outline" size="sm">
                         <Copy class="w-4 h-4 mr-1" />
                         URL
                       </Button>
@@ -121,7 +121,7 @@
 
                   <Tooltip>
                     <TooltipTrigger :asChild="true">
-                      <Button @click="copyCode(url.short_url)" variant="outline" size="sm">
+                      <Button @click="copyCode(url.shortCode)" variant="outline" size="sm">
                         <Hash class="w-4 h-4 mr-1" />
                         Código
                       </Button>
@@ -131,7 +131,7 @@
 
                   <Tooltip>
                     <TooltipTrigger :asChild="true">
-                      <Button @click="generateQR(url.short_url)" variant="outline" size="sm">
+                      <Button @click="generateQR(url.shortCode)" variant="outline" size="sm">
                         <QrCode class="w-4 h-4" />
                       </Button>
                     </TooltipTrigger>
@@ -142,7 +142,7 @@
                 <Tooltip>
                   <TooltipTrigger :asChild="true">
                     <Button 
-                      @click="openExternal(baseUrl.replace(/\/$/, '') + '/' + url.short_url)"
+                      @click="openExternal(baseUrl.replace(/\/$/, '') + '/' + url.shortCode)"
                       variant="outline" 
                       size="sm"
                     >
@@ -163,7 +163,7 @@
               <TableRow>
                 <TableHead>URLs</TableHead>
                 <TableHead>Código</TableHead>
-                <TableHead>Clicks</TableHead>
+                <TableHead>Visitas</TableHead>
                 <TableHead>Creada</TableHead>
                 <TableHead class="text-right">Acciones</TableHead>
               </TableRow>
@@ -171,43 +171,43 @@
             <TableBody>
               <TableRow 
                 v-for="url in filteredUrls" 
-                :key="`${url.short_url}-${url.original_url}`"
+                :key="`${url.shortCode}-${url.originalUrl}`"
               >
                 <TableCell>
                   <div class="space-y-1 max-w-md">
                     <div class="flex items-center gap-2">
                       <Hash class="w-4 h-4 text-muted-foreground" />
-                      <span class="font-mono text-sm truncate text-primary" :title="baseUrl.replace(/\/$/, '') + '/' + url.short_url">{{ baseUrl.replace(/\/$/, '') + '/' + url.short_url }}</span>
+                      <span class="font-mono text-sm truncate text-primary" :title="baseUrl.replace(/\/$/, '') + '/' + url.shortCode">{{ baseUrl.replace(/\/$/, '') + '/' + url.shortCode }}</span>
                     </div>
                     <div class="flex items-center gap-2">
                       <Globe class="w-4 h-4 text-muted-foreground" />
-                      <span class="font-mono text-sm truncate text-muted-foreground" :title="url.original_url">{{ truncateText(url.original_url, 50) }}</span>
+                      <span class="font-mono text-sm truncate text-muted-foreground" :title="url.originalUrl">{{ truncateText(url.originalUrl, 50) }}</span>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-2">
                     <Hash class="w-4 h-4 text-muted-foreground" />
-                    <span class="font-mono">{{ url.short_url }}</span>
+                    <span class="font-mono">{{ url.shortCode }}</span>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-2">
                     <MousePointer class="w-4 h-4 text-muted-foreground" />
-                    <span class="font-semibold">{{ url.clicks || 0 }}</span>
+                    <span class="font-semibold">{{ url.visits || 0 }}</span>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div class="flex items-center gap-2">
                     <Clock class="w-4 h-4 text-muted-foreground" />
-                    <span class="text-sm">{{ formatDate(url.created_at) }}</span>
+                    <span class="text-sm">{{ formatDate(url.createdAt) }}</span>
                   </div>
                 </TableCell>
                 <TableCell class="text-right">
                   <div class="flex items-center justify-end gap-2">
                       <Tooltip>
                         <TooltipTrigger :asChild="true">
-                          <Button @click="copyFullUrl(url.short_url)" variant="outline" size="sm">
+                          <Button @click="copyFullUrl(url.shortCode)" variant="outline" size="sm">
                             <Copy class="w-4 h-4" />
                           </Button>
                         </TooltipTrigger>
@@ -216,7 +216,7 @@
 
                       <Tooltip>
                         <TooltipTrigger :asChild="true">
-                          <Button @click="copyCode(url.short_url)" variant="outline" size="sm">
+                          <Button @click="copyCode(url.shortCode)" variant="outline" size="sm">
                             <Hash class="w-4 h-4" />
                           </Button>
                         </TooltipTrigger>
@@ -225,7 +225,7 @@
 
                       <Tooltip>
                         <TooltipTrigger :asChild="true">
-                          <Button @click="generateQR(url.short_url)" variant="outline" size="sm">
+                          <Button @click="generateQR(url.shortCode)" variant="outline" size="sm">
                             <QrCode class="w-4 h-4" />
                           </Button>
                         </TooltipTrigger>
@@ -235,7 +235,7 @@
                       <Tooltip>
                         <TooltipTrigger :asChild="true">
                           <Button 
-                            @click="openExternal(baseUrl.replace(/\/$/, '') + '/' + url.short_url)"
+                            @click="openExternal(baseUrl.replace(/\/$/, '') + '/' + url.shortCode)"
                             variant="outline" 
                             size="sm"
                           >
@@ -324,12 +324,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import QRCode from "qrcode-generator";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
 import { useNotificationStore } from "@/stores/notificationStore";
+import { useUrlStore } from "@/stores/urlStore";
 import { formatDate, truncateText } from "@/lib/utils";
 import type { UrlInfoResponse } from "@/api/types";
 
 // Composables
 const { copyToClipboard } = useCopyToClipboard();
 const notificationStore = useNotificationStore();
+const urlStore = useUrlStore();
 
 // Estado reactivo
 const shortUrls = ref<UrlInfoResponse[]>([]);
@@ -351,8 +353,8 @@ const filteredUrls = computed(() => {
 	const query = searchQuery.value.toLowerCase();
 	return shortUrls.value.filter(
 		(url) =>
-			url.short_url.toLowerCase().includes(query) ||
-			url.original_url.toLowerCase().includes(query),
+			url.shortCode.toLowerCase().includes(query) ||
+			url.originalUrl.toLowerCase().includes(query),
 	);
 });
 
@@ -453,15 +455,23 @@ const downloadQR = () => {
 };
 
 const loadUrls = async () => {
+	// Verificar si debemos hacer la llamada a la API
+	if (!urlStore.shouldFetchPublicList()) {
+		console.log("Usando cache de lista pública (menos de 5 min)");
+		return;
+	}
+
 	isLoading.value = true;
 
 	try {
 		const response = await getUrlsRequest();
-		if (response.data && Array.isArray(response.data)) {
-			shortUrls.value = response.data.sort(
+		if (response && Array.isArray(response)) {
+			shortUrls.value = response.sort(
 				(a, b) =>
-					new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
 			);
+			// Actualizar el tiempo de la última llamada
+			urlStore.updatePublicListFetchTime();
 			notificationStore.showSuccess(
 				"URLs cargadas",
 				"Lista de URLs actualizada correctamente",
@@ -560,56 +570,10 @@ const openExternal = (url: string) => {
   scroll-behavior: smooth;
 }
 
-/* Efecto de fade en los bordes para indicar scroll */
-.scroll-container {
-  position: relative;
-}
-
-.scroll-container::before,
-.scroll-container::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 20px;
-  pointer-events: none;
-  z-index: 5;
-  transition: opacity 0.3s ease;
-}
-
-/* Gradientes para modo claro */
-.scroll-container::before {
-  top: 0;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, transparent 100%);
-}
-
-.scroll-container::after {
-  bottom: 0;
-  background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, transparent 100%);
-}
-
-/* Gradientes para modo oscuro */
-@media (prefers-color-scheme: dark) {
-  .scroll-container::before {
-    background: linear-gradient(to bottom, rgba(15, 15, 15, 1) 0%, transparent 100%);
-  }
-
-  .scroll-container::after {
-    background: linear-gradient(to top, rgba(15, 15, 15, 1) 0%, transparent 100%);
-  }
-}
-
 /* Mejorar la visibilidad del header sticky */
 .sticky-header {
   backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.95);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-@media (prefers-color-scheme: dark) {
-  .sticky-header {
-    background: rgba(15, 15, 15, 0.95);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
+  background-color: hsl(var(--background));
+  border-bottom: 1px solid hsl(var(--border));
 }
 </style>
