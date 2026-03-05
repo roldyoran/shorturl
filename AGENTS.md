@@ -6,7 +6,7 @@ Guía mínima para agentes de IA en este monorepo.
 
 ## ¿Qué hace el proyecto?
 
-**ShortURL v2** es un acortador de URLs con:
+**shorturl** es un acortador de URLs con:
 
 - **Backend**: API REST (Hono + Cloudflare Workers + D1 + Drizzle). Crear/listar/buscar/redirigir/eliminar URLs; arquitectura hexagonal.
 - **Frontend**: App web (Vue 3 + Vite + Shadcn-VUE). Acortar URLs, ver info, gestionar “mis URLs” y lista pública.

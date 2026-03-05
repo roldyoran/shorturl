@@ -1,81 +1,90 @@
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col relative">
+    <div class="bg-ambient" aria-hidden="true" />
     <Toaster class="pointer-events-auto" />
-    
+
     <NavbarHeader :attempts="attempts" />
-    
-    <main class="flex-grow container mx-auto px-4 py-8">
+
+    <main id="main-content" class="flex-grow container mx-auto px-4 py-8 relative z-10" tabindex="-1">
       <Principal />
-      
-      <!-- Sonner Test (temporal) -->
-      <!-- <div class="mb-8">
-        <SonnerTest />
-      </div> -->
-      
-      <!-- Config Test (temporal) -->
-      <!-- <div class="mb-8">
-        <ConfigTest />
-      </div> -->
-      
-      <!-- Main Content -->
+
       <div class="space-y-8 mb-10">
-        <!-- Navigation Tabs -->
         <Tabs v-model="activeTab" class="w-full">
-          <!-- Mobile: Vertical layout with clear labels -->
+          <!-- Mobile: vertical layout with clear labels -->
           <div class="block sm:hidden space-y-3">
-            <h3 class="text-sm font-semibold text-center text-muted-foreground mb-3">
+            <h2 class="text-sm font-semibold text-center text-muted-foreground mb-3">
               Selecciona una funcionalidad:
-            </h3>
+            </h2>
             <div class="grid grid-cols-2 gap-2">
               <button
+                type="button"
+                aria-label="Acortar URL"
+                :aria-pressed="activeTab === 'shorten'"
                 @click="activeTab = 'shorten'"
+                @keydown.enter.prevent="activeTab = 'shorten'"
+                @keydown.space.prevent="activeTab = 'shorten'"
                 :class="[
-                  'flex flex-col items-center gap-2 p-3 rounded-lg border transition-all duration-200',
-                  activeTab === 'shorten' 
-                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                  'flex flex-col items-center gap-2 p-3 rounded-lg border transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
+                  activeTab === 'shorten'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'bg-background hover:bg-muted'
                 ]"
               >
-                <Link class="w-5 h-5" />
+                <Link class="w-5 h-5" aria-hidden="true" />
                 <span class="text-xs font-medium">Acortar URL</span>
               </button>
-              
+
               <button
+                type="button"
+                aria-label="Ver información de URL"
+                :aria-pressed="activeTab === 'info'"
                 @click="activeTab = 'info'"
+                @keydown.enter.prevent="activeTab = 'info'"
+                @keydown.space.prevent="activeTab = 'info'"
                 :class="[
-                  'flex flex-col items-center gap-2 p-3 rounded-lg border transition-all duration-200',
-                  activeTab === 'info' 
-                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                  'flex flex-col items-center gap-2 p-3 rounded-lg border transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
+                  activeTab === 'info'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'bg-background hover:bg-muted'
                 ]"
               >
-                <Info class="w-5 h-5" />
+                <Info class="w-5 h-5" aria-hidden="true" />
                 <span class="text-xs font-medium">Ver Info</span>
               </button>
-              
+
               <button
+                type="button"
+                aria-label="Mis URLs"
+                :aria-pressed="activeTab === 'myurls'"
                 @click="activeTab = 'myurls'"
+                @keydown.enter.prevent="activeTab = 'myurls'"
+                @keydown.space.prevent="activeTab = 'myurls'"
                 :class="[
-                  'flex flex-col items-center gap-2 p-3 rounded-lg border transition-all duration-200',
-                  activeTab === 'myurls' 
-                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                  'flex flex-col items-center gap-2 p-3 rounded-lg border transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
+                  activeTab === 'myurls'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'bg-background hover:bg-muted'
                 ]"
               >
-                <Database class="w-5 h-5" />
+                <Database class="w-5 h-5" aria-hidden="true" />
                 <span class="text-xs font-medium">Mis URLs</span>
               </button>
-              
+
               <button
+                type="button"
+                aria-label="Lista pública de URLs"
+                :aria-pressed="activeTab === 'list'"
                 @click="activeTab = 'list'"
+                @keydown.enter.prevent="activeTab = 'list'"
+                @keydown.space.prevent="activeTab = 'list'"
                 :class="[
-                  'flex flex-col items-center gap-2 p-3 rounded-lg border transition-all duration-200',
-                  activeTab === 'list' 
-                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                  'flex flex-col items-center gap-2 p-3 rounded-lg border transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
+                  activeTab === 'list'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
                     : 'bg-background hover:bg-muted'
                 ]"
               >
-                <List class="w-5 h-5" />
+                <List class="w-5 h-5" aria-hidden="true" />
                 <span class="text-xs font-medium">Lista Pública</span>
               </button>
             </div>
@@ -191,11 +200,14 @@ onMounted(() => {
     transform: translateY(-6px);
   }
 }
-
+@media (prefers-reduced-motion: reduce) {
+  .github-bounce {
+    animation: none;
+  }
+}
 .github-bounce {
   animation: gentle-bounce 3s ease-in-out infinite;
 }
-
 .github-bounce:hover {
   animation: none;
 }

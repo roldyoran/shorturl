@@ -1,19 +1,19 @@
 <template>
-  <div>
+  <div class="redirect-test">
     <DialogHeader>
-      <DialogTitle class="flex items-center gap-3">
+      <DialogTitle class="flex items-center gap-3 redirect-test-item">
         <ExternalLink class="w-6 h-6" />
         Probar Redirección
       </DialogTitle>
-      <DialogDescription>
+      <DialogDescription class="redirect-test-item">
         Ingresa el código de una URL corta para probar la redirección a la URL original
       </DialogDescription>
     </DialogHeader>
 
     <div class="space-y-6 mt-6">
-      <div class="space-y-2">
+      <div class="space-y-2 redirect-test-item">
         <Label for="redirect-url">Código de URL Corta</Label>
-        <Input 
+        <Input
           id="redirect-url"
           v-model="shortCode"
           placeholder="Ej: abc123xyz"
@@ -21,30 +21,33 @@
         />
       </div>
 
-      <div class="space-y-4">
-        <Button 
+      <div class="space-y-4 redirect-test-item">
+        <Button
           @click="redirectToUrl"
           :disabled="!shortCode.trim()"
-          class="w-full"
+          class="w-full transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.99] disabled:transform-none"
         >
           <ExternalLink class="w-4 h-4 mr-2" />
           Ir a URL Original
         </Button>
 
-        <!-- Mostrar la URL completa que se abrirá -->
-        <div v-if="shortCode.trim()" class="p-3 rounded-lg border bg-muted/50">
-          <p class="text-sm text-muted-foreground mb-1">URL de redirección:</p>
-          <p class="font-mono text-sm break-all">{{ getRedirectUrl() }}</p>
-        </div>
+        <Transition name="redirect-preview">
+          <div v-if="shortCode.trim()" class="p-3 rounded-lg border bg-muted/50">
+            <p class="text-sm text-muted-foreground mb-1">URL de redirección:</p>
+            <p class="font-mono text-sm break-all">{{ getRedirectUrl() }}</p>
+          </div>
+        </Transition>
       </div>
 
-      <Alert v-if="error" variant="destructive">
-        <AlertCircle class="h-4 w-4" />
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>{{ error }}</AlertDescription>
-      </Alert>
+      <Transition name="redirect-fade">
+        <Alert v-if="error" variant="destructive" class="redirect-test-item">
+          <AlertCircle class="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{{ error }}</AlertDescription>
+        </Alert>
+      </Transition>
 
-      <Alert>
+      <Alert class="redirect-test-item">
         <Info class="h-4 w-4" />
         <AlertTitle>¿Cómo funciona?</AlertTitle>
         <AlertDescription>
@@ -119,3 +122,52 @@ const redirectToUrl = async () => {
   }
 }
 </script>
+
+<style scoped>
+/* Entrada sutil al abrir el diálogo */
+.redirect-test-item {
+  animation: redirectStagger 0.35s ease-out 0.08s forwards;
+  opacity: 0;
+}
+@keyframes redirectStagger {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Transición del bloque de vista previa */
+.redirect-preview-enter-active,
+.redirect-preview-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.redirect-preview-enter-from,
+.redirect-preview-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+/* Transición del alert de error */
+.redirect-fade-enter-active,
+.redirect-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.redirect-fade-enter-from,
+.redirect-fade-leave-to {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .redirect-test-item {
+    animation: none;
+    opacity: 1;
+  }
+  .redirect-preview-enter-active,
+  .redirect-preview-leave-active,
+  .redirect-fade-enter-active,
+  .redirect-fade-leave-active {
+    transition-duration: 0.01s;
+  }
+}
+</style>

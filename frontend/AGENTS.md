@@ -1,10 +1,10 @@
 # AGENTS.md - Guía para Agentes de IA
 
-Este documento proporciona información esencial para agentes de IA (como Cursor AI, GitHub Copilot, etc.) que trabajan en el frontend de ShortURL v2.
+Este documento proporciona información esencial para agentes de IA (como Cursor AI, GitHub Copilot, etc.) que trabajan en el frontend de shorturl.
 
 ## 📋 Resumen del Proyecto
 
-**ShortURL v2 Frontend** es una aplicación web construida con Vue 3 que permite:
+**shorturl Frontend** es una aplicación web construida con Vue 3 que permite:
 - Acortar URLs largas
 - Ver información de URLs acortadas
 - Gestionar URLs guardadas del usuario

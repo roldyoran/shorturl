@@ -71,9 +71,10 @@ defineExpose({
     size="sm"
     class="h-9 w-9 p-0"
     @click="toggleTheme"
+    :aria-label="mode === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'"
     :title="mode === 'light' ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'"
   >
-    <component :is="currentIcon" class="h-4 w-4 transition-transform hover:scale-110" />
+    <component :is="currentIcon" class="h-4 w-4 transition-transform duration-200 hover:scale-110" aria-hidden="true" />
   </Button>
 </template>
 

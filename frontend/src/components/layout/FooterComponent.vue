@@ -37,8 +37,8 @@
         <!-- Copyright -->
         <div class="text-center">
           <p class="text-xs text-muted-foreground">
-            &copy; {{ new Date().getFullYear() }} ShortURL • Open Source
-          </p>
+              &copy; {{ new Intl.DateTimeFormat('es-ES', { year: 'numeric' }).format(new Date()) }} ShortURL • Open Source
+            </p>
         </div>
       </div>
 
@@ -122,7 +122,7 @@
         <div class="border-t mt-6 pt-4">
           <div class="flex flex-col md:flex-row justify-between items-center gap-3">
             <p class="text-xs text-muted-foreground">
-              &copy; {{ new Date().getFullYear() }} ShortURL • API & Frontend
+              &copy; {{ new Intl.DateTimeFormat('es-ES', { year: 'numeric' }).format(new Date()) }} ShortURL • API & Frontend
             </p>
             
             <div class="flex items-center gap-4">

@@ -1,6 +1,6 @@
 <template>
-  <!-- Header -->
-  <header class="border-b">
+  <!-- Header: fondo sólido y borde para que se vea como antes -->
+  <header class="border-b border-border bg-background sticky top-0 z-50">
     <div class="container mx-auto px-4 py-4">
       <Collapsible v-slot="{ open }">
         <div class="flex items-center justify-between">
@@ -92,9 +92,11 @@
                 variant="ghost"
                 size="sm"
                 class="md:hidden"
+                aria-label="Abrir o cerrar menú de navegación"
+                :aria-expanded="open"
               >
-                <X v-if="open" class="h-5 w-5" />
-                <Menu v-else class="h-5 w-5" />
+                <X v-if="open" class="h-5 w-5" aria-hidden="true" />
+                <Menu v-else class="h-5 w-5" aria-hidden="true" />
               </Button>
             </CollapsibleTrigger>
           </div>

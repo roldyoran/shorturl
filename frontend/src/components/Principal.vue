@@ -1,170 +1,70 @@
 <template>
-  <!-- Hero Section -->
-  <section class="text-center mb-8 md:mb-12 fade-up" :style="{ animationDelay: '0ms' }">
-    <Card class="p-4 md:p-8">
-      <CardContent class="space-y-4 md:space-y-6">
-        <!-- Mobile: Simplified header -->
-        <div class="block md:hidden space-y-3 fade-up" :style="{ animationDelay: '100ms' }">
-          <Badge variant="secondary" class="text-xs">
-            <Zap class="w-3 h-3 mr-1" />
-            Cloudflare Workers
-          </Badge>
-
-          <h1 class="text-2xl font-bold">
-            ShortURL
-          </h1>
-
-          <p class="text-sm text-muted-foreground leading-relaxed">
-            Acortador de URLs rápido y seguro
-          </p>
-        </div>
-
-        <!-- Desktop: Full header -->
-        <div class="hidden md:block space-y-4 fade-up" :style="{ animationDelay: '100ms' }">
-          <Badge variant="secondary" class="mb-4">
-            <Zap class="w-3 h-3 mr-1" />
+  <!-- Hero compacto: prioridad a la funcionalidad (tabs/form) -->
+  <section
+    class="hero-stagger text-center mb-4 md:mb-6"
+    aria-labelledby="hero-title"
+  >
+    <Card class="p-3 md:p-5 overflow-hidden border-border shadow-sm">
+      <CardContent class="space-y-3 md:space-y-4 relative">
+        <div class="hero-item" style="--delay: 80ms">
+          <Badge variant="secondary" class="text-xs font-medium">
+            <Zap class="w-3 h-3 mr-1 inline" aria-hidden="true" />
             Powered by Cloudflare Workers
           </Badge>
 
-          <h1 class="text-3xl sm:text-5xl font-extrabold mb-4">
-            ShortURL: Acortador de Enlaces
+          <h1 id="hero-title" class="mt-2 md:mt-3 text-xl md:text-2xl font-display font-semibold md:font-bold tracking-tight text-balance">
+            <span class="md:hidden">ShortURL</span>
+            <span class="hidden md:inline">ShortURL: Acortador de Enlaces</span>
           </h1>
 
-          <p class="text-lg text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-            Acortador de URLs moderno y eficiente, ideal para compartir enlaces largos de manera rápida y profesional.
-            Potenciado por Cloudflare Workers para máxima velocidad y confiabilidad.
+          <p class="mt-1 text-xs md:text-sm text-muted-foreground max-w-2xl mx-auto text-pretty">
+            <span class="md:hidden">Acortador de URLs rápido y seguro</span>
+            <span class="hidden md:inline">Acorta enlaces de forma rápida y profesional.</span>
           </p>
         </div>
 
-        <Separator />
+        <Separator class="opacity-50 my-2" />
 
-        <!-- Service URL section - simplified on mobile -->
-        <div class="space-y-3 md:space-y-4 fade-up" :style="{ animationDelay: '200ms' }">
-          <div class="flex items-center justify-center gap-2">
-            <Globe class="w-4 h-4 md:w-5 md:h-5 text-primary" />
-            <span class="text-sm md:text-base font-semibold">Servicio Principal</span>
-          </div>
-
-          <div class="max-w-3xl mx-auto w-full">
-            <!-- Mobile: Simplified URL display -->
-            <div class="block md:hidden">
-              <div class="flex flex-col gap-2 p-2 rounded-lg border bg-muted/50">
-                <label
-                  class="font-mono text-xs truncate text-center px-2 py-2 bg-card rounded-md cursor-pointer select-all"
-                  :title="SERVICE_URL"
-                  role="button"
-                  tabindex="0"
-                  @click="copyServiceUrl"
-                  @keydown.enter.prevent="copyServiceUrl"
-                >
-                  {{ SERVICE_URL }}
-                </label>
-                
-                <Button
-                  variant="outline"
-                  size="sm"
-                  class="w-full text-xs"
-                  @click="copyServiceUrl"
-                  aria-label="Copiar URL del servicio"
-                >
-                  <Copy class="w-3 h-3 mr-1" />
-                  Copiar URL
-                </Button>
-              </div>
-            </div>
-
-            <!-- Desktop: Full URL display -->
-            <div class="hidden md:block fade-up" :style="{ animationDelay: '200ms' }">
-              <div class="flex flex-col md:flex-row items-center md:items-stretch gap-3 p-3 rounded-lg border bg-muted/50">
-                <label
-                  class="flex-1 min-w-0 font-mono text-sm md:text-base truncate text-center md:text-left px-3 py-2 bg-card rounded-md cursor-pointer select-all"
-                  :title="SERVICE_URL"
-                  role="button"
-                  tabindex="0"
-                  @click="copyServiceUrl"
-                  @keydown.enter.prevent="copyServiceUrl"
-                >
-                  {{ SERVICE_URL }}
-                </label>
-
-                <div class="flex w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2 flex-col md:flex-row">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    class="w-full md:w-auto"
-                    @click="openServiceUrl"
-                    aria-label="Abrir servicio en nueva pestaña"
-                  >
-                    <ExternalLink class="w-4 h-4 mr-1" />
-                    Abrir
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    class="w-full md:w-auto"
-                    @click="copyServiceUrl"
-                    aria-label="Copiar URL del servicio"
-                  >
-                    <Copy class="w-4 h-4 mr-1" />
-                    Copiar
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <p class="text-xs text-muted-foreground text-center mt-2">
-              Toca la URL para copiar rápidamente.
-            </p>
+        <!-- Servicio: una línea compacta -->
+        <div class="hero-item flex flex-wrap items-center justify-center gap-2 md:gap-3" style="--delay: 160ms">
+          <Globe class="w-3.5 h-3.5 md:w-4 md:h-4 text-muted-foreground shrink-0" aria-hidden="true" />
+          <span class="text-xs md:text-sm font-medium text-muted-foreground">Servicio:</span>
+          <div class="flex flex-1 min-w-0 max-w-md items-center gap-2">
+            <label
+              class="flex-1 min-w-0 font-mono text-xs truncate px-2 py-1.5 rounded border bg-muted/50 cursor-pointer select-all"
+              :title="SERVICE_URL"
+              role="button"
+              tabindex="0"
+              @click="copyServiceUrl"
+              @keydown.enter.prevent="copyServiceUrl"
+              @keydown.space.prevent="copyServiceUrl"
+            >
+              {{ SERVICE_URL }}
+            </label>
+            <Button variant="outline" size="sm" class="shrink-0 h-7 text-xs" @click="copyServiceUrl" aria-label="Copiar URL del servicio">
+              <Copy class="w-3 h-3 md:mr-1" aria-hidden="true" />
+              <span class="hidden md:inline">Copiar</span>
+            </Button>
+            <Button variant="ghost" size="sm" class="shrink-0 h-7 text-xs" @click="openServiceUrl" aria-label="Abrir servicio">
+              <ExternalLink class="w-3 h-3" aria-hidden="true" />
+            </Button>
           </div>
         </div>
 
-        <Separator class="hidden md:block" />
-
-        <!-- Features section - simplified on mobile -->
-        <div class="block md:hidden mt-4 fade-up" :style="{ animationDelay: '300ms' }">
-          <div class="flex justify-center gap-4 text-center">
-            <div class="flex flex-col items-center space-y-1">
-              <Zap class="w-5 h-5 text-primary" />
-              <span class="text-xs font-medium">Rápido</span>
-            </div>
-            <div class="flex flex-col items-center space-y-1">
-              <Brush class="w-5 h-5 text-primary" />
-              <span class="text-xs font-medium">Personalizable</span>
-            </div>
-            <div class="flex flex-col items-center space-y-1">
-              <BarChart3 class="w-5 h-5 text-primary" />
-              <span class="text-xs font-medium">Analytics</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Desktop: Full features -->
-        <div class="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 fade-up" :style="{ animationDelay: '300ms' }">
-          <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card fade-up" :style="{ animationDelay: '350ms' }">
-            <Zap class="w-8 h-8 text-primary" />
-            <h3 class="font-semibold">Súper Rápido</h3>
-            <p class="text-sm text-muted-foreground text-center">
-              Redirecciones instantáneas con Cloudflare Workers
-            </p>
-          </div>
-          
-          <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card fade-up" :style="{ animationDelay: '400ms' }">
-            <Brush class="w-8 h-8 text-primary" />
-            <h3 class="font-semibold">Personalizable</h3>
-            <p class="text-sm text-muted-foreground text-center">
-              Elige un hash personalizado para tu enlace (ej: <span class="font-mono">mi-enlace</span>).
-              Esta opción permite URLs más legibles y memorables.
-            </p>
-          </div>
-          
-          <div class="flex flex-col items-center space-y-2 p-4 rounded-lg border bg-card fade-up" :style="{ animationDelay: '450ms' }">
-            <BarChart3 class="w-8 h-8 text-primary" />
-            <h3 class="font-semibold">Analytics</h3>
-            <p class="text-sm text-muted-foreground text-center">
-              Seguimiento de clicks y estadísticas detalladas
-            </p>
-          </div>
+        <!-- Features: una sola fila compacta (sin cards grandes) -->
+        <div class="hero-item flex flex-wrap justify-center gap-4 md:gap-6 pt-1 text-muted-foreground" style="--delay: 220ms">
+          <span class="inline-flex items-center gap-1.5 text-xs">
+            <Zap class="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+            Rápido
+          </span>
+          <span class="inline-flex items-center gap-1.5 text-xs">
+            <Brush class="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+            Personalizable
+          </span>
+          <span class="inline-flex items-center gap-1.5 text-xs">
+            <BarChart3 class="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+            Analytics
+          </span>
         </div>
       </CardContent>
     </Card>
@@ -202,20 +102,19 @@ const copyServiceUrl = () => {
 </script>
 
 <style scoped>
-/* Fade-up animation used to give a subtle entrance effect on page load. */
-.fade-up{
+/* Staggered hero reveal: transform + opacity only (compositor-friendly) */
+.hero-item {
   opacity: 0;
   transform: translateY(12px);
-  /* animationDelay can be set inline per-element via :style */
-  animation: fadeUp 1s cubic-bezier(.2,.8,.2,1) forwards;
+  animation: heroReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--delay, 0ms);
 }
-
-@keyframes fadeUp{
-  from{
+@keyframes heroReveal {
+  from {
     opacity: 0;
     transform: translateY(12px);
   }
-  to{
+  to {
     opacity: 1;
     transform: translateY(0);
   }
