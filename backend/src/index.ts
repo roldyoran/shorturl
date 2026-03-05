@@ -15,7 +15,7 @@ app.use("*", checkEnvMiddleware);
 app.use(
 	"*",
 	cors({
-		origin: ["http://localhost:5173", "https://shorturl-roldyoran.vercel.app/"],
+		origin: ["*"],
 		allowHeaders: ["X-Custom-Header", "Upgrade-Insecure-Requests"],
 		allowMethods: ["POST", "GET", "OPTIONS"],
 		exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
