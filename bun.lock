@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "shorturl_v2",
+      "name": "shorturl",
     },
     "backend": {
       "name": "backend",

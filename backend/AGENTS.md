@@ -1,4 +1,4 @@
-# AGENTS.md — shorturl_v2
+# AGENTS.md — shorturl
 
 Guía de arquitectura y estructura del proyecto para agentes de IA y desarrolladores.
 
