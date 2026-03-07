@@ -1,161 +1,74 @@
 <template>
-  <!-- Header: fondo sólido y borde para que se vea como antes -->
-  <header class="border-b border-border bg-background sticky top-0 z-50">
-    <div class="container mx-auto px-4 py-4">
-      <Collapsible v-slot="{ open }">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div class="flex items-center gap-2 p-2 rounded-lg border">
-              <Link2 class="h-5 w-5" />
-              <span class="h-2.5 w-2.5 rounded-full bg-green-500 animate-pulse"></span>
-            </div>
-            <div>
-              <h1 class="text-lg font-bold">ShortURL</h1>
-              <p class="text-xs text-muted-foreground">by roldyoran</p>
-            </div>
-            <div class="ml-4 px-3 py-1 rounded-md border flex flex-col items-center space-x-3 hidden sm:flex md:text-sm">
-              <p class="text-sm">URLs Acortadas: <span class="font-mono">{{ attempts }}</span></p>
-              <div class="text-sm text-muted-foreground">Intentos restantes: <span class="font-mono">{{ remainingAttempts }}</span></div>
-            </div>
-            <div v-if="isAdmin" class="text-sm text-green-500 font-semibold">ADMIN</div>
-          </div>
-
-          <!-- Desktop Navigation -->
-          <div class="hidden md:flex items-center space-x-2">
-            <ThemeToggle />
-            
-            <Dialog>
-              <DialogTrigger as-child>
-                <Button variant="ghost" size="sm">
-                  <Settings class="h-4 w-4 mr-2" />
-                  Configuración
-                </Button>
-              </DialogTrigger>
-              <DialogContent class="max-w-2xl">
-                <ApiConfig />
-              </DialogContent>
-            </Dialog>
-
-            <!-- Admin Dialog Trigger -->
-            <Dialog>
-              <DialogTrigger as-child>
-                <Button variant="ghost" size="sm">
-                  <User />  
-                  Admin
-                </Button>
-              </DialogTrigger>
-              <DialogContent class="max-w-md">
-                <div class="space-y-4">
-                  <Label for="admin-pass">Contraseña Admin</Label>
-                  <Input id="admin-pass" v-model="adminPassword" type="password" placeholder="Ingresa contraseña" />
-                  <div class="flex justify-end">
-                    <Button @click="submitAdmin">Iniciar sesión</Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            <Dialog>
-              <DialogTrigger as-child>
-                <Button variant="ghost" size="sm">
-                  <ExternalLink class="h-4 w-4 mr-2" />
-                  Probar Redirección
-                </Button>
-              </DialogTrigger>
-              <DialogContent class="max-w-2xl">
-                <RedirectTest />
-              </DialogContent>
-            </Dialog>
-
-            <Button variant="ghost" size="sm" as-child>
-              <a
-                href="https://github.com/roldyoran/shorturl"
-                target="_blank"
-                class="flex items-center"
-              >
-                <Github class="h-4 w-4 mr-2" />
-                GitHub
-              </a>
-            </Button>
-          </div>
-
-          <!-- Mobile attempts indicator (compact) -->
-          <div class="flex items-center space-x-3 md:hidden mr-2">
-            <div class="text-xs text-muted-foreground">A: <span class="font-mono">{{ attempts }}</span></div>
-            <div class="text-xs text-muted-foreground">R: <span class="font-mono">{{ remainingAttempts }}</span></div>
-          </div>
-
-          <!-- Mobile Menu Button -->
-          <div class="md:hidden">
-            <CollapsibleTrigger as-child>
-              <Button
-                variant="ghost"
-                size="sm"
-                class="md:hidden"
-                aria-label="Abrir o cerrar menú de navegación"
-                :aria-expanded="open"
-              >
-                <X v-if="open" class="h-5 w-5" aria-hidden="true" />
-                <Menu v-else class="h-5 w-5" aria-hidden="true" />
-              </Button>
-            </CollapsibleTrigger>
-          </div>
+  <!-- Header estilo example.html -->
+  <header class="sticky top-0 z-50 h-14 border-b border-border/50 bg-background/80 backdrop-blur-md">
+    <div class="flex items-center justify-between h-full px-6 gap-4">
+      <!-- Logo -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-md border border-border bg-card flex items-center justify-center">
+          <Link class="w-4 h-4 text-primary" />
         </div>
+        <div>
+          <span class="font-display font-800 text-[17px] text-foreground tracking-tight">ShortURL</span>
+          <span class="block font-mono text-[11px] tracking-wider text-muted-foreground leading-none -mt-0.5">by roldyoran</span>
+        </div>
+        <div class="w-2 h-2 rounded-full bg-primary animate-pulse ml-1"></div>
+      </div>
 
-  <!-- Mobile Navigation -->
-  <CollapsibleContent class="w-full block">
-          <div class="md:hidden mt-4 pt-4 border-t px-3">
-            <div class="flex flex-col space-y-4">
-              <div class="flex justify-start">
-                <ThemeToggle />
+      <!-- Stats pill -->
+      <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card/60">
+        <span class="font-mono text-[10px] tracking-wider text-muted-foreground">URLS ACORTADAS</span>
+        <span class="font-mono text-[10px] tracking-wider text-primary font-bold">{{ attempts }}</span>
+        <div class="w-px h-3 bg-border"></div>
+        <span class="font-mono text-[10px] tracking-wider text-muted-foreground">INTENTOS</span>
+        <span class="font-mono text-[10px] tracking-wider text-foreground">{{ remainingAttempts }}</span>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Nav actions -->
+      <div class="flex items-center gap-1">
+        <!-- Theme Toggle -->
+        <ThemeToggle />
+
+        <!-- Config -->
+        <Dialog>
+          <DialogTrigger as-child>
+            <Button variant="ghost" size="sm" class="w-9 h-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted">
+              <Settings class="w-4 h-4" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent class="max-w-2xl">
+            <ApiConfig />
+          </DialogContent>
+        </Dialog>
+
+        <!-- Admin -->
+        <Dialog>
+          <DialogTrigger as-child>
+            <Button variant="ghost" size="sm" class="hidden sm:flex items-center gap-1.5 px-3 h-8 text-muted-foreground hover:text-foreground hover:bg-muted">
+              <User class="w-3.5 h-3.5" />
+              <span class="font-mono text-[10px] tracking-wider">ADMIN</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent class="max-w-md">
+            <div class="space-y-4">
+              <Label for="admin-pass">Contraseña Admin</Label>
+              <Input id="admin-pass" v-model="adminPassword" type="password" placeholder="Ingresa contraseña" />
+              <div class="flex justify-end">
+                <Button @click="submitAdmin">Iniciar sesión</Button>
               </div>
-
-              <div class="space-y-1">
-                <Label for="admin-pass-mobile" class="text-sm">Admin</Label>
-                <div class="flex flex-col sm:flex-row gap-2">
-                  <Input id="admin-pass-mobile" v-model="adminPassword" type="password" placeholder="Contraseña" class="flex-1 w-full" />
-                  <Button class="w-full sm:w-auto" @click="submitAdmin">OK</Button>
-                </div>
-              </div>
-
-              <Dialog>
-                <DialogTrigger as-child>
-                  <Button variant="ghost" class="w-full justify-start">
-                    <Settings class="h-4 w-4 mr-2" />
-                    Configuración
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <ApiConfig />
-                </DialogContent>
-              </Dialog>
-
-              <Dialog>
-                <DialogTrigger as-child>
-                  <Button variant="ghost" class="w-full justify-start">
-                    <ExternalLink class="h-4 w-4 mr-2" />
-                    Probar Redirección
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <RedirectTest />
-                </DialogContent>
-              </Dialog>
-
-              <Button variant="ghost" class="w-full justify-start" as-child>
-                <a
-                  href="https://github.com/roldyoran/shorturl"
-                  target="_blank"
-                  class="flex items-center w-full"
-                >
-                  <Github class="h-4 w-4 mr-2" />
-                  GitHub
-                </a>
-              </Button>
             </div>
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+          </DialogContent>
+        </Dialog>
+
+        <!-- GitHub -->
+        <Button variant="ghost" size="sm" as-child class="hidden sm:flex items-center gap-1.5 px-3 h-8 text-muted-foreground hover:text-foreground hover:bg-muted">
+          <a href="https://github.com/roldyoran/shorturl" target="_blank">
+            <Github class="w-3.5 h-3.5" />
+            <span class="font-mono text-[10px] tracking-wider">GITHUB</span>
+          </a>
+        </Button>
+      </div>
     </div>
   </header>
 </template>
@@ -165,20 +78,15 @@
 <script setup lang="ts">
 // No local refs needed; Collapsible handles state
 import {
-	Link2,
-	Settings,
-	ExternalLink,
-	Github,
-	Menu,
-	X,
+  Link,
+  Settings,
+  Github,
   User,
 } from "lucide-vue-next";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "./ThemeToggle.vue";
 import ApiConfig from "./ApiConfig.vue";
-import RedirectTest from "./RedirectTest.vue";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ref, computed } from "vue";
 import { useUrlStore } from "@/stores/urlStore";
 import { Input } from "@/components/ui/input";

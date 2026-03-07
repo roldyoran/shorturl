@@ -12,7 +12,7 @@ export const useUrlShortener = () => {
 	const shortenUrl = async (
 		originalUrl: string,
 		customHash?: string,
-	): Promise<{ success: boolean; shortUrl?: string }> => {
+	): Promise<{ success: boolean; shortCode?: string; shortUrl?: string; originalUrl?: string }> => {
 		// Verificar si puede usar el servicio
 		if (!urlStore.canUseService) {
 			toast.error(
@@ -28,7 +28,7 @@ export const useUrlShortener = () => {
 			urlStore.isLoading = true;
 
 			// Validar hash personalizado si se proporciona
-			if (customHash && !/^[a-zA-Z0-9-_]+$/.test(customHash)) {
+			if (customHash && !/^[a-z0-9]+$/.test(customHash)) {
 				toast.error(
 					"Hash inválido",
 					{
@@ -51,15 +51,16 @@ export const useUrlShortener = () => {
 				// Agregar URL al store
 				urlStore.addUrl(data.originalUrl, data.shortCode);
 
-				// Mostrar notificación de éxito
+				// Construir URL completa y mostrar notificación de éxito
+				const builtShortUrl = `${getApiBaseUrl().replace(/\/$/, "")}/${data.shortCode}`;
 				toast.success(
 					"¡URL acortada exitosamente!",
 					{
-						description: `URL corta: ${getApiBaseUrl().replace(/\/$/, "")}/${data.shortCode}`,
+						description: `URL corta: ${builtShortUrl}`,
 					}
 				);
 
-				return { success: true, shortUrl: data.shortCode };
+				return { success: true, shortCode: data.shortCode, shortUrl: builtShortUrl, originalUrl: data.originalUrl };
 			} else {
 				toast.error("Respuesta inválida", {
 					description: "La respuesta de la API no es válida."
