@@ -108,9 +108,9 @@ import { useNotificationStore } from "@/stores/notificationStore";
 import { formatDate } from "@/lib/utils";
 import type { UrlInfoResponse } from "@/api/types";
 import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
+	Tooltip,
+	TooltipTrigger,
+	TooltipContent,
 } from "@/components/ui/tooltip";
 import { TooltipProvider } from "@/components/ui/tooltip";
 

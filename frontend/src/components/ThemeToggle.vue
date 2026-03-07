@@ -1,67 +1,67 @@
 <script setup lang="ts">
-import { useColorMode } from '@vueuse/core'
-import { Sun, Moon, Monitor } from 'lucide-vue-next'
-import { computed, ref } from 'vue'
-import { Button } from '@/components/ui/button'
+import { useColorMode } from "@vueuse/core";
+import { Sun, Moon, Monitor } from "lucide-vue-next";
+import { computed, ref } from "vue";
+import { Button } from "@/components/ui/button";
 
-const mode = useColorMode()
-const buttonRef = ref<HTMLElement>()
+const mode = useColorMode();
+const buttonRef = ref<HTMLElement>();
 
 const currentIcon = computed(() => {
-  switch (mode.value) {
-    case 'dark':
-      return Moon
-    case 'light':
-      return Sun
-    default:
-      return Monitor
-  }
-})
+	switch (mode.value) {
+		case "dark":
+			return Moon;
+		case "light":
+			return Sun;
+		default:
+			return Monitor;
+	}
+});
 
 const toggleTheme = async (event: MouseEvent) => {
-  // Si el navegador no soporta View Transitions, cambiar directamente
-  if (!document.startViewTransition) {
-    mode.value = mode.value === 'light' ? 'dark' : 'light'
-    return
-  }
+	// Si el navegador no soporta View Transitions, cambiar directamente
+	if (!document.startViewTransition) {
+		mode.value = mode.value === "light" ? "dark" : "light";
+		return;
+	}
 
-  // Obtener las coordenadas del click
-  const x = event.clientX
-  const y = event.clientY
-  
-  // Calcular el radio más grande desde el punto de click hasta cualquier esquina
-  const endRadius = Math.hypot(
-    Math.max(x, innerWidth - x),
-    Math.max(y, innerHeight - y)
-  )
+	// Obtener las coordenadas del click
+	const x = event.clientX;
+	const y = event.clientY;
 
-  // Iniciar la transición con animación circular
-  const transition = document.startViewTransition(() => {
-    mode.value = mode.value === 'light' ? 'dark' : 'light'
-  })
+	// Calcular el radio más grande desde el punto de click hasta cualquier esquina
+	const endRadius = Math.hypot(
+		Math.max(x, innerWidth - x),
+		Math.max(y, innerHeight - y),
+	);
 
-  await transition.ready
+	// Iniciar la transición con animación circular
+	const transition = document.startViewTransition(() => {
+		mode.value = mode.value === "light" ? "dark" : "light";
+	});
 
-  // Animar el círculo expandiéndose desde el punto de click
-  document.documentElement.animate(
-    {
-      clipPath: [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${endRadius}px at ${x}px ${y}px)`
-      ]
-    },
-    {
-      duration: 500,
-      easing: 'ease-in-out',
-      pseudoElement: '::view-transition-new(root)'
-    }
-  )
-}
+	await transition.ready;
+
+	// Animar el círculo expandiéndose desde el punto de click
+	document.documentElement.animate(
+		{
+			clipPath: [
+				`circle(0px at ${x}px ${y}px)`,
+				`circle(${endRadius}px at ${x}px ${y}px)`,
+			],
+		},
+		{
+			duration: 500,
+			easing: "ease-in-out",
+			pseudoElement: "::view-transition-new(root)",
+		},
+	);
+};
 
 // Exponer la función para que se pueda llamar desde el padre
 defineExpose({
-  toggleTheme,
-})
+	toggleTheme,
+});
 </script>
 
 <template>

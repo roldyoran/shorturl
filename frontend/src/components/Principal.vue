@@ -198,9 +198,9 @@ const originalUrl = ref("");
 const resultCard = ref<HTMLElement | null>(null);
 const cardAnimating = ref(false);
 const onAliasInput = (e: Event) => {
-  const val = (e.target as HTMLInputElement).value || "";
-  // Allow only lowercase a-z and digits 0-9, limit to 6 characters
-  alias.value = val.replace(/[^a-z0-9]/g, "").slice(0, 6);
+	const val = (e.target as HTMLInputElement).value || "";
+	// Allow only lowercase a-z and digits 0-9, limit to 6 characters
+	alias.value = val.replace(/[^a-z0-9]/g, "").slice(0, 6);
 };
 const customAlias = ref(false);
 const shortUrl = ref("");
@@ -208,54 +208,56 @@ const shortUrl = ref("");
 const attempts = computed(() => urlStore.userSession.remainingAttempts);
 
 const handleShorten = async () => {
-  if (!urlInput.value || !urlStore.canUseService) return;
+	if (!urlInput.value || !urlStore.canUseService) return;
 
-  const original = urlInput.value;
+	const original = urlInput.value;
 
-  try {
-    const result = await shortenUrl(urlInput.value, alias.value || undefined);
+	try {
+		const result = await shortenUrl(urlInput.value, alias.value || undefined);
 
-    if (result.success) {
-      // Prefer full short URL provided by the composable (API) when available
-      shortUrl.value = (result as any).shortUrl ?? `${SERVICE_URL}/${(result as any).shortCode ?? result.shortUrl}`;
-      // Prefer the API-normalized original URL when provided
-      originalUrl.value = (result as any).originalUrl ?? original;
-      // clear inputs
-      urlInput.value = "";
-      alias.value = "";
-      customAlias.value = false;
+		if (result.success) {
+			// Prefer full short URL provided by the composable (API) when available
+			shortUrl.value =
+				(result as any).shortUrl ??
+				`${SERVICE_URL}/${(result as any).shortCode ?? result.shortUrl}`;
+			// Prefer the API-normalized original URL when provided
+			originalUrl.value = (result as any).originalUrl ?? original;
+			// clear inputs
+			urlInput.value = "";
+			alias.value = "";
+			customAlias.value = false;
 
-      await nextTick();
-      // trigger animation and center card in viewport
-      cardAnimating.value = true;
-      // resultCard may be a DOM element or a component instance; handle both
-      const el = (resultCard.value as any)?.$el ?? resultCard.value;
-      if (el && typeof el.scrollIntoView === "function") {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-      setTimeout(() => (cardAnimating.value = false), 600);
-    }
-  } catch (err: any) {
-    toast.error(err.message || "Error al acortar la URL");
-  }
+			await nextTick();
+			// trigger animation and center card in viewport
+			cardAnimating.value = true;
+			// resultCard may be a DOM element or a component instance; handle both
+			const el = (resultCard.value as any)?.$el ?? resultCard.value;
+			if (el && typeof el.scrollIntoView === "function") {
+				el.scrollIntoView({ behavior: "smooth", block: "center" });
+			}
+			setTimeout(() => (cardAnimating.value = false), 600);
+		}
+	} catch (err: any) {
+		toast.error(err.message || "Error al acortar la URL");
+	}
 };
 
 const copyServiceUrl = () => {
-  copyToClipboard(SERVICE_URL, "URL del servicio copiada");
+	copyToClipboard(SERVICE_URL, "URL del servicio copiada");
 };
 
 const copyShortUrl = () => {
-  copyToClipboard(shortUrl.value, "URL copiada al portapapeles");
+	copyToClipboard(shortUrl.value, "URL copiada al portapapeles");
 };
 
 const openShortUrl = () => {
-  if (!shortUrl.value) return;
-  try {
-    window.open(shortUrl.value, "_blank", "noopener,noreferrer");
-  } catch (e) {
-    // Fallback: assign location
-    window.location.href = shortUrl.value;
-  }
+	if (!shortUrl.value) return;
+	try {
+		window.open(shortUrl.value, "_blank", "noopener,noreferrer");
+	} catch (e) {
+		// Fallback: assign location
+		window.location.href = shortUrl.value;
+	}
 };
 </script>
 

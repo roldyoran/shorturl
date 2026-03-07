@@ -61,7 +61,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { ExternalLink, AlertCircle, Info } from "lucide-vue-next";
-import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -70,57 +74,53 @@ import { toast } from "vue-sonner";
 import { getApiBaseUrl } from "@/api/http";
 
 // Estado reactivo
-const shortCode = ref<string>("")
-const error = ref<string>("")
+const shortCode = ref<string>("");
+const error = ref<string>("");
 
 // Methods
 const getRedirectUrl = (): string => {
-  if (!shortCode.value.trim()) return ""
-  
-  const base = getApiBaseUrl().replace(/\/$/, "");
-  return `${base}/${shortCode.value.trim()}`
-}
+	if (!shortCode.value.trim()) return "";
+
+	const base = getApiBaseUrl().replace(/\/$/, "");
+	return `${base}/${shortCode.value.trim()}`;
+};
 
 const redirectToUrl = async () => {
-  error.value = ""
-  
-  if (!shortCode.value.trim()) {
-    error.value = "Por favor ingresa el código de la URL corta."
-    return
-  }
+	error.value = "";
 
-  try {
-    const redirectUrl = getRedirectUrl()
-    
-    // Abrir en nueva pestaña
-    const newWindow = window.open(redirectUrl, "_blank")
-    
-    if (newWindow) {
-      toast.success(
-        "Redirección iniciada", 
-        {
-          description: "Se ha abierto una nueva pestaña con la URL corta",
-        }
-      )
-      
-      // Limpiar el campo después de la redirección exitosa
-      setTimeout(() => {
-        shortCode.value = ""
-      }, 1000)
-    } else {
-      error.value = "No se pudo abrir la nueva pestaña. Verifica que no esté bloqueada por el navegador."
-    }
-  } catch (e: any) {
-    console.error("Error al intentar abrir la URL:", e)
-    error.value = "Error al intentar abrir la URL. Verifica la consola para más detalles."
-    toast.error(
-      "Error de redirección",
-      {
-        description: "No se pudo abrir la URL de redirección",
-      }
-    )
-  }
-}
+	if (!shortCode.value.trim()) {
+		error.value = "Por favor ingresa el código de la URL corta.";
+		return;
+	}
+
+	try {
+		const redirectUrl = getRedirectUrl();
+
+		// Abrir en nueva pestaña
+		const newWindow = window.open(redirectUrl, "_blank");
+
+		if (newWindow) {
+			toast.success("Redirección iniciada", {
+				description: "Se ha abierto una nueva pestaña con la URL corta",
+			});
+
+			// Limpiar el campo después de la redirección exitosa
+			setTimeout(() => {
+				shortCode.value = "";
+			}, 1000);
+		} else {
+			error.value =
+				"No se pudo abrir la nueva pestaña. Verifica que no esté bloqueada por el navegador.";
+		}
+	} catch (e: any) {
+		console.error("Error al intentar abrir la URL:", e);
+		error.value =
+			"Error al intentar abrir la URL. Verifica la consola para más detalles.";
+		toast.error("Error de redirección", {
+			description: "No se pudo abrir la URL de redirección",
+		});
+	}
+};
 </script>
 
 <style scoped>

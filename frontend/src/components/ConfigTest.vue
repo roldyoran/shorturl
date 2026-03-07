@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import { Settings, TestTube, Info } from "lucide-vue-next"
-import { Button } from "@/components/ui/button"
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogTrigger 
-} from "@/components/ui/dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import ApiConfig from "@/components/ApiConfig.vue"
-import RedirectTest from "@/components/RedirectTest.vue"
-import { getApiBaseUrl } from "@/api/http"
+import { Settings, TestTube, Info } from "lucide-vue-next";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import ApiConfig from "@/components/ApiConfig.vue";
+import RedirectTest from "@/components/RedirectTest.vue";
+import { getApiBaseUrl } from "@/api/http";
 </script>
 
 <template>

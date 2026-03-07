@@ -152,7 +152,7 @@ import { Badge } from "@/components/ui/badge";
 
 // Props
 interface Props {
-  attempts: number;
+	attempts: number;
 }
 
 defineProps<Props>();

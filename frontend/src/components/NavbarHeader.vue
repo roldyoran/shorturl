@@ -77,12 +77,7 @@
 
 <script setup lang="ts">
 // No local refs needed; Collapsible handles state
-import {
-  Link,
-  Settings,
-  Github,
-  User,
-} from "lucide-vue-next";
+import { Link, Settings, Github, User } from "lucide-vue-next";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "./ThemeToggle.vue";
@@ -105,16 +100,22 @@ const adminPassword = ref("");
 // Read admin password from Vite env to avoid hardcoding
 const ADMIN_PASS = (import.meta as any).env?.VITE_ADMIN_PASS ?? "";
 const isAdmin = computed(() => urlStore.userSession?.isAdmin ?? false);
-const remainingAttempts = computed(() => urlStore.userSession?.remainingAttempts ?? 0);
+const remainingAttempts = computed(
+	() => urlStore.userSession?.remainingAttempts ?? 0,
+);
 
 function submitAdmin() {
-  if (adminPassword.value === ADMIN_PASS) {
-    urlStore.setAdminStatus(true);
-    toast.success("Modo admin activado", { description: "Tienes intentos ilimitados." });
-  } else {
-    urlStore.setAdminStatus(false);
-    toast.error("Contraseña incorrecta", { description: "La contraseña admin es incorrecta." });
-  }
-  adminPassword.value = "";
+	if (adminPassword.value === ADMIN_PASS) {
+		urlStore.setAdminStatus(true);
+		toast.success("Modo admin activado", {
+			description: "Tienes intentos ilimitados.",
+		});
+	} else {
+		urlStore.setAdminStatus(false);
+		toast.error("Contraseña incorrecta", {
+			description: "La contraseña admin es incorrecta.",
+		});
+	}
+	adminPassword.value = "";
 }
 </script>

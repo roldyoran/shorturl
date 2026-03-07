@@ -121,7 +121,7 @@ import { useColorMode } from "@vueuse/core";
 import { useUrlStore } from "@/stores/urlStore";
 import { Toaster } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import 'vue-sonner/style.css'; // vue-sonner v2 requires this import
+import "vue-sonner/style.css"; // vue-sonner v2 requires this import
 import NavbarHeader from "@/components/NavbarHeader.vue";
 import Principal from "@/components/Principal.vue";
 import FooterComponent from "@/components/layout/FooterComponent.vue";
@@ -130,17 +130,16 @@ import ShortenUrlForm from "@/components/features/url-shortener/ShortenUrlForm.v
 import UrlInfoForm from "@/components/features/url-info/UrlInfoForm.vue";
 import MyUrlsList from "@/components/features/my-urls/MyUrlsList.vue";
 import PublicUrlsList from "@/components/features/url-list/PublicUrlsList.vue";
-const mode = useColorMode()
+const mode = useColorMode();
 
 // Apply the theme class to the document element
 watchEffect(() => {
-  if (mode.value === 'dark') {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
-})
-
+	if (mode.value === "dark") {
+		document.documentElement.classList.add("dark");
+	} else {
+		document.documentElement.classList.remove("dark");
+	}
+});
 
 type Tab = "info" | "myurls" | "list";
 
@@ -151,7 +150,9 @@ const urlStore = useUrlStore();
 useColorMode();
 
 // Usar el estado del store en lugar de refs locales
-const activeTab = ref<Tab>(urlStore.currentTab === "shorten" ? "info" : urlStore.currentTab as Tab);
+const activeTab = ref<Tab>(
+	urlStore.currentTab === "shorten" ? "info" : (urlStore.currentTab as Tab),
+);
 const attempts = ref(urlStore.urlCount);
 
 const incrementAttempts = () => {
@@ -163,8 +164,9 @@ onMounted(() => {
 	// Inicializar los stores
 	urlStore.initialize();
 
-// Sincronizar el tab activo con el store
-  activeTab.value = urlStore.currentTab === "shorten" ? "info" : urlStore.currentTab as Tab;
+	// Sincronizar el tab activo con el store
+	activeTab.value =
+		urlStore.currentTab === "shorten" ? "info" : (urlStore.currentTab as Tab);
 	attempts.value = urlStore.urlCount;
 });
 </script>
