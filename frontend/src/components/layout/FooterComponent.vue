@@ -12,7 +12,7 @@
             <h3 class="font-bold text-sm">ShortURL</h3>
           </div>
           <div class="flex items-center gap-2 text-xs text-muted-foreground">
-            <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+            <div class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
             <span>{{ attempts.toLocaleString() }} URLs</span>
           </div>
         </div>
@@ -62,7 +62,7 @@
             </p>
             <div class="flex items-center gap-2 text-xs">
               <div class="flex items-center gap-1">
-                <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                <div class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
                 <span class="text-muted-foreground">Activo</span>
               </div>
               <div class="w-1 h-1 bg-muted-foreground/50 rounded-full"></div>
@@ -127,7 +127,7 @@
             
             <div class="flex items-center gap-4">
               <div class="flex items-center gap-1.5">
-                <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                <div class="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></div>
                 <span class="text-xs text-muted-foreground">En línea</span>
                 <span class="text-xs font-medium text-foreground ml-2">
                   {{ attempts.toLocaleString() }} URLs
@@ -152,7 +152,7 @@ import { Badge } from "@/components/ui/badge";
 
 // Props
 interface Props {
-  attempts: number;
+	attempts: number;
 }
 
 defineProps<Props>();

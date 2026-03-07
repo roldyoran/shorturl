@@ -12,15 +12,18 @@ export const useUrlShortener = () => {
 	const shortenUrl = async (
 		originalUrl: string,
 		customHash?: string,
-	): Promise<{ success: boolean; shortUrl?: string }> => {
+	): Promise<{
+		success: boolean;
+		shortCode?: string;
+		shortUrl?: string;
+		originalUrl?: string;
+	}> => {
 		// Verificar si puede usar el servicio
 		if (!urlStore.canUseService) {
-			toast.error(
-				"Límite de intentos alcanzado",
-				{
-					description: "Ha alcanzado el límite máximo de 3 intentos. Los intentos se reinician cada 24 horas.",
-				}
-			);
+			toast.error("Límite de intentos alcanzado", {
+				description:
+					"Ha alcanzado el límite máximo de 3 intentos. Los intentos se reinician cada 24 horas.",
+			});
 			return { success: false };
 		}
 
@@ -28,13 +31,11 @@ export const useUrlShortener = () => {
 			urlStore.isLoading = true;
 
 			// Validar hash personalizado si se proporciona
-			if (customHash && !/^[a-zA-Z0-9-_]+$/.test(customHash)) {
-				toast.error(
-					"Hash inválido",
-					{
-						description: "El hash personalizado solo puede contener letras, números, guiones y guiones bajos.",
-					}
-				);
+			if (customHash && !/^[a-z0-9]+$/.test(customHash)) {
+				toast.error("Hash inválido", {
+					description:
+						"El hash personalizado solo puede contener letras, números, guiones y guiones bajos.",
+				});
 				return { success: false };
 			}
 
@@ -51,18 +52,21 @@ export const useUrlShortener = () => {
 				// Agregar URL al store
 				urlStore.addUrl(data.originalUrl, data.shortCode);
 
-				// Mostrar notificación de éxito
-				toast.success(
-					"¡URL acortada exitosamente!",
-					{
-						description: `URL corta: ${getApiBaseUrl().replace(/\/$/, "")}/${data.shortCode}`,
-					}
-				);
+				// Construir URL completa y mostrar notificación de éxito
+				const builtShortUrl = `${getApiBaseUrl().replace(/\/$/, "")}/${data.shortCode}`;
+				toast.success("¡URL acortada exitosamente!", {
+					description: `URL corta: ${builtShortUrl}`,
+				});
 
-				return { success: true, shortUrl: data.shortCode };
+				return {
+					success: true,
+					shortCode: data.shortCode,
+					shortUrl: builtShortUrl,
+					originalUrl: data.originalUrl,
+				};
 			} else {
 				toast.error("Respuesta inválida", {
-					description: "La respuesta de la API no es válida."
+					description: "La respuesta de la API no es válida.",
 				});
 				return { success: false };
 			}
@@ -70,7 +74,7 @@ export const useUrlShortener = () => {
 			const errorMessage =
 				error?.response?.data?.message || "Error al acortar la URL";
 			toast.error("Error en el servidor", {
-				description: errorMessage
+				description: errorMessage,
 			});
 			return { success: false };
 		} finally {

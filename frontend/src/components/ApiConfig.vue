@@ -40,7 +40,11 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { Settings, Info } from "lucide-vue-next";
-import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+} from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

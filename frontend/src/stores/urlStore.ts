@@ -243,7 +243,8 @@ export const useUrlStore = defineStore("urlStore", () => {
 			return true;
 		}
 
-		const timeSinceLastFetch = now - new Date(lastPublicListFetch.value).getTime();
+		const timeSinceLastFetch =
+			now - new Date(lastPublicListFetch.value).getTime();
 		const timeSinceLastUserUrl = lastUserUrlCreated.value
 			? now - new Date(lastUserUrlCreated.value).getTime()
 			: 0;

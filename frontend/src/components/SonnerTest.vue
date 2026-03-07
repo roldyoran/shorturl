@@ -1,25 +1,26 @@
 <script setup lang="ts">
-import { useToast } from '@/composables/useToast'
-import { Button } from '@/components/ui/button'
+import { useToast } from "@/composables/useToast";
+import { Button } from "@/components/ui/button";
 
-const { toast, showSuccess, showError, showWarning, showInfo, showPromise } = useToast()
+const { toast, showSuccess, showError, showWarning, showInfo, showPromise } =
+	useToast();
 
 // Función para simular una operación asíncrona
 const simulateAsyncOperation = (): Promise<string> => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve('URL acortada'), 2000)
-  })
-}
+	return new Promise((resolve) => {
+		setTimeout(() => resolve("URL acortada"), 2000);
+	});
+};
 
 const handlePromiseToast = () => {
-  const promise = simulateAsyncOperation()
-  
-  showPromise(promise, {
-    loading: 'Acortando URL...',
-    success: 'URL acortada correctamente',
-    error: 'Error al acortar URL',
-  })
-}
+	const promise = simulateAsyncOperation();
+
+	showPromise(promise, {
+		loading: "Acortando URL...",
+		success: "URL acortada correctamente",
+		error: "Error al acortar URL",
+	});
+};
 </script>
 
 <template>

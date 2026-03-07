@@ -316,9 +316,9 @@ import {
 } from "@/components/ui/dialog";
 import { getUrlsRequest, getApiBaseUrl } from "@/api/http";
 import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
+	Tooltip,
+	TooltipTrigger,
+	TooltipContent,
 } from "@/components/ui/tooltip";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import QRCode from "qrcode-generator";
@@ -360,8 +360,8 @@ const filteredUrls = computed(() => {
 
 // Methods
 const copyFullUrl = (shortCode: string) => {
-  const fullUrl = baseUrl.replace(/\/$/, "") + '/' + shortCode;
-  copyToClipboard(fullUrl, "URL completa copiada");
+	const fullUrl = baseUrl.replace(/\/$/, "") + "/" + shortCode;
+	copyToClipboard(fullUrl, "URL completa copiada");
 };
 
 const copyCode = (shortCode: string) => {
@@ -370,7 +370,7 @@ const copyCode = (shortCode: string) => {
 
 // QR Code functions
 const generateQR = (shortCode: string) => {
-	const fullUrl = baseUrl.replace(/\/$/, "") + '/' + shortCode;
+	const fullUrl = baseUrl.replace(/\/$/, "") + "/" + shortCode;
 	currentQRUrl.value = fullUrl;
 	showQRModal.value = true;
 
@@ -500,7 +500,7 @@ onMounted(() => {
 
 // Abre una URL externa en nueva pestaña (expuesto al template)
 const openExternal = (url: string) => {
-  window.open(url, "_blank");
+	window.open(url, "_blank");
 };
 </script>
 

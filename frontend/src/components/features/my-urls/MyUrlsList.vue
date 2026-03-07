@@ -242,14 +242,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import {
-  Database,
-  Globe,
-  Clock,
-  Copy,
-  Hash,
-  QrCode,
-  Trash,
-  ChevronLeft,
+	Database,
+	Globe,
+	Clock,
+	Copy,
+	Hash,
+	QrCode,
+	Trash,
+	ChevronLeft,
 	ChevronRight,
 	Download,
 } from "lucide-vue-next";
@@ -262,9 +262,9 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
+	Tooltip,
+	TooltipTrigger,
+	TooltipContent,
 } from "@/components/ui/tooltip";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import {
@@ -332,7 +332,7 @@ const visiblePages = computed(() => {
 
 // Methods
 const getFullShortUrl = (shortCode: string): string => {
-  return `${getApiBaseUrl().replace(/\/$/, "")}/${shortCode}`;
+	return `${getApiBaseUrl().replace(/\/$/, "")}/${shortCode}`;
 };
 
 const copyFullUrl = (shortCode: string) => {

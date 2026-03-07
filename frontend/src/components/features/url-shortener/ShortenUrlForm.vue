@@ -129,11 +129,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-	Alert,
-	AlertDescription,
-	AlertTitle,
-} from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useUrlStore } from "@/stores/urlStore";
 import { useUrlShortener } from "@/composables/useUrlShortener";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
@@ -192,7 +188,7 @@ const handleSubmit = async (event: Event) => {
 };
 
 const copyUrl = () => {
-	const fullUrl = `${urlBase.replace(/\/$/, '')}/${shortUrl.value}`;
+	const fullUrl = `${urlBase.replace(/\/$/, "")}/${shortUrl.value}`;
 	copyToClipboard(fullUrl, "URL copiada al portapapeles");
 };
 </script>

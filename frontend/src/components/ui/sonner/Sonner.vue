@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { ToasterProps } from "vue-sonner"
-import { Toaster as Sonner } from "vue-sonner"
+import type { ToasterProps } from "vue-sonner";
+import { Toaster as Sonner } from "vue-sonner";
 
-const props = defineProps<ToasterProps>()
+const props = defineProps<ToasterProps>();
 </script>
 
 <template>
@@ -13,17 +13,17 @@ const props = defineProps<ToasterProps>()
       '--normal-bg': 'var(--popover)',
       '--normal-text': 'var(--popover-foreground)',
       '--normal-border': 'var(--border)',
-      '--success-bg': 'var(--popover)',
-      '--success-text': 'var(--popover-foreground)',
-      '--success-border': 'var(--border)',
-      '--error-bg': 'var(--popover)',
-      '--error-text': 'var(--popover-foreground)',
-      '--error-border': 'var(--border)',
-      '--warning-bg': 'var(--popover)',
-      '--warning-text': 'var(--popover-foreground)',
-      '--warning-border': 'var(--border)',
-      '--info-bg': 'var(--popover)',
-      '--info-text': 'var(--popover-foreground)',
+      '--success-bg': 'var(--primary)',
+      '--success-text': 'var(--primary-foreground)',
+      '--success-border': 'var(--primary)',
+      '--error-bg': 'var(--destructive)',
+      '--error-text': 'var(--destructive-foreground)',
+      '--error-border': 'var(--destructive)',
+      '--warning-bg': 'var(--accent)',
+      '--warning-text': 'var(--accent-foreground)',
+      '--warning-border': 'var(--accent)',
+      '--info-bg': 'var(--muted)',
+      '--info-text': 'var(--muted-foreground)',
       '--info-border': 'var(--border)',
     }"
   />
@@ -40,6 +40,15 @@ const props = defineProps<ToasterProps>()
 [data-sonner-toaster] [data-title] {
   color: var(--popover-foreground) !important;
   opacity: 1;
+}
+
+/* Tipografías del proyecto: usar variables definidas en src/style.css */
+[data-sonner-toaster] {
+  font-family: var(--font-body);
+}
+
+[data-sonner-toaster] [data-title] {
+  font-family: var(--font-display);
 }
 
 /* Mejorar el contraste en modo oscuro */
@@ -62,5 +71,13 @@ const props = defineProps<ToasterProps>()
 
 [data-sonner-toaster] [data-type="info"] [data-description] {
   opacity: 0.85;
+}
+
+/* Icono de success (verde según el modo) */
+[data-sonner-toaster] [data-type="success"] [data-icon],
+[data-sonner-toaster] [data-type="success"] svg {
+  color: var(--primary) !important;
+  fill: currentColor !important;
+  stroke: currentColor !important;
 }
 </style>
