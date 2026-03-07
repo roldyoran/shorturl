@@ -185,6 +185,7 @@ import { useUrlShortener } from "@/composables/useUrlShortener";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
 import { getApiBaseUrl } from "@/api/http";
 import { toast } from "vue-sonner";
+import { z } from "zod";
 
 const urlStore = useUrlStore();
 const { shortenUrl, isLoading } = useUrlShortener();
@@ -207,30 +208,42 @@ const shortUrl = ref("");
 
 const attempts = computed(() => urlStore.userSession.remainingAttempts);
 
-const handleShorten = async () => {
-	if (!urlInput.value || !urlStore.canUseService) return;
+// Zod schema: require a valid URL and only http or https protocols
+const urlSchema = z
+	.string()
+	.nonempty({ message: "Ingresa una URL" })
+	.url({ message: "Ingresa una URL válida" })
+	.refine((val) => /^https?:\/\//i.test(val), {
+		message: "Solo se permiten URLs con protocolo http(s)",
+	});
 
-	const original = urlInput.value;
+const handleShorten = async () => {
+	const raw = (urlInput.value || "").trim();
+	if (!urlStore.canUseService) return;
+
+  const parsed = urlSchema.safeParse(raw);
+  if (!parsed.success) {
+    const first = parsed.error.issues?.[0];
+    toast.error(first?.message ?? "URL inválida");
+    return;
+  }
+
+	const original = parsed.data;
 
 	try {
-		const result = await shortenUrl(urlInput.value, alias.value || undefined);
+		const result = await shortenUrl(original, alias.value || undefined);
 
 		if (result.success) {
-			// Prefer full short URL provided by the composable (API) when available
 			shortUrl.value =
 				(result as any).shortUrl ??
 				`${SERVICE_URL}/${(result as any).shortCode ?? result.shortUrl}`;
-			// Prefer the API-normalized original URL when provided
 			originalUrl.value = (result as any).originalUrl ?? original;
-			// clear inputs
 			urlInput.value = "";
 			alias.value = "";
 			customAlias.value = false;
 
 			await nextTick();
-			// trigger animation and center card in viewport
 			cardAnimating.value = true;
-			// resultCard may be a DOM element or a component instance; handle both
 			const el = (resultCard.value as any)?.$el ?? resultCard.value;
 			if (el && typeof el.scrollIntoView === "function") {
 				el.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -238,7 +251,7 @@ const handleShorten = async () => {
 			setTimeout(() => (cardAnimating.value = false), 600);
 		}
 	} catch (err: any) {
-		toast.error(err.message || "Error al acortar la URL");
+		toast.error(err?.message || "Error al acortar la URL");
 	}
 };
 
@@ -250,15 +263,7 @@ const copyShortUrl = () => {
 	copyToClipboard(shortUrl.value, "URL copiada al portapapeles");
 };
 
-const openShortUrl = () => {
-	if (!shortUrl.value) return;
-	try {
-		window.open(shortUrl.value, "_blank", "noopener,noreferrer");
-	} catch (e) {
-		// Fallback: assign location
-		window.location.href = shortUrl.value;
-	}
-};
+// openShortUrl removed — not used
 </script>
 
 <style scoped>

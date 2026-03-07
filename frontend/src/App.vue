@@ -126,7 +126,6 @@ import NavbarHeader from "@/components/NavbarHeader.vue";
 import Principal from "@/components/Principal.vue";
 import FooterComponent from "@/components/layout/FooterComponent.vue";
 
-import ShortenUrlForm from "@/components/features/url-shortener/ShortenUrlForm.vue";
 import UrlInfoForm from "@/components/features/url-info/UrlInfoForm.vue";
 import MyUrlsList from "@/components/features/my-urls/MyUrlsList.vue";
 import PublicUrlsList from "@/components/features/url-list/PublicUrlsList.vue";
@@ -155,9 +154,7 @@ const activeTab = ref<Tab>(
 );
 const attempts = ref(urlStore.urlCount);
 
-const incrementAttempts = () => {
-	attempts.value++;
-};
+// incrementAttempts removed — not used
 
 // Hacerlo accesible globalmente (opcional)
 onMounted(() => {
