@@ -99,7 +99,6 @@ const urlStore = useUrlStore();
 const adminPassword = ref("");
 // Read admin password from Vite env to avoid hardcoding
 const ADMIN_PASS = (import.meta as any).env?.VITE_ADMIN_PASS ?? "";
-const isAdmin = computed(() => urlStore.userSession?.isAdmin ?? false);
 const remainingAttempts = computed(
 	() => urlStore.userSession?.remainingAttempts ?? 0,
 );
