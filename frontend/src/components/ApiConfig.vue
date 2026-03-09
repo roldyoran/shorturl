@@ -2,11 +2,11 @@
   <div>
     <DialogHeader>
       <DialogTitle class="flex items-center gap-3">
-        <Settings class="w-6 h-6" />
-        Configuración de API
+        <Info class="w-6 h-6" />
+        Información de la API
       </DialogTitle>
       <DialogDescription>
-        Configura la URL base de la API para el acortador de URLs
+        Información sobre el acortador de URLs
       </DialogDescription>
     </DialogHeader>
 
@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { Settings, Info } from "lucide-vue-next";
+import { Info } from "lucide-vue-next";
 import {
 	DialogHeader,
 	DialogTitle,
