@@ -3,7 +3,7 @@ import { corsMiddleware } from "@/utils/cors-middleware";
 import { checkEnvMiddleware, type Bindings } from "@/utils/context";
 import { v1Router } from "@/presentation/http/v1";
 import { redirectRoutes } from "@/presentation/http/redirect";
-import { onError } from "@/utils/error-handler";
+import { onError } from "@/infrastructure/http/error-handler";
 
 // Crear la instancia principal de la aplicación
 const app = new Hono<{ Bindings: Bindings }>();

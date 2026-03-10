@@ -1,5 +1,18 @@
 import type { Context } from "hono";
-import { AppError, ValidationError } from "@/utils/app-error";
+import { AppError, ValidationError } from "@/domain/app-error";
+
+/**
+ * Mapeo de códigos de error de negocio a status HTTP.
+ * La infraestructura decide qué status usar basándose en el code del dominio.
+ */
+const STATUS_CODE_MAP: Record<string, number> = {
+	UNAUTHORIZED: 401,
+	NOT_FOUND: 404,
+	VALIDATION_ERROR: 400,
+	SHORT_CODE_ALREADY_EXISTS: 409,
+	URL_NOT_FOUND: 404,
+	INTERNAL_SERVER_ERROR: 500,
+};
 
 /**
  * Formato estándar de respuesta de error.
@@ -15,20 +28,28 @@ export type ApiErrorResponse = {
 };
 
 /**
+ * Obtiene el status HTTP basado en el código de error de negocio.
+ */
+function getStatusCode(code: string): number {
+	return STATUS_CODE_MAP[code] ?? 500;
+}
+
+/**
  * Genera una respuesta HTTP de error estandarizada.
  * Usado tanto por el onError global como por middleware que necesita responder antes de lanzar.
  */
 export function errorResponse(c: Context, error: AppError): Response {
+	const statusCode = getStatusCode(error.code);
 	return c.json<ApiErrorResponse>(
 		{
 			success: false,
 			error: {
 				code: error.code,
 				message: error.message,
-				statusCode: error.statusCode,
+				statusCode,
 			},
 		},
-		error.statusCode as Parameters<typeof c.json>[1],
+		statusCode,
 	);
 }
 
