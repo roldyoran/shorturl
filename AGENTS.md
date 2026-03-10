@@ -30,3 +30,27 @@ Cada parte tiene su propia guía para agentes.
 - **Si estás trabajando en el frontend** (cualquier cosa bajo `frontend/`, componentes Vue, stores, UI, llamadas a la API desde la app): **lee y aplica [frontend/AGENTS.md](frontend/AGENTS.md)** antes de editar. Ahí están el stack, convenciones de componentes y reglas de UI.
 
 Usa la guía del área en la que estés tocando código para no saltarte convenciones ni reglas críticas.
+
+---
+
+## Conventional Commits
+
+Los mensajes de commit deben seguir el formato de [Conventional Commits](https://www.conventionalcommits.org/) en **inglés**:
+
+```
+<tipo>(<alcance>): <descripción>
+
+[body opcional]
+
+[footer opcional]
+```
+
+Tipos comunes:
+- `feat` — nueva funcionalidad
+- `fix` — corrección de bug
+- `refactor` — refactorización sin cambio de comportamiento
+- `docs` — documentación
+- `test` — tests
+- `chore` — tareas de mantenimiento
+
+Ejemplo: `feat(urls): add shortCode validation with custom error`
