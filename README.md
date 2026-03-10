@@ -4,6 +4,8 @@
 
 A URL shortener built with **Hono** on **Cloudflare Workers**, **Cloudflare D1** (serverless SQLite) and **Drizzle ORM**. Hexagonal Architecture (Ports & Adapters).
 
+**by roldyoran**
+
 > **Note**: This repository is primarily focused on the **backend** (URL shortener API). The frontend is a simple Vue 3 application used to test the API with a nice UI, but it's not the main focus of this project.
 
 ---
