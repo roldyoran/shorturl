@@ -1,43 +1,47 @@
 # shorturl
 
-Acortador de URLs construido con **Hono** sobre **Cloudflare Workers**, **Cloudflare D1** (SQLite serverless) y **Drizzle ORM**. Arquitectura Hexagonal (Ports & Adapters).
+A URL shortener built with **Hono** on **Cloudflare Workers**, **Cloudflare D1** (serverless SQLite) and **Drizzle ORM**. Hexagonal Architecture (Ports & Adapters).
+
+> **Note**: This repository is primarily focused on the **backend** (URL shortener API). The frontend is a simple Vue 3 application used to test the API with a nice UI, but it's not the main focus of this project.
+
+> **Español**: ¿Prefieres leer en español? Consulta la [documentación en español](./docs/README.es.md).
 
 ---
 
-## Requisitos previos
+## Prerequisites
 
 - [Bun](https://bun.sh) ≥ 1.0
-- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) ≥ 4.0 (incluido como devDependency)
-- Cuenta de Cloudflare con una base de datos D1 creada
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) ≥ 4.0 (included as devDependency)
+- A Cloudflare account with a D1 database created
 
 ---
 
-## Instalación
+## Installation
 
 ```bash
-# 1. Clona el repositorio
+# 1. Clone the repository
 git clone git@github.com:roldyoran/shorturl.git
 cd shorturl
 
-# 2. Instala las dependencias
+# 2. Install dependencies
 bun install
 ```
 
 ---
 
-## Configuración
+## Configuration
 
-### 1. Variables de entorno (local)
+### 1. Environment variables (local)
 
-Crea un archivo `.env` en la raíz del proyecto:
+Create a `.env` file in the project root:
 
 ```env
-SERVICE_ADMIN_API_KEY=tu_api_key_secreta
+SERVICE_ADMIN_API_KEY=your_secret_api_key
 ```
 
-### 2. Wrangler — binding D1
+### 2. Wrangler — D1 binding
 
-Edita `wrangler.jsonc` y reemplaza el `database_id` con el ID de tu base de datos D1:
+Edit `wrangler.jsonc` and replace the `database_id` with your D1 database ID:
 
 ```jsonc
 {
@@ -45,37 +49,37 @@ Edita `wrangler.jsonc` y reemplaza el `database_id` con el ID de tu base de dato
     {
       "binding": "DB",
       "database_name": "shorturl",
-      "database_id": "<tu-database-id>"
+      "database_id": "<your-database-id>"
     }
   ]
 }
 ```
 
-### 3. Migraciones de base de datos
+### 3. Database migrations
 
 ```bash
-# Aplicar migraciones en D1 local (desarrollo)
+# Apply migrations to local D1 (development)
 bun run db:migrate:local
 
-# Aplicar migraciones en D1 remoto (producción)
+# Apply migrations to remote D1 (production)
 bun run db:migrate:remote
 ```
 
 ---
 
-## Desarrollo local
+## Local Development
 
 ```bash
 bun dev
 ```
 
-El servidor arranca en `http://localhost:8787`.
+The server starts at `http://localhost:8787`.
 
 ---
 
-## Uso de la API
+## API Usage
 
-### Crear una URL corta
+### Create a short URL
 
 ```bash
 curl -X POST http://localhost:8787/v1/urls \
@@ -93,7 +97,7 @@ curl -X POST http://localhost:8787/v1/urls \
 }
 ```
 
-### Crear una URL con shortCode personalizado
+### Create a URL with custom shortCode
 
 ```bash
 curl -X POST http://localhost:8787/v1/urls \
@@ -101,38 +105,38 @@ curl -X POST http://localhost:8787/v1/urls \
   -d '{"originalUrl": "https://hono.dev", "shortCode": "hono"}'
 ```
 
-### Redirigir a la URL original
+### Redirect to original URL
 
 ```bash
 curl -L http://localhost:8787/c04jzv
 ```
 
-Responde con `302 Location: https://www.epicgames.com` e incrementa el contador de visitas.
+Responds with `302 Location: https://www.epicgames.com` and increments the visit counter.
 
-### Listar todas las URLs
+### List all URLs
 
 ```bash
 curl http://localhost:8787/v1/urls
 ```
 
-### Obtener una URL por shortCode
+### Get a URL by shortCode
 
 ```bash
 curl http://localhost:8787/v1/urls/c04jzv
 ```
 
-### Eliminar una URL (requiere API key)
+### Delete a URL (requires API key)
 
 ```bash
 curl -X DELETE http://localhost:8787/v1/admin/urls/c04jzv \
-  -H "Authorization: Bearer tu_api_key_secreta"
+  -H "Authorization: Bearer your_secret_api_key"
 ```
 
-### Eliminar todas las URLs (requiere API key)
+### Delete all URLs (requires API key)
 
 ```bash
 curl -X DELETE http://localhost:8787/v1/admin/urls \
-  -H "Authorization: Bearer tu_api_key_secreta"
+  -H "Authorization: Bearer your_secret_api_key"
 ```
 
 ---
@@ -140,15 +144,15 @@ curl -X DELETE http://localhost:8787/v1/admin/urls \
 ## Tests
 
 ```bash
-bun test                  # todos los tests
-bun run test:watch        # modo watch
-bun run test:coverage     # con reporte de cobertura
-bun run test:bail         # aborta al primer fallo
+bun test                  # all tests
+bun run test:watch       # watch mode
+bun run test:coverage    # with coverage report
+bun run test:bail        # abort on first failure
 ```
 
 ---
 
-## Deploy a Cloudflare Workers
+## Deploy to Cloudflare Workers
 
 ```bash
 bun deploy
@@ -156,10 +160,43 @@ bun deploy
 
 ---
 
-## Comandos útiles
+## Useful Commands
 
 ```bash
-bun format                 # formatea el código con Biome
-bun run db:generate        # genera SQL de migración desde el schema
-bun run db:studio          # abre Drizzle Studio para inspeccionar la BD
+bun format                 # format code with Biome
+bun run db:generate        # generate migration SQL from schema
+bun run db:studio          # open Drizzle Studio to inspect the DB
 ```
+
+---
+
+## Frontend (Vue 3)
+
+The project includes a simple Vue 3 frontend to test the API with a user-friendly interface.
+
+### Frontend Features
+
+- **Shorten URLs**: Create short URLs directly from the UI
+- **URL Management**: View, copy, and delete your shortened URLs
+- **QR Code Generation**: Generate QR codes for shortened URLs
+- **Public URL List**: Browse publicly shortened URLs
+- **Dark/Light Theme**: Toggle between dark and light modes
+- **Responsive Design**: Works on desktop and mobile devices
+
+### Running the Frontend
+
+```bash
+cd frontend
+bun dev
+```
+
+The frontend runs on `http://localhost:5173` (Vite default).
+
+### Frontend Tech Stack
+
+- Vue 3 (Composition API)
+- Vite
+- Pinia (state management)
+- Shadcn-VUE (UI components)
+- Tailwind CSS
+- TypeScript
