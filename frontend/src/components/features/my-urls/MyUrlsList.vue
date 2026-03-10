@@ -214,7 +214,7 @@
         </div>
       </div>
 
-      <!-- QR Modal -->
+      <!-- Dialog QR -->
       <Dialog :open="showQRModal" @update:open="showQRModal = $event">
         <DialogContent class="sm:max-w-md">
           <DialogHeader>
@@ -232,6 +232,38 @@
               Descargar QR
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <!-- Dialog confirmar eliminar URL -->
+      <Dialog :open="showDeleteUrlDialog" @update:open="showDeleteUrlDialog = $event">
+        <DialogContent class="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Eliminar URL</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que quieres eliminar esta URL? Esta acción no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button @click="showDeleteUrlDialog = false" variant="outline">Cancelar</Button>
+            <Button @click="confirmDeleteUrl" variant="destructive">Eliminar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <!-- Dialog confirmar borrar todo -->
+      <Dialog :open="showClearAllDialog" @update:open="showClearAllDialog = $event">
+        <DialogContent class="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Borrar todas las URLs</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que quieres borrar todo el historial de URLs? Esta acción no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button @click="showClearAllDialog = false" variant="outline">Cancelar</Button>
+            <Button @click="confirmClearAllUrls" variant="destructive">Borrar Todo</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </CardContent>
@@ -281,6 +313,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogDescription,
+	DialogFooter,
 } from "@/components/ui/dialog";
 import { useUrlStore } from "@/stores/urlStore";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
@@ -302,6 +335,11 @@ const itemsPerPage = 10;
 const showQRModal = ref(false);
 const qrCanvas = ref<HTMLCanvasElement>();
 const currentQRUrl = ref<string>("");
+
+// Estado de diálogos de confirmación
+const showDeleteUrlDialog = ref(false);
+const showClearAllDialog = ref(false);
+const urlToDelete = ref<{ original: string; short: string } | null>(null);
 
 // Computed
 const totalPages = computed(() =>
@@ -345,10 +383,14 @@ const copyCode = (shortCode: string) => {
 };
 
 const removeUrl = (original: string, short: string) => {
-	if (confirm("¿Estás seguro de que quieres eliminar esta URL?")) {
-		urlStore.removeUrl(original, short);
+	urlToDelete.value = { original, short };
+	showDeleteUrlDialog.value = true;
+};
 
-		// Ajustar página si es necesario
+const confirmDeleteUrl = () => {
+	if (urlToDelete.value) {
+		urlStore.removeUrl(urlToDelete.value.original, urlToDelete.value.short);
+
 		if (paginatedUrls.value.length === 0 && currentPage.value > 1) {
 			currentPage.value--;
 		}
@@ -358,21 +400,22 @@ const removeUrl = (original: string, short: string) => {
 			"La URL ha sido eliminada correctamente",
 		);
 	}
+	showDeleteUrlDialog.value = false;
+	urlToDelete.value = null;
 };
 
 const confirmClearUrls = () => {
-	if (
-		confirm(
-			"¿Estás seguro de que quieres borrar todo el historial de URLs? Esta acción no se puede deshacer.",
-		)
-	) {
-		urlStore.clearAllUrls();
-		currentPage.value = 1;
-		notificationStore.showWarning(
-			"Historial borrado",
-			"Se ha eliminado todo el historial de URLs",
-		);
-	}
+	showClearAllDialog.value = true;
+};
+
+const confirmClearAllUrls = () => {
+	urlStore.clearAllUrls();
+	currentPage.value = 1;
+	showClearAllDialog.value = false;
+	notificationStore.showWarning(
+		"Historial borrado",
+		"Se ha eliminado todo el historial de URLs",
+	);
 };
 
 const previousPage = () => {

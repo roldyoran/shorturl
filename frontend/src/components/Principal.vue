@@ -221,12 +221,12 @@ const handleShorten = async () => {
 	const raw = (urlInput.value || "").trim();
 	if (!urlStore.canUseService) return;
 
-  const parsed = urlSchema.safeParse(raw);
-  if (!parsed.success) {
-    const first = parsed.error.issues?.[0];
-    toast.error(first?.message ?? "URL inválida");
-    return;
-  }
+	const parsed = urlSchema.safeParse(raw);
+	if (!parsed.success) {
+		const first = parsed.error.issues?.[0];
+		toast.error(first?.message ?? "URL inválida");
+		return;
+	}
 
 	const original = parsed.data;
 

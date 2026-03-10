@@ -27,14 +27,72 @@
 
       <!-- Nav actions -->
       <div class="flex items-center gap-1">
-        <!-- Theme Toggle -->
+        <!-- Theme Toggle - siempre visible -->
         <ThemeToggle />
 
-        <!-- Config -->
+        <!-- Botón menú móvil -->
+        <Drawer>
+          <DrawerTrigger as-child>
+            <Button variant="ghost" size="sm" class="sm:hidden w-9 h-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted">
+              <Menu class="w-4 h-4" />
+            </Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader class="text-left">
+              <DrawerTitle>Menú</DrawerTitle>
+              <DrawerDescription>
+                Opciones de navegación
+              </DrawerDescription>
+            </DrawerHeader>
+            <div class="px-4 pb-8 space-y-4">
+              <!-- Información -->
+              <Dialog>
+                <DialogTrigger as-child>
+                  <Button variant="outline" class="w-full justify-start gap-2">
+                    <Info class="w-4 h-4" />
+                    Información
+                  </Button>
+                </DialogTrigger>
+                <DialogContent class="max-w-2xl">
+                  <ApiConfig />
+                </DialogContent>
+              </Dialog>
+
+              <!-- Admin -->
+              <Dialog>
+                <DialogTrigger as-child>
+                  <Button variant="outline" class="w-full justify-start gap-2">
+                    <User class="w-4 h-4" />
+                    Admin
+                  </Button>
+                </DialogTrigger>
+                <DialogContent class="max-w-md">
+                  <div class="space-y-4">
+                    <Label for="admin-pass-mobile">Contraseña Admin</Label>
+                    <Input id="admin-pass-mobile" v-model="adminPassword" type="password" placeholder="Ingresa contraseña" />
+                    <div class="flex justify-end">
+                      <Button @click="submitAdmin">Iniciar sesión</Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <!-- GitHub -->
+              <Button variant="outline" as-child class="w-full justify-start gap-2">
+                <a href="https://github.com/roldyoran/shorturl" target="_blank">
+                  <Github class="w-4 h-4" />
+                  GitHub
+                </a>
+              </Button>
+            </div>
+          </DrawerContent>
+        </Drawer>
+
+        <!-- Info - solo visible en desktop -->
         <Dialog>
           <DialogTrigger as-child>
-            <Button variant="ghost" size="sm" class="w-9 h-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted">
-              <Settings class="w-4 h-4" />
+            <Button variant="ghost" size="sm" class="hidden sm:flex w-9 h-9 p-0 text-muted-foreground hover:text-foreground hover:bg-muted">
+              <Info class="w-4 h-4" />
             </Button>
           </DialogTrigger>
           <DialogContent class="max-w-2xl">
@@ -42,7 +100,7 @@
           </DialogContent>
         </Dialog>
 
-        <!-- Admin -->
+        <!-- Admin - solo visible en desktop -->
         <Dialog>
           <DialogTrigger as-child>
             <Button variant="ghost" size="sm" class="hidden sm:flex items-center gap-1.5 px-3 h-8 text-muted-foreground hover:text-foreground hover:bg-muted">
@@ -61,7 +119,7 @@
           </DialogContent>
         </Dialog>
 
-        <!-- GitHub -->
+        <!-- GitHub - solo visible en desktop -->
         <Button variant="ghost" size="sm" as-child class="hidden sm:flex items-center gap-1.5 px-3 h-8 text-muted-foreground hover:text-foreground hover:bg-muted">
           <a href="https://github.com/roldyoran/shorturl" target="_blank">
             <Github class="w-3.5 h-3.5" />
@@ -77,8 +135,16 @@
 
 <script setup lang="ts">
 // No local refs needed; Collapsible handles state
-import { Link, Settings, Github, User } from "lucide-vue-next";
+import { Link, Info, Github, User, Menu } from "lucide-vue-next";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+	Drawer,
+	DrawerContent,
+	DrawerDescription,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "./ThemeToggle.vue";
 import ApiConfig from "./ApiConfig.vue";
@@ -97,17 +163,16 @@ defineProps<{
 // Admin state
 const urlStore = useUrlStore();
 const adminPassword = ref("");
-// Read admin password from Vite env to avoid hardcoding
-const ADMIN_PASS = (import.meta as any).env?.VITE_ADMIN_PASS ?? "";
+const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS as string | undefined;
 const remainingAttempts = computed(
 	() => urlStore.userSession?.remainingAttempts ?? 0,
 );
 
 function submitAdmin() {
-	if (adminPassword.value === ADMIN_PASS) {
+	if (adminPassword.value === ADMIN_PASS && ADMIN_PASS) {
 		urlStore.setAdminStatus(true);
 		toast.success("Modo admin activado", {
-			description: "Tienes intentos ilimitados.",
+			description: "Tienes 999 intentos restantes.",
 		});
 	} else {
 		urlStore.setAdminStatus(false);
