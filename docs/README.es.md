@@ -1,8 +1,8 @@
 # shorturl
 
-Acortador de URLs construido con **Hono** sobre **Cloudflare Workers**, **Cloudflare D1** (SQLite serverless) y **Drizzle ORM**. Arquitectura Hexagonal (Ports & Adapters).
-
 **by roldyoran**
+
+Acortador de URLs construido con **Hono** sobre **Cloudflare Workers**, **Cloudflare D1** (SQLite serverless) y **Drizzle ORM**. Arquitectura Hexagonal (Ports & Adapters).
 
 ---
 
