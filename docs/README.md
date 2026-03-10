@@ -1,6 +1,6 @@
-# shorturl
+<h1 align="center">SHORTURL</h1>
 
-**by roldyoran**
+<p align="center">by roldyoran</p>
 
 A URL shortener built with **Hono** on **Cloudflare Workers**, **Cloudflare D1** (serverless SQLite) and **Drizzle ORM**. Hexagonal Architecture (Ports & Adapters).
 

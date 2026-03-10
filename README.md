@@ -1,6 +1,6 @@
-# shorturl
+<h1 align="center">SHORTURL</h1>
 
-**by roldyoran**
+<p align="center">by roldyoran</p>
 
 > **Español**: [Documentación en español](./docs/README.es.md)
 
