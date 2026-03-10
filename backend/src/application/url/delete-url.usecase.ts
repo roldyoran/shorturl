@@ -1,12 +1,11 @@
 import type { UrlEntity } from "@/domain/url/url.entity";
 import type { UrlRepositoryPort } from "@/domain/url/url.repository.port";
-import { AppError } from "@/utils/app-error";
+import { AppError } from "@/domain/app-error";
 
 export class UrlNotFoundError extends AppError {
 	constructor(shortCode: string) {
 		super(
 			`No existe una URL con el shortCode "${shortCode}"`,
-			404,
 			"URL_NOT_FOUND",
 		);
 	}

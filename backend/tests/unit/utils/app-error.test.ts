@@ -4,36 +4,34 @@ import {
 	UnauthorizedError,
 	NotFoundError,
 	ValidationError,
-} from "@/utils/app-error";
+} from "@/domain/app-error";
 
 describe("AppError", () => {
-	it("debe asignar message, statusCode y code correctamente", () => {
-		const error = new AppError("algo falló", 500, "INTERNAL_ERROR");
+	it("debe asignar message y code correctamente", () => {
+		const error = new AppError("algo falló", "INTERNAL_ERROR");
 
 		expect(error.message).toBe("algo falló");
-		expect(error.statusCode).toBe(500);
 		expect(error.code).toBe("INTERNAL_ERROR");
 	});
 
 	it("debe ser instancia de Error", () => {
-		const error = new AppError("msg", 500, "CODE");
+		const error = new AppError("msg", "CODE");
 
 		expect(error).toBeInstanceOf(Error);
 		expect(error).toBeInstanceOf(AppError);
 	});
 
 	it("debe asignar el name al nombre de la clase", () => {
-		const error = new AppError("msg", 500, "CODE");
+		const error = new AppError("msg", "CODE");
 
 		expect(error.name).toBe("AppError");
 	});
 });
 
 describe("UnauthorizedError", () => {
-	it("debe tener statusCode 401 y code UNAUTHORIZED", () => {
+	it("debe tener code UNAUTHORIZED", () => {
 		const error = new UnauthorizedError();
 
-		expect(error.statusCode).toBe(401);
 		expect(error.code).toBe("UNAUTHORIZED");
 	});
 
@@ -55,10 +53,9 @@ describe("UnauthorizedError", () => {
 });
 
 describe("NotFoundError", () => {
-	it("debe tener statusCode 404 y code NOT_FOUND", () => {
+	it("debe tener code NOT_FOUND", () => {
 		const error = new NotFoundError();
 
-		expect(error.statusCode).toBe(404);
 		expect(error.code).toBe("NOT_FOUND");
 	});
 
@@ -80,10 +77,9 @@ describe("NotFoundError", () => {
 });
 
 describe("ValidationError", () => {
-	it("debe tener statusCode 400 y code VALIDATION_ERROR", () => {
+	it("debe tener code VALIDATION_ERROR", () => {
 		const error = new ValidationError("campo requerido");
 
-		expect(error.statusCode).toBe(400);
 		expect(error.code).toBe("VALIDATION_ERROR");
 	});
 

@@ -5,8 +5,8 @@ import { createDb } from "@/db";
 import { UrlRepository } from "@/infrastructure/persistence/url.repository.impl";
 import { RedirectUrlUseCase } from "@/application/url/redirect-url.usecase";
 import { shortCodeSchema } from "@/utils/schemas";
-import { NotFoundError } from "@/utils/app-error";
-import { validationHook } from "@/utils/error-handler";
+import { NotFoundError } from "@/domain/app-error";
+import { validationHook } from "@/infrastructure/http/error-handler";
 
 // Adaptador primario: redirección directa por shortCode en la raíz
 const redirectRoutes = new Hono<{ Bindings: Bindings }>();

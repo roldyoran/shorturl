@@ -3,7 +3,7 @@ import { corsMiddleware } from "@/utils/cors-middleware";
 import { checkEnvMiddleware, type Bindings } from "@/utils/context";
 import { v1Router } from "@/presentation/http/v1";
 import { redirectRoutes } from "@/presentation/http/redirect";
-import { onError } from "@/utils/error-handler";
+import { onError } from "@/infrastructure/http/error-handler";
 
 // Crear la instancia principal de la aplicación
 const app = new Hono<{ Bindings: Bindings }>();
@@ -16,7 +16,7 @@ app.use("*", corsMiddleware());
 
 app.get("/", (c) => {
 	return c.json({
-		message: "Bienvenido al acortador de URLs",
+		message: "Bienvenido al acortador de URLs creado por Roldyoran, este proyecto utiliza Hono, TypeScript y Bun, alojado en Clouflare workers. Gracias por visitarlo!",
 		version: "1.0.0",
 	});
 });

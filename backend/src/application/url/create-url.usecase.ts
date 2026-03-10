@@ -1,12 +1,11 @@
 import type { UrlEntity, CreateUrlInput } from "@/domain/url/url.entity";
 import type { UrlRepositoryPort } from "@/domain/url/url.repository.port";
-import { AppError } from "@/utils/app-error";
+import { AppError } from "@/domain/app-error";
 
 export class ShortCodeAlreadyExistsError extends AppError {
 	constructor(shortCode: string) {
 		super(
 			`El shortCode "${shortCode}" ya está en uso`,
-			409,
 			"SHORT_CODE_ALREADY_EXISTS",
 		);
 	}
