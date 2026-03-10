@@ -6,5 +6,8 @@
     "dev:front": " bun run --cwd frontend dev",
     "dev:back": " bun run --cwd backend dev",
     "build:front": " bun run --cwd frontend build"
+  },
+  "devDependencies": {
+    "shadcn-vue": "^2.4.3"
   }
 }
