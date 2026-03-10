@@ -46,7 +46,7 @@ describe("DeleteUrlUseCase", () => {
 			expect(promise).rejects.toThrow(UrlNotFoundError);
 		});
 
-		it("el error debe tener statusCode 404 y code URL_NOT_FOUND", async () => {
+		it("el error debe tener code URL_NOT_FOUND", async () => {
 			repo.deleteByShortCode = () => Promise.resolve(null);
 
 			try {
@@ -54,7 +54,6 @@ describe("DeleteUrlUseCase", () => {
 			} catch (error) {
 				expect(error).toBeInstanceOf(UrlNotFoundError);
 				if (error instanceof UrlNotFoundError) {
-					expect(error.statusCode).toBe(404);
 					expect(error.code).toBe("URL_NOT_FOUND");
 					expect(error.message).toContain("noexiste");
 				}

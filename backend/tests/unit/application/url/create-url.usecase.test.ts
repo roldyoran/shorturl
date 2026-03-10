@@ -56,7 +56,6 @@ describe("CreateUrlUseCase", () => {
 			} catch (error) {
 				expect(error).toBeInstanceOf(ShortCodeAlreadyExistsError);
 				if (error instanceof ShortCodeAlreadyExistsError) {
-					expect(error.statusCode).toBe(409);
 					expect(error.code).toBe("SHORT_CODE_ALREADY_EXISTS");
 					expect(error.message).toContain("hono");
 				}

@@ -6,8 +6,8 @@ import { UrlRepository } from "@/infrastructure/persistence/url.repository.impl"
 import { DeleteUrlUseCase } from "@/application/url/delete-url.usecase";
 import { DeleteAllUrlsUseCase } from "@/application/url/delete-all-urls.usecase";
 import { shortCodeSchema } from "@/utils/schemas";
-import { UnauthorizedError } from "@/utils/app-error";
-import { validationHook } from "@/utils/error-handler";
+import { UnauthorizedError } from "@/domain/app-error";
+import { validationHook } from "@/infrastructure/http/error-handler";
 
 const adminRoutes = new Hono<{ Bindings: Bindings }>();
 

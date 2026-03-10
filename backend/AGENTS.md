@@ -35,6 +35,7 @@ El proyecto sigue **Arquitectura Hexagonal**, separando el núcleo de negocio de
 ```
 src/
 ├── domain/                          ← Núcleo (sin dependencias externas)
+│   ├── app-error.ts                 ← AppError base + errores genéricos reutilizables
 │   └── url/
 │       ├── url.entity.ts            ← Entidad UrlEntity + CreateUrlInput
 │       └── url.repository.port.ts  ← Puerto (interfaz del repositorio)
@@ -49,8 +50,10 @@ src/
 │       └── delete-all-urls.usecase.ts       ← Eliminar todas las URLs
 │
 ├── infrastructure/                  ← Adaptadores secundarios
-│   └── persistence/
-│       └── url.repository.impl.ts  ← Implementación Drizzle + D1
+│   ├── persistence/
+│   │   └── url.repository.impl.ts  ← Implementación Drizzle + D1
+│   └── http/
+│       └── error-handler.ts        ← onError global + errorResponse() + validationHook + mapeo code→status
 │
 ├── presentation/                    ← Adaptadores primarios (HTTP)
 │   └── http/
@@ -67,9 +70,7 @@ src/
 │
 ├── utils/
 │   ├── context.ts                  ← Tipo Bindings + checkEnvMiddleware
-│   ├── schemas.ts                  ← Esquemas Zod (shortCodeSchema, createUrlSchema)
-│   ├── app-error.ts                ← AppError base + errores genéricos reutilizables
-│   └── error-handler.ts            ← onError global + errorResponse() + validationHook
+│   └── schemas.ts                   ← Esquemas Zod (shortCodeSchema, createUrlSchema)
 │
 └── index.ts                         ← Bootstrap: app Hono + middlewares + rutas + onError
 
@@ -95,6 +96,11 @@ tests/
 ## Capas en detalle
 
 ### `domain/` — Dominio
+- **`app-error.ts`**: clase base `AppError` (con `message` y `code` de negocio). Los errores **nunca** deben incluir `statusCode` — ese es un detalle de infraestructura. Subclases genéricas:
+  - `UnauthorizedError` — `UNAUTHORIZED`
+  - `NotFoundError` — `NOT_FOUND`
+  - `ValidationError` — `VALIDATION_ERROR`
+  - Los errores de dominio (`ShortCodeAlreadyExistsError`, `UrlNotFoundError`) también extienden `AppError`.
 - **`url.entity.ts`**: interfaz `UrlEntity` (`id`, `originalUrl`, `shortCode`, `createdAt`, `visits`) e interfaz `CreateUrlInput`. No depende de ningún framework.
 - **`url.repository.port.ts`**: interfaz `UrlRepositoryPort` con los métodos:
   - `findAll()` → `UrlEntity[]`
@@ -108,15 +114,21 @@ tests/
 ### `application/` — Casos de uso
 Orquestan la lógica de negocio recibiendo el puerto como dependencia (inyección de dependencias manual). **Nunca** importan Hono, Drizzle ni D1.
 
-- **`CreateUrlUseCase`**: primero verifica si `originalUrl` ya existe (devuelve la existente si es así). Si se provee `shortCode`, verifica que no esté en uso — lanza `ShortCodeAlreadyExistsError` (409) si ya existe. Si no, genera uno automáticamente.
+- **`CreateUrlUseCase`**: primero verifica si `originalUrl` ya existe (devuelve la existente si es así). Si se provee `shortCode`, verifica que no esté en uso — lanza `ShortCodeAlreadyExistsError` si ya existe. Si no, genera uno automáticamente.
 - **`GetAllUrlsUseCase`**: retorna todas las URLs.
 - **`GetUrlByShortCodeUseCase`**: busca por código corto, retorna `null` si no existe.
 - **`RedirectUrlUseCase`**: busca la URL por `shortCode`; si existe, llama a `incrementVisits` y retorna la entidad actualizada. Retorna `null` si no existe.
-- **`DeleteUrlUseCase`**: elimina por `shortCode` — lanza `UrlNotFoundError` (404) si no existe.
+- **`DeleteUrlUseCase`**: elimina por `shortCode` — lanza `UrlNotFoundError` si no existe.
 - **`DeleteAllUrlsUseCase`**: elimina todos los registros de la tabla.
 
 ### `infrastructure/` — Adaptadores secundarios
 - **`UrlRepository`**: implementa `UrlRepositoryPort` usando Drizzle ORM sobre D1. Contiene `generateShortCode()` para crear códigos aleatorios de 6 chars `[a-z0-9]`. Implementa `incrementVisits` con un `UPDATE ... SET visits = visits + 1 ... RETURNING` atómico.
+- **`http/error-handler.ts`**: **punto único de control de errores**.
+  - `ApiErrorResponse` — tipo del formato estándar de respuesta de error.
+  - `errorResponse(c, error)` — construye la respuesta JSON con el formato estándar.
+  - `onError(error, c)` — handler global registrado en `app.onError()`. Los `AppError` se formatean con `errorResponse`; cualquier otro error se convierte en 500.
+  - `validationHook` — hook para `zValidator` que estandariza errores de Zod al mismo formato.
+  - Mapeo de `code` → `statusCode` HTTP (ej: `UNAUTHORIZED` → 401, `SHORT_CODE_ALREADY_EXISTS` → 409).
 
 ### `presentation/` — Adaptadores primarios
 - **`redirect/index.ts`**: router de redirección montado en `/` (raíz). `GET /:shortCode` valida el param con `shortCodeSchema`, ejecuta `RedirectUrlUseCase` y responde con `302` a `originalUrl`. Lanza `NotFoundError` si el código no existe.
@@ -125,16 +137,6 @@ Orquestan la lógica de negocio recibiendo el puerto como dependencia (inyecció
 - **`v1/admin.routes.ts`**: rutas protegidas montadas en `/v1/admin`. Middleware de autenticación que valida `Authorization: Bearer <SERVICE_ADMIN_API_KEY>` — lanza `UnauthorizedError` si falla.
 
 ### `utils/` — Utilidades transversales
-- **`app-error.ts`**: clase base `AppError` (con `message`, `statusCode`, `code`) y subclases genéricas:
-  - `UnauthorizedError` — 401, `UNAUTHORIZED`
-  - `NotFoundError` — 404, `NOT_FOUND`
-  - `ValidationError` — 400, `VALIDATION_ERROR`
-  - Los errores de dominio (`ShortCodeAlreadyExistsError`, `UrlNotFoundError`) también extienden `AppError`.
-- **`error-handler.ts`**: **punto único de control de errores**.
-  - `ApiErrorResponse` — tipo del formato estándar de respuesta de error.
-  - `errorResponse(c, error)` — construye la respuesta JSON con el formato estándar.
-  - `onError(error, c)` — handler global registrado en `app.onError()`. Los `AppError` se formatean con `errorResponse`; cualquier otro error se convierte en 500.
-  - `validationHook` — hook para `zValidator` que estandariza errores de Zod al mismo formato.
 - **`context.ts`**: tipo `Bindings` y middleware `checkEnvMiddleware`.
 - **`schemas.ts`**: `shortCodeSchema` y `createUrlSchema`.
 
@@ -149,7 +151,7 @@ Orquestan la lógica de negocio recibiendo el puerto como dependencia (inyecció
   }
 }
 ```
-Para cambiar el formato de todos los errores de la API, modificar únicamente `ApiErrorResponse` y `errorResponse()` en `src/utils/error-handler.ts`.
+Para cambiar el formato de todos los errores de la API, modificar únicamente `ApiErrorResponse` y `errorResponse()` en `src/infrastructure/http/error-handler.ts`.
 
 ### `index.ts` — Entry point
 Bootstrap: instancia Hono, registra `checkEnvMiddleware`, `cors`, el router `/v1`, el router de redirección `/` y `app.onError(onError)`. El router de redirección se monta **después** de `/v1` para evitar colisiones.
@@ -294,7 +296,7 @@ bun format                 # Formatea el código con Biome
 ## Convenciones para agentes
 
 - **Nuevas entidades de dominio**: crear en `src/domain/<entidad>/`.
-- **Nuevos casos de uso**: crear en `src/application/<entidad>/`, inyectar el puerto en el constructor. Los errores del caso de uso deben extender `AppError` de `src/utils/app-error.ts`.
+- **Nuevos casos de uso**: crear en `src/application/<entidad>/`, inyectar el puerto en el constructor. Los errores del caso de uso deben extender `AppError` de `src/domain/app-error.ts`. **Nunca** incluir `statusCode` en los errores de dominio — el mapeo a HTTP es responsabilidad de infraestructura.
 - **Nueva tabla**: añadir en `src/db/schema.ts`, luego `bun run db:generate` y `bun run db:migrate:local`.
 - **Nuevas rutas públicas**: crear archivo en `src/presentation/http/v1/` y registrarlo en `src/presentation/http/v1/index.ts` con `v1Router.route()`.
 - **Nuevas rutas protegidas**: añadirlas a `src/presentation/http/v1/admin.routes.ts` o crear un nuevo router de admin si corresponde a otra entidad.
@@ -305,4 +307,5 @@ bun format                 # Formatea el código con Biome
 - **Nuevo método en el puerto**: añadirlo a `UrlRepositoryPort`, implementarlo en `UrlRepository`, añadirlo al tipo `MockedRepository` y a `createMockRepository()` en el mock.
 - **Rutas de redirección** (no versionadas): añadirlas en `src/presentation/http/redirect/index.ts` y montarlas en `src/index.ts` con `app.route("/", redirectRoutes)` **después** de las rutas versionadas.
 - **Nunca** importar Drizzle, D1 o Hono desde `domain/` ni `application/`.
+- **Nunca** importar desde `infrastructure/` o `presentation/` hacia `application/` o `domain/` — las capas inferiores no pueden depender de las superiores.
 - El alias `@/` apunta a `src/` (definido en `tsconfig.json` `paths`).

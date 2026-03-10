@@ -7,8 +7,8 @@ import { GetAllUrlsUseCase } from "@/application/url/get-all-urls.usecase";
 import { GetUrlByShortCodeUseCase } from "@/application/url/get-url-by-shortcode.usecase";
 import { CreateUrlUseCase } from "@/application/url/create-url.usecase";
 import { shortCodeSchema, createUrlSchema } from "@/utils/schemas";
-import { NotFoundError } from "@/utils/app-error";
-import { validationHook } from "@/utils/error-handler";
+import { NotFoundError } from "@/domain/app-error";
+import { validationHook } from "@/infrastructure/http/error-handler";
 
 // Adaptador primario: rutas HTTP que traducen requests a llamadas de casos de uso
 const urlRoutes = new Hono<{ Bindings: Bindings }>();
