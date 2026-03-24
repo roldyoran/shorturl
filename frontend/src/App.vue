@@ -71,22 +71,22 @@
 
           <!-- Desktop: tabs -->
           <TabsList class="hidden sm:grid w-full max-w-md mx-auto grid-cols-3 bg-muted/50 p-1 rounded-lg">
-            <TabsTrigger 
-              value="info" 
+            <TabsTrigger
+              value="info"
               class="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-colors"
             >
               <Info class="w-4 h-4" />
               <span>Información</span>
             </TabsTrigger>
-            <TabsTrigger 
-              value="myurls" 
+            <TabsTrigger
+              value="myurls"
               class="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-colors"
             >
               <Database class="w-4 h-4" />
               <span>Mis URLs</span>
             </TabsTrigger>
-            <TabsTrigger 
-              value="list" 
+            <TabsTrigger
+              value="list"
               class="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-colors"
             >
               <List class="w-4 h-4" />
@@ -95,15 +95,19 @@
           </TabsList>
 
           <div class="mt-6">
-            <TabsContent value="info">
-              <UrlInfoForm />
-            </TabsContent>
-            <TabsContent value="myurls">
-              <MyUrlsList />
-            </TabsContent>
-            <TabsContent value="list">
-              <PublicUrlsList />
-            </TabsContent>
+            <Transition name="tab-fade" mode="out-in">
+              <div :key="activeTab">
+                <TabsContent value="info" v-if="activeTab === 'info'">
+                  <UrlInfoForm />
+                </TabsContent>
+                <TabsContent value="myurls" v-else-if="activeTab === 'myurls'">
+                  <UrlsList mode="my" />
+                </TabsContent>
+                <TabsContent value="list" v-else>
+                  <UrlsList mode="public" />
+                </TabsContent>
+              </div>
+            </Transition>
           </div>
         </Tabs>
       </div>
@@ -127,8 +131,7 @@ import Principal from "@/components/Principal.vue";
 import FooterComponent from "@/components/layout/FooterComponent.vue";
 
 import UrlInfoForm from "@/components/features/url-info/UrlInfoForm.vue";
-import MyUrlsList from "@/components/features/my-urls/MyUrlsList.vue";
-import PublicUrlsList from "@/components/features/url-list/PublicUrlsList.vue";
+import UrlsList from "@/components/features/urls/UrlsList.vue";
 const mode = useColorMode();
 
 // Apply the theme class to the document element
@@ -189,5 +192,15 @@ onMounted(() => {
 }
 .github-bounce:hover {
   animation: none;
+}
+
+.tab-fade-enter-active,
+.tab-fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.tab-fade-enter-from,
+.tab-fade-leave-to {
+  opacity: 0;
+  transform: translateY(6px);
 }
 </style>
