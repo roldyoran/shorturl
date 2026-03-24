@@ -32,15 +32,20 @@
         </svg>
         <span class="font-mono text-xs text-foreground">{{ SERVICE_URL }}</span>
       </div>
-      <Button
-        variant="outline"
-        size="sm"
-        class="h-8 w-8 p-0"
-        @click="copyServiceUrl"
-        aria-label="Copiar URL del servicio"
-      >
-        <Copy class="w-3.5 h-3.5" />
-      </Button>
+      <Tooltip>
+        <TooltipTrigger :asChild="true">
+          <Button
+            variant="outline"
+            size="sm"
+            class="h-8 w-8 p-0"
+            @click="copyServiceUrl"
+            aria-label="Copiar URL del servicio"
+          >
+            <Copy class="w-3.5 h-3.5" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Copiar URL del servicio</TooltipContent>
+      </Tooltip>
     </div>
 
     <!-- Main Input Card -->
@@ -178,6 +183,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useUrlStore } from "@/stores/urlStore";
 import { useUrlShortener } from "@/composables/useUrlShortener";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
@@ -199,8 +209,8 @@ const resultCard = ref<HTMLElement | null>(null);
 const cardAnimating = ref(false);
 
 const onAliasInput = (e: Event) => {
-  const val = (e.target as HTMLInputElement).value || "";
-  alias.value = val.replace(/[^a-z0-9]/g, "").slice(0, 6);
+	const val = (e.target as HTMLInputElement).value || "";
+	alias.value = val.replace(/[^a-z0-9]/g, "").slice(0, 6);
 };
 
 const customAlias = ref(false);
@@ -209,84 +219,84 @@ const shortUrl = ref("");
 const attempts = computed(() => urlStore.userSession.remainingAttempts);
 
 const urlSchema = z
-  .string()
-  .nonempty({ message: "Ingresa una URL" })
-  .url({ message: "Ingresa una URL válida" })
-  .refine((val) => /^https?:\/\//i.test(val), {
-    message: "Solo se permiten URLs con protocolo http(s)",
-  });
+	.string()
+	.nonempty({ message: "Ingresa una URL" })
+	.url({ message: "Ingresa una URL válida" })
+	.refine((val) => /^https?:\/\//i.test(val), {
+		message: "Solo se permiten URLs con protocolo http(s)",
+	});
 
 const fireConfetti = () => {
-  // Lado izquierdo
-  confetti({
-    particleCount: 80,
-    spread: 70,
-    origin: { x: 0, y: 0.6 },
-    angle: 60,
-  });
-  // Lado derecho
-  confetti({
-    particleCount: 80,
-    spread: 70,
-    origin: { x: 1, y: 0.6 },
-    angle: 120,
-  });
-  // Centro (el que pediste)
-  confetti({
-    particleCount: 80,
-    spread: 70,
-    origin: { y: 0.6 },
-  });
+	// Lado izquierdo
+	confetti({
+		particleCount: 80,
+		spread: 70,
+		origin: { x: 0, y: 0.6 },
+		angle: 60,
+	});
+	// Lado derecho
+	confetti({
+		particleCount: 80,
+		spread: 70,
+		origin: { x: 1, y: 0.6 },
+		angle: 120,
+	});
+	// Centro (el que pediste)
+	confetti({
+		particleCount: 80,
+		spread: 70,
+		origin: { y: 0.6 },
+	});
 };
 
 const handleShorten = async () => {
-  const raw = (urlInput.value || "").trim();
-  if (!urlStore.canUseService) return;
+	const raw = (urlInput.value || "").trim();
+	if (!urlStore.canUseService) return;
 
-  const parsed = urlSchema.safeParse(raw);
-  if (!parsed.success) {
-    const first = parsed.error.issues?.[0];
-    toast.error(first?.message ?? "URL inválida");
-    return;
-  }
+	const parsed = urlSchema.safeParse(raw);
+	if (!parsed.success) {
+		const first = parsed.error.issues?.[0];
+		toast.error(first?.message ?? "URL inválida");
+		return;
+	}
 
-  const original = parsed.data;
+	const original = parsed.data;
 
-  try {
-    const result = await shortenUrl(original, alias.value || undefined);
+	try {
+		const result = await shortenUrl(original, alias.value || undefined);
 
-    if (result.success) {
-      shortUrl.value =
-        (result as any).shortUrl ??
-        `${SERVICE_URL}/${(result as any).shortCode ?? result.shortUrl}`;
-      originalUrl.value = (result as any).originalUrl ?? original;
-      urlInput.value = "";
-      alias.value = "";
-      customAlias.value = false;
+		if (result.success) {
+			shortUrl.value =
+				(result as any).shortUrl ??
+				`${SERVICE_URL}/${(result as any).shortCode ?? result.shortUrl}`;
+			originalUrl.value = (result as any).originalUrl ?? original;
+			urlInput.value = "";
+			alias.value = "";
+			customAlias.value = false;
 
-      await nextTick();
+			await nextTick();
 
-      cardAnimating.value = true;
-      const el = (resultCard.value as any)?.$el ?? resultCard.value;
-      if (el && typeof el.scrollIntoView === "function") {
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-      setTimeout(() => (cardAnimating.value = false), 600);
+			cardAnimating.value = true;
+			const el = (resultCard.value as any)?.$el ?? resultCard.value;
+			if (el && typeof el.scrollIntoView === "function") {
+				el.scrollIntoView({ behavior: "smooth", block: "center" });
+			}
+			setTimeout(() => (cardAnimating.value = false), 600);
 
-      // Lanzar confetti
-      fireConfetti();
-    }
-  } catch (err: any) {
-    toast.error(err?.message || "Error al acortar la URL");
-  }
+			// Lanzar confetti
+			fireConfetti();
+		}
+	} catch (err: any) {
+		toast.error(err?.message || "Error al acortar la URL");
+	}
 };
 
 const copyServiceUrl = () => {
-  copyToClipboard(SERVICE_URL, "URL del servicio copiada");
+	copyToClipboard(SERVICE_URL, "URL del servicio copiada");
 };
 
 const copyShortUrl = () => {
-  copyToClipboard(shortUrl.value, "URL copiada al portapapeles");
+	copyToClipboard(shortUrl.value, "URL copiada al portapapeles");
 };
 </script>
 

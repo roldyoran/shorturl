@@ -7,7 +7,8 @@
     <NavbarHeader :attempts="attempts" />
 
     <main id="main-content" class="flex-grow container mx-auto px-4 py-4 relative z-10" tabindex="-1">
-      <Principal />
+      <TooltipProvider>
+        <Principal />
 
       <!-- Tabs para otras funcionalidades -->
       <div class="space-y-6 mt-8">
@@ -109,8 +110,9 @@
               </div>
             </Transition>
           </div>
-        </Tabs>
-      </div>
+          </Tabs>
+        </div>
+      </TooltipProvider>
     </main>
 
     <!-- Footer -->
@@ -125,6 +127,7 @@ import { useColorMode } from "@vueuse/core";
 import { useUrlStore } from "@/stores/urlStore";
 import { Toaster } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "vue-sonner/style.css"; // vue-sonner v2 requires this import
 import NavbarHeader from "@/components/NavbarHeader.vue";
 import Principal from "@/components/Principal.vue";
