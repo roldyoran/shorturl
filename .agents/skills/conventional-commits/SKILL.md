@@ -75,11 +75,26 @@ The scope is optional but recommended when it adds clarity. Use a scope that des
 
 ### Body
 
-The body is **mandatory** and must:
-- Be descriptive about what was done in the files that were changed
-- Explain the "what" and "why", not "how"
-- Be brief but informative (1-3 lines recommended)
-- Reference any related issues or PRs if applicable
+The body is **mandatory** and must include:
+
+1. **Summary**: A brief description of what was done (1-3 lines)
+2. **File list**: A list of all modified or created files with a very brief description of the change
+
+Use this format:
+```
+<summary description>
+
+Files:
+- filename.ext: brief description of change
+- another-file.ext: brief description of change
+```
+
+#### File List Requirements
+
+- List ALL files that were modified, created, or deleted
+- Use relative paths from the project root
+- Keep the description extremely brief (2-5 words)
+- Group related files together if needed
 
 ### Examples
 
@@ -87,36 +102,45 @@ The body is **mandatory** and must:
 feat(api): add user registration endpoint
 
 Created new POST endpoint for user signup with validation. Added password hashing and token generation.
+
+Files:
+- routes/auth.ts: added POST /register endpoint
+- controllers/auth.ts: added registration logic with validation
+- models/user.ts: added user schema with email/password fields
+- utils/auth.ts: added password hashing and token generation functions
+- middleware/auth.ts: added auth middleware
 ```
 
 ```
 fix(ui): resolve button alignment on mobile
 
 Fixed spacing issue in the navigation component that caused buttons to overflow on small screens.
+
+Files:
+- components/Navbar.vue: fixed flexbox alignment and added responsive styles
+- styles/buttons.css: adjusted padding and margins for mobile
 ```
 
 ```
 refactor(db): optimize query performance
 
 Restructured database queries to reduce N+1 problems. Added proper indexing for frequently accessed columns.
-```
 
-```
-test(auth): add integration tests for login flow
-
-Created test suite covering valid credentials, invalid credentials, and session timeout scenarios.
+Files:
+- models/post.ts: replaced eager loading with proper joins
+- queries/posts.ts: refactored query methods
+- migrations/001_add_indexes.sql: added indexes for foreign keys
 ```
 
 ```
 chore(deps): update React to version 18
 
 Upgraded React and related packages to latest stable version. Fixed deprecation warnings.
-```
 
-```
-perf(utils): improve array processing speed
-
-Replaced forEach with map for better performance. Added memoization for expensive computations.
+Files:
+- package.json: updated React and React DOM to v18
+- package-lock.json: regenerated lock file
+- src/index.tsx: updated root render to use createRoot
 ```
 
 ## Rules
@@ -124,6 +148,7 @@ Replaced forEach with map for better performance. Added memoization for expensiv
 1. **Language**: All commit messages MUST be in English
 2. **Format**: Follow the conventional commits structure exactly
 3. **Body required**: Always include a descriptive body that explains what was changed
-4. **Imperative mood**: Use "add", "fix", "update" not "added", "fixed", "updated"
-5. **No emoji**: Do not use emojis in commit messages
-6. **Breaking changes**: Prefix with `!` after type/scope or use `BREAKING CHANGE:` in footer
+4. **File list required**: Always include a list of all modified/created files with brief descriptions
+5. **Imperative mood**: Use "add", "fix", "update" not "added", "fixed", "updated"
+6. **No emoji**: Do not use emojis in commit messages
+7. **Breaking changes**: Prefix with `!` after type/scope or use `BREAKING CHANGE:` in footer
