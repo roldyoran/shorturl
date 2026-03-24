@@ -1,17 +1,17 @@
 <template>
   <div class="redirect-test">
     <DialogHeader>
-      <DialogTitle class="flex items-center gap-3 redirect-test-item">
+      <DialogTitle class="flex items-center gap-3">
         <ExternalLink class="w-6 h-6" />
         Probar Redirección
       </DialogTitle>
-      <DialogDescription class="redirect-test-item">
+      <DialogDescription>
         Ingresa el código de una URL corta para probar la redirección a la URL original
       </DialogDescription>
     </DialogHeader>
 
     <div class="space-y-6 mt-6">
-      <div class="space-y-2 redirect-test-item">
+      <div class="space-y-2">
         <Label for="redirect-url">Código de URL Corta</Label>
         <Input
           id="redirect-url"
@@ -21,7 +21,7 @@
         />
       </div>
 
-      <div class="space-y-4 redirect-test-item">
+      <div class="space-y-4">
         <Button
           @click="redirectToUrl"
           :disabled="!shortCode.trim()"
@@ -40,18 +40,19 @@
       </div>
 
       <Transition name="redirect-fade">
-        <Alert v-if="error" variant="destructive" class="redirect-test-item">
+        <Alert v-if="error" variant="destructive">
           <AlertCircle class="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>{{ error }}</AlertDescription>
         </Alert>
       </Transition>
 
-      <Alert class="redirect-test-item">
+      <Alert>
         <Info class="h-4 w-4" />
         <AlertTitle>¿Cómo funciona?</AlertTitle>
         <AlertDescription>
-          Este probador abre la URL corta en una nueva pestaña. Si el código existe, serás redirigido automáticamente a la URL original.
+          Este probador abre la URL corta en una nueva pestaña. Si el código existe,
+          serás redirigido automáticamente a la URL original.
         </AlertDescription>
       </Alert>
     </div>
@@ -73,14 +74,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { toast } from "vue-sonner";
 import { getApiBaseUrl } from "@/api/http";
 
-// Estado reactivo
 const shortCode = ref<string>("");
 const error = ref<string>("");
 
-// Methods
 const getRedirectUrl = (): string => {
 	if (!shortCode.value.trim()) return "";
-
 	const base = getApiBaseUrl().replace(/\/$/, "");
 	return `${base}/${shortCode.value.trim()}`;
 };
@@ -95,16 +93,12 @@ const redirectToUrl = async () => {
 
 	try {
 		const redirectUrl = getRedirectUrl();
-
-		// Abrir en nueva pestaña
 		const newWindow = window.open(redirectUrl, "_blank");
 
 		if (newWindow) {
 			toast.success("Redirección iniciada", {
 				description: "Se ha abierto una nueva pestaña con la URL corta",
 			});
-
-			// Limpiar el campo después de la redirección exitosa
 			setTimeout(() => {
 				shortCode.value = "";
 			}, 1000);
@@ -112,7 +106,7 @@ const redirectToUrl = async () => {
 			error.value =
 				"No se pudo abrir la nueva pestaña. Verifica que no esté bloqueada por el navegador.";
 		}
-	} catch (e: any) {
+	} catch (e: unknown) {
 		console.error("Error al intentar abrir la URL:", e);
 		error.value =
 			"Error al intentar abrir la URL. Verifica la consola para más detalles.";
@@ -124,50 +118,53 @@ const redirectToUrl = async () => {
 </script>
 
 <style scoped>
-/* Entrada sutil al abrir el diálogo */
 .redirect-test-item {
-  animation: redirectStagger 0.35s ease-out 0.08s forwards;
-  opacity: 0;
+	animation: redirectStagger 0.35s ease-out 0.08s forwards;
+	opacity: 0;
 }
+
 @keyframes redirectStagger {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
-/* Transición del bloque de vista previa */
+
 .redirect-preview-enter-active,
 .redirect-preview-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+	transition: opacity 0.2s ease, transform 0.2s ease;
 }
+
 .redirect-preview-enter-from,
 .redirect-preview-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
+	opacity: 0;
+	transform: translateY(-4px);
 }
-/* Transición del alert de error */
+
 .redirect-fade-enter-active,
 .redirect-fade-leave-active {
-  transition: opacity 0.2s ease;
+	transition: opacity 0.2s ease;
 }
+
 .redirect-fade-enter-from,
 .redirect-fade-leave-to {
-  opacity: 0;
+	opacity: 0;
 }
+
 @media (prefers-reduced-motion: reduce) {
-  .redirect-test-item {
-    animation: none;
-    opacity: 1;
-  }
-  .redirect-preview-enter-active,
-  .redirect-preview-leave-active,
-  .redirect-fade-enter-active,
-  .redirect-fade-leave-active {
-    transition-duration: 0.01s;
-  }
+	.redirect-test-item {
+		animation: none;
+		opacity: 1;
+	}
+	.redirect-preview-enter-active,
+	.redirect-preview-leave-active,
+	.redirect-fade-enter-active,
+	.redirect-fade-leave-active {
+		transition-duration: 0.01s;
+	}
 }
 </style>

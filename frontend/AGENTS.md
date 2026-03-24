@@ -43,54 +43,64 @@ Este documento proporciona información esencial para agentes de IA (como Cursor
 ```
 frontend/
 ├── src/
-│   ├── api/              # Configuración de API y tipos
-│   │   ├── http.ts       # Instancia de Axios y funciones de API
-│   │   └── types.ts      # Tipos TypeScript para API
+│   ├── api/                    # Servicios HTTP y tipos compartidos
+│   │   ├── http.ts             # Instancia de Axios y funciones de API
+│   │   └── types.ts            # Tipos TypeScript (UrlInfoResponse, SavedUrlItem, UserSession, etc.)
 │   │
-│   ├── components/       # Componentes Vue
-│   │   ├── features/     # Componentes específicos de funcionalidad
-│   │   │   ├── url-shortener/    # Acortamiento de URLs
-│   │   │   ├── url-info/         # Información de URLs
-│   │   │   ├── my-urls/          # URLs del usuario
-│   │   │   └── url-list/         # Lista pública
+│   ├── views/                  # Componentes de página (rutas/vistas)
+│   │   └── HomeView.vue        # Vista principal (hero + form de acortar)
+│   │
+│   ├── components/
+│   │   ├── shared/             # Componentes reutilizables no-UI
+│   │   │   ├── UrlResultCard.vue    # Card de resultado de URL acortada
+│   │   │   └── AttemptsBadge.vue    # Badge de intentos restantes
 │   │   │
-│   │   ├── layout/       # Componentes de layout
-│   │   │   └── FooterComponent.vue
+│   │   ├── config/             # Componentes de configuración/debug
+│   │   │   ├── ApiConfigDialog.vue  # Dialog de info de API
+│   │   │   ├── RedirectTest.vue     # Herramienta de prueba de redirección
+│   │   │   └── ToastDemo.vue        # Demo del sistema de notificaciones
 │   │   │
-│   │   ├── ui/           # Componentes Shadcn-VUE (NO modificar estilos)
-│   │   │   ├── button/
-│   │   │   ├── card/
-│   │   │   ├── dialog/
-│   │   │   ├── form/
-│   │   │   ├── tabs/
-│   │   │   └── ... (más componentes)
+│   │   ├── features/           # Componentes de funcionalidad
+│   │   │   ├── url-shortener/        # Acortamiento de URLs
+│   │   │   │   └── ShortenUrlForm.vue
+│   │   │   ├── url-info/              # Información de URLs
+│   │   │   │   └── UrlInfoForm.vue
+│   │   │   └── urls/                  # Lista de URLs
+│   │   │       └── UrlsList.vue      # Soporta modo "my" y "public"
 │   │   │
-│   │   ├── NavbarHeader.vue
-│   │   ├── Principal.vue
-│   │   └── ThemeToggle.vue
+│   │   ├── layout/             # Componentes de layout
+│   │   │   ├── NavbarHeader.vue
+│   │   │   ├── FooterComponent.vue
+│   │   │   └── ThemeToggle.vue
+│   │   │
+│   │   └── ui/                # Componentes Shadcn-VUE (NO modificar estilos)
+│   │       ├── button/
+│   │       ├── card/
+│   │       ├── dialog/
+│   │       ├── form/
+│   │       ├── tabs/
+│   │       └── ... (más componentes)
 │   │
-│   ├── composables/      # Composables reutilizables
-│   │   ├── useCopyToClipboard.ts
-│   │   ├── useToast.ts
-│   │   └── useUrlShortener.ts
+│   ├── composables/            # Composables reutilizables
+│   │   ├── useUrlShortener.ts       # Lógica de negocio para acortar URLs
+│   │   └── useCopyToClipboard.ts     # Utilidad para copiar al portapapeles
 │   │
-│   ├── stores/           # Stores de Pinia
-│   │   ├── index.ts      # Configuración de Pinia
-│   │   ├── urlStore.ts   # Store principal de URLs y sesión
-│   │   └── notificationStore.ts
+│   ├── stores/                  # Stores de Pinia
+│   │   ├── index.ts            # Configuración de Pinia
+│   │   └── urlStore.ts         # Store principal de URLs y sesión
 │   │
-│   ├── lib/              # Utilidades
-│   │   └── utils.ts      # Funciones helper
+│   ├── lib/                    # Utilidades
+│   │   └── utils.ts            # Funciones helper (cn, formatDate, etc.)
 │   │
-│   ├── App.vue           # Componente raíz
-│   ├── main.ts           # Punto de entrada
-│   └── style.css         # Estilos globales
+│   ├── App.vue                 # Componente raíz
+│   ├── main.ts                 # Punto de entrada
+│   └── style.css               # Estilos globales
 │
-├── public/               # Archivos estáticos
+├── public/                     # Archivos estáticos
 ├── package.json
 ├── vite.config.ts
 ├── tsconfig.json
-└── biome.json            # Configuración de Biome
+└── biome.json                  # Configuración de Biome
 ```
 
 ## 🎯 Convenciones y Reglas Importantes
@@ -242,20 +252,40 @@ El store `urlStore` incluye una función `getDebugInfo()` que retorna:
 
 ## 📦 Scripts Disponibles
 
+> **IMPORTANTE**: NO ejecutar `build` para verificar que el código funcione. Usar solo para generar archivos de producción.
+
 ```bash
 # Desarrollo
 bun dev               # Inicia servidor de desarrollo
 
-# Build
-bun build             # Construye para producción
-
-# Preview
-bun preview           # Previsualiza build de producción
-
-# Linting y Formateo
-bun check             # Verifica código con Biome
+# Verificación de código (NO build)
+bun check             # Verifica código con Biome (tipo-check + lint)
 bun format            # Formatea código con Biome
 bun lint              # Lint y auto-fix con Biome
+
+# Preview (solo cuando sea necesario)
+bun preview           # Previsualiza build de producción
+
+# Build (solo para generar archivos de producción)
+bun build             # Construye para producción
+```
+
+### En el root del monorepo
+
+Todos los comandos deben especificar explícitamente si son para `front` o `back`:
+
+```bash
+# Incorrecto (no hacer esto)
+bun run dev
+bun run build
+bun run check
+
+# Correcto (siempre especificar)
+bun run dev:front     # Inicia servidor frontend
+bun run dev:back      # Inicia servidor backend
+bun run build:front  # Build del frontend
+bun run build:back   # Build del backend
+bun run check        # Check del frontend (asumir frontend por defecto)
 ```
 
 ## 🔍 Búsqueda de Código

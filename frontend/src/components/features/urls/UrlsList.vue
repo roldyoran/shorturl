@@ -259,75 +259,74 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue";
 import {
-  Database,
-  Trash,
-  Globe,
-  Search,
-  ExternalLink,
-  Copy,
-  QrCode,
-  Download,
-  ChevronLeft,
-  ChevronRight,
+	Database,
+	Trash,
+	Globe,
+	Search,
+	ExternalLink,
+	Copy,
+	QrCode,
+	Download,
+	ChevronLeft,
+	ChevronRight,
 } from "lucide-vue-next";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
+	CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+	DialogFooter,
 } from "@/components/ui/dialog";
 import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
+	Tooltip,
+	TooltipTrigger,
+	TooltipContent,
+	TooltipProvider,
 } from "@/components/ui/tooltip";
 import QRCode from "qrcode-generator";
 import { getUrlsRequest, getApiBaseUrl } from "@/api/http";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
-import { useNotificationStore } from "@/stores/notificationStore";
 import { useUrlStore } from "@/stores/urlStore";
 import { formatDate, truncateText } from "@/lib/utils";
 import type { UrlInfoResponse } from "@/api/types";
+import { toast } from "vue-sonner";
 
 type Mode = "my" | "public";
 
 type SavedUrl = {
-  original: string;
-  short: string;
-  date: string;
-  clicks?: number;
-  visits?: number;
+	original: string;
+	short: string;
+	date: string;
+	clicks?: number;
+	visits?: number;
 };
 
 type NormalizedUrl = {
-  shortCode: string;
-  originalUrl: string;
-  createdAt: string;
-  clicks: number;
-  raw: SavedUrl | UrlInfoResponse;
+	shortCode: string;
+	originalUrl: string;
+	createdAt: string;
+	clicks: number;
+	raw: SavedUrl | UrlInfoResponse;
 };
 
 const props = withDefaults(defineProps<{ mode?: Mode }>(), {
-  mode: "my",
+	mode: "my",
 });
 
 const isMyList = computed(() => props.mode === "my");
 
 const urlStore = useUrlStore();
 const { copyToClipboard } = useCopyToClipboard();
-const notificationStore = useNotificationStore();
 
 const baseUrl = getApiBaseUrl();
 
@@ -352,246 +351,262 @@ const urlToDelete = ref<{ original: string; short: string } | null>(null);
 
 // Computed: normalize lists
 const publicClicksByShort = computed(() => {
-  const map = new Map<string, number>();
-  for (const url of shortUrls.value) {
-    map.set(url.shortCode, url.visits || 0);
-  }
-  return map;
+	const map = new Map<string, number>();
+	for (const url of shortUrls.value) {
+		map.set(url.shortCode, url.visits || 0);
+	}
+	return map;
 });
 
 const normalizedMyUrls = computed<NormalizedUrl[]>(() =>
-  urlStore.savedUrls.map((url: SavedUrl) => {
-    const savedClicks = url.clicks ?? url.visits;
-    const clicks =
-      savedClicks ?? publicClicksByShort.value.get(url.short) ?? 0;
-    return {
-      shortCode: url.short,
-      originalUrl: url.original,
-      createdAt: url.date,
-      clicks,
-      raw: url,
-    };
-  }),
+	urlStore.savedUrls.map((url: SavedUrl) => {
+		const savedClicks = url.clicks ?? url.visits;
+		const clicks = savedClicks ?? publicClicksByShort.value.get(url.short) ?? 0;
+		return {
+			shortCode: url.short,
+			originalUrl: url.original,
+			createdAt: url.date,
+			clicks,
+			raw: url,
+		};
+	}),
 );
 
 const normalizedPublicUrls = computed<NormalizedUrl[]>(() =>
-  shortUrls.value.map((url) => ({
-    shortCode: url.shortCode,
-    originalUrl: url.originalUrl,
-    createdAt: url.createdAt,
-    clicks: url.visits || 0,
-    raw: url,
-  })),
+	shortUrls.value.map((url) => ({
+		shortCode: url.shortCode,
+		originalUrl: url.originalUrl,
+		createdAt: url.createdAt,
+		clicks: url.visits || 0,
+		raw: url,
+	})),
 );
 
 const filteredUrls = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return normalizedPublicUrls.value;
-  }
-  const query = searchQuery.value.toLowerCase();
-  return normalizedPublicUrls.value.filter(
-    (url) =>
-      url.shortCode.toLowerCase().includes(query) ||
-      url.originalUrl.toLowerCase().includes(query),
-  );
+	if (!searchQuery.value.trim()) {
+		return normalizedPublicUrls.value;
+	}
+	const query = searchQuery.value.toLowerCase();
+	return normalizedPublicUrls.value.filter(
+		(url) =>
+			url.shortCode.toLowerCase().includes(query) ||
+			url.originalUrl.toLowerCase().includes(query),
+	);
 });
 
 const totalPages = computed(() =>
-  Math.ceil(normalizedMyUrls.value.length / itemsPerPage),
+	Math.ceil(normalizedMyUrls.value.length / itemsPerPage),
 );
 
 const paginatedUrls = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return normalizedMyUrls.value.slice(start, end);
+	const start = (currentPage.value - 1) * itemsPerPage;
+	const end = start + itemsPerPage;
+	return normalizedMyUrls.value.slice(start, end);
 });
 
 const visiblePages = computed(() => {
-  const pages: number[] = [];
-  const maxVisible = 5;
-  let start = Math.max(1, currentPage.value - Math.floor(maxVisible / 2));
-  let end = Math.min(totalPages.value, start + maxVisible - 1);
-  if (end - start + 1 < maxVisible) {
-    start = Math.max(1, end - maxVisible + 1);
-  }
-  for (let i = start; i <= end; i++) {
-    pages.push(i);
-  }
-  return pages;
+	const pages: number[] = [];
+	const maxVisible = 5;
+	let start = Math.max(1, currentPage.value - Math.floor(maxVisible / 2));
+	let end = Math.min(totalPages.value, start + maxVisible - 1);
+	if (end - start + 1 < maxVisible) {
+		start = Math.max(1, end - maxVisible + 1);
+	}
+	for (let i = start; i <= end; i++) {
+		pages.push(i);
+	}
+	return pages;
 });
 
 const displayUrls = computed(() =>
-  isMyList.value ? paginatedUrls.value : filteredUrls.value,
+	isMyList.value ? paginatedUrls.value : filteredUrls.value,
 );
 
 const shouldUseScroll = computed(() => {
-  if (isMyList.value) {
-    return normalizedMyUrls.value.length > itemsPerPage;
-  }
-  return filteredUrls.value.length > 8;
+	if (isMyList.value) {
+		return normalizedMyUrls.value.length > itemsPerPage;
+	}
+	return filteredUrls.value.length > 8;
 });
 
 const getFullShortUrl = (shortCode: string): string => {
-  return `${baseUrl.replace(/\/$/, "")}/${shortCode}`;
+	return `${baseUrl.replace(/\/$/, "")}/${shortCode}`;
 };
 
 const copyFullUrl = (shortCode: string) => {
-  copyToClipboard(getFullShortUrl(shortCode), "URL completa copiada");
+	copyToClipboard(getFullShortUrl(shortCode), "URL completa copiada");
 };
 
 const openExternal = (url: string) => {
-  window.open(url, "_blank");
+	window.open(url, "_blank");
 };
 
 const removeUrl = (original: string, short: string) => {
-  urlToDelete.value = { original, short };
-  showDeleteUrlDialog.value = true;
+	urlToDelete.value = { original, short };
+	showDeleteUrlDialog.value = true;
 };
 
 const confirmDeleteUrl = () => {
-  if (urlToDelete.value) {
-    urlStore.removeUrl(urlToDelete.value.original, urlToDelete.value.short);
-    if (paginatedUrls.value.length === 0 && currentPage.value > 1) {
-      currentPage.value--;
-    }
-    notificationStore.showSuccess("URL eliminada", "La URL ha sido eliminada correctamente");
-  }
-  showDeleteUrlDialog.value = false;
-  urlToDelete.value = null;
+	if (urlToDelete.value) {
+		urlStore.removeUrl(urlToDelete.value.original, urlToDelete.value.short);
+		if (paginatedUrls.value.length === 0 && currentPage.value > 1) {
+			currentPage.value--;
+		}
+		toast.success("URL eliminada", {
+			description: "La URL ha sido eliminada correctamente",
+		});
+	}
+	showDeleteUrlDialog.value = false;
+	urlToDelete.value = null;
 };
 
 const confirmClearUrls = () => {
-  showClearAllDialog.value = true;
+	showClearAllDialog.value = true;
 };
 
 const confirmClearAllUrls = () => {
-  urlStore.clearAllUrls();
-  currentPage.value = 1;
-  showClearAllDialog.value = false;
-  notificationStore.showWarning("Historial borrado", "Se ha eliminado todo el historial de URLs");
+	urlStore.clearAllUrls();
+	currentPage.value = 1;
+	showClearAllDialog.value = false;
+	toast.warning("Historial borrado", {
+		description: "Se ha eliminado todo el historial de URLs",
+	});
 };
 
 const previousPage = () => {
-  if (currentPage.value > 1) currentPage.value--;
+	if (currentPage.value > 1) currentPage.value--;
 };
 
 const nextPage = () => {
-  if (currentPage.value < totalPages.value) currentPage.value++;
+	if (currentPage.value < totalPages.value) currentPage.value++;
 };
 
 // QR Code functions
 const generateQR = (shortCode: string) => {
-  const fullUrl = getFullShortUrl(shortCode);
-  currentQRUrl.value = fullUrl;
-  showQRModal.value = true;
-  setTimeout(() => {
-    createQRCode(fullUrl);
-  }, 100);
+	const fullUrl = getFullShortUrl(shortCode);
+	currentQRUrl.value = fullUrl;
+	showQRModal.value = true;
+	setTimeout(() => {
+		createQRCode(fullUrl);
+	}, 100);
 };
 
 const createQRCode = (url: string) => {
-  if (!qrCanvas.value) return;
+	if (!qrCanvas.value) return;
 
-  const qr = QRCode(0, "M");
-  qr.addData(url);
-  qr.make();
+	const qr = QRCode(0, "M");
+	qr.addData(url);
+	qr.make();
 
-  const canvas = qrCanvas.value;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+	const canvas = qrCanvas.value;
+	const ctx = canvas.getContext("2d");
+	if (!ctx) return;
 
-  const moduleCount = qr.getModuleCount();
-  const moduleSize = 6;
-  const margin = 4;
-  canvas.width = canvas.height = moduleCount * moduleSize + margin * 2;
+	const moduleCount = qr.getModuleCount();
+	const moduleSize = 6;
+	const margin = 4;
+	canvas.width = canvas.height = moduleCount * moduleSize + margin * 2;
 
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.fillStyle = "#ffffff";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = "#000000";
-  const offset = margin;
-  for (let y = 0; y < moduleCount; y++) {
-    for (let x = 0; x < moduleCount; x++) {
-      if (qr.isDark(y, x)) {
-        ctx.fillRect(
-          offset + x * moduleSize,
-          offset + y * moduleSize,
-          moduleSize,
-          moduleSize,
-        );
-      }
-    }
-  }
+	ctx.fillStyle = "#000000";
+	const offset = margin;
+	for (let y = 0; y < moduleCount; y++) {
+		for (let x = 0; x < moduleCount; x++) {
+			if (qr.isDark(y, x)) {
+				ctx.fillRect(
+					offset + x * moduleSize,
+					offset + y * moduleSize,
+					moduleSize,
+					moduleSize,
+				);
+			}
+		}
+	}
 };
 
 const downloadQR = () => {
-  if (!qrCanvas.value) {
-    notificationStore.showError("Error", "No se encontró el código QR");
-    return;
-  }
-  try {
-    const dataUrl = qrCanvas.value.toDataURL("image/png");
-    const cleanUrl = currentQRUrl.value
-      .replace(/^https?:\/\//, "")
-      .replace(/\//g, "-")
-      .slice(0, 50);
-    const fileName = `qr-${cleanUrl || "codigo"}.png`;
-    const link = document.createElement("a");
-    link.download = fileName;
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    notificationStore.showSuccess("QR descargado", "El código QR se ha descargado correctamente");
-  } catch (error) {
-    console.error("Error al descargar el QR:", error);
-    notificationStore.showError("Error al descargar", "No se pudo descargar el código QR");
-  }
+	if (!qrCanvas.value) {
+		toast.error("Error", {
+			description: "No se encontró el código QR",
+		});
+		return;
+	}
+	try {
+		const dataUrl = qrCanvas.value.toDataURL("image/png");
+		const cleanUrl = currentQRUrl.value
+			.replace(/^https?:\/\//, "")
+			.replace(/\//g, "-")
+			.slice(0, 50);
+		const fileName = `qr-${cleanUrl || "codigo"}.png`;
+		const link = document.createElement("a");
+		link.download = fileName;
+		link.href = dataUrl;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		toast.success("QR descargado", {
+			description: "El código QR se ha descargado correctamente",
+		});
+	} catch (error) {
+		console.error("Error al descargar el QR:", error);
+		toast.error("Error al descargar", {
+			description: "No se pudo descargar el código QR",
+		});
+	}
 };
 
 const loadUrls = async () => {
-  if (!urlStore.shouldFetchPublicList() && shortUrls.value.length > 0) {
-    return;
-  }
-  isLoading.value = true;
-  try {
-    const response = await getUrlsRequest();
-    if (response && Array.isArray(response)) {
-      shortUrls.value = response.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      );
-      urlStore.updatePublicListFetchTime();
-      notificationStore.showSuccess("URLs cargadas", "Lista de URLs actualizada correctamente");
-    } else {
-      shortUrls.value = [];
-      notificationStore.showWarning("Sin URLs", "No se encontraron URLs disponibles");
-    }
-  } catch (error: any) {
-    console.error("Error loading URLs:", error);
-    const errorMessage = error?.response?.data?.message || "Error al cargar las URLs";
-    notificationStore.showError("Error al cargar", errorMessage);
-    shortUrls.value = [];
-  } finally {
-    isLoading.value = false;
-  }
+	if (!urlStore.shouldFetchPublicList() && shortUrls.value.length > 0) {
+		return;
+	}
+	isLoading.value = true;
+	try {
+		const response = await getUrlsRequest();
+		if (response && Array.isArray(response)) {
+			shortUrls.value = response.sort(
+				(a, b) =>
+					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+			);
+			urlStore.updatePublicListFetchTime();
+			toast.success("URLs cargadas", {
+				description: "Lista de URLs actualizada correctamente",
+			});
+		} else {
+			shortUrls.value = [];
+			toast.warning("Sin URLs", {
+				description: "No se encontraron URLs disponibles",
+			});
+		}
+	} catch (error: any) {
+		console.error("Error loading URLs:", error);
+		const errorMessage =
+			error?.response?.data?.message || "Error al cargar las URLs";
+		toast.error("Error al cargar", {
+			description: errorMessage,
+		});
+		shortUrls.value = [];
+	} finally {
+		isLoading.value = false;
+	}
 };
 
 onMounted(() => {
-  if (!isMyList.value) {
-    loadUrls();
-  } else if (urlStore.savedUrls.length > 0) {
-    loadUrls();
-  }
+	if (!isMyList.value) {
+		loadUrls();
+	} else if (urlStore.savedUrls.length > 0) {
+		loadUrls();
+	}
 });
 
 watch(isMyList, (value) => {
-  if (!value && shortUrls.value.length === 0) {
-    loadUrls();
-  }
-  if (value && urlStore.savedUrls.length > 0 && shortUrls.value.length === 0) {
-    loadUrls();
-  }
+	if (!value && shortUrls.value.length === 0) {
+		loadUrls();
+	}
+	if (value && urlStore.savedUrls.length > 0 && shortUrls.value.length === 0) {
+		loadUrls();
+	}
 });
 </script>
 

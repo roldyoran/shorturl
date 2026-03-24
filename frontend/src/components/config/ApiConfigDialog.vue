@@ -15,16 +15,16 @@
         <Info class="w-4 h-4" />
         <AlertTitle>Información</AlertTitle>
         <AlertDescription>
-          El acortador de urls utiliza una clave de API para autenticarse. 
+          El acortador de URLs utiliza una clave de API para autenticarse.
           <strong>Puede probar el acortador un máximo de 3 veces.</strong>
         </AlertDescription>
       </Alert>
 
       <div class="space-y-2">
         <Label for="api-url">URL Base de la API</Label>
-        <Input 
+        <Input
           id="api-url"
-          v-model="apiUrl" 
+          :modelValue="apiUrl"
           placeholder="https://tu-worker.workers.dev"
           type="url"
           readonly
@@ -38,7 +38,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
 import { Info } from "lucide-vue-next";
 import {
 	DialogHeader,
@@ -48,20 +47,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-const apiKey = ref<string>(
-	import.meta.env.VITE_API_KEY || localStorage.getItem("apiKey") || "",
-);
-
 import { getApiBaseUrl } from "@/api/http";
 
-const apiUrl = ref<string>(getApiBaseUrl());
-
-watch(apiKey, (val) => {
-	try {
-		localStorage.setItem("apiKey", val);
-	} catch (e) {
-		console.error("Error guardando apiKey en localStorage:", e);
-	}
-});
+const apiUrl = getApiBaseUrl();
 </script>

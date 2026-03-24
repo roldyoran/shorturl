@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { useToast } from "@/composables/useToast";
+import { toast } from "vue-sonner";
 import { Button } from "@/components/ui/button";
 
-const { toast, showSuccess, showError, showWarning, showInfo, showPromise } =
-	useToast();
-
-// Función para simular una operación asíncrona
 const simulateAsyncOperation = (): Promise<string> => {
 	return new Promise((resolve) => {
 		setTimeout(() => resolve("URL acortada"), 2000);
@@ -14,8 +10,7 @@ const simulateAsyncOperation = (): Promise<string> => {
 
 const handlePromiseToast = () => {
 	const promise = simulateAsyncOperation();
-
-	showPromise(promise, {
+	toast.promise(promise, {
 		loading: "Acortando URL...",
 		success: "URL acortada correctamente",
 		error: "Error al acortar URL",
@@ -44,7 +39,7 @@ const handlePromiseToast = () => {
 
       <Button
         variant="outline"
-        @click="() => showSuccess('URL acortada correctamente', {
+        @click="() => toast.success('URL acortada correctamente', {
           description: 'Tu nueva URL está lista para usar',
         })"
       >
@@ -53,29 +48,11 @@ const handlePromiseToast = () => {
 
       <Button
         variant="outline"
-        @click="() => showError('Error al acortar URL', {
+        @click="() => toast.error('Error al acortar URL', {
           description: 'Por favor, verifica la URL e inténtalo de nuevo',
         })"
       >
         Error Toast
-      </Button>
-
-      <Button
-        variant="outline"
-        @click="() => showWarning('Advertencia', {
-          description: 'Esta acción no se puede deshacer',
-        })"
-      >
-        Warning Toast
-      </Button>
-
-      <Button
-        variant="outline"
-        @click="() => showInfo('Información', {
-          description: 'Esta es una notificación informativa',
-        })"
-      >
-        Info Toast
       </Button>
 
       <Button

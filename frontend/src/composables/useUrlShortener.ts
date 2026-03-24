@@ -84,9 +84,6 @@ export const useUrlShortener = () => {
 
 	return {
 		shortenUrl,
-		canUseService: urlStore.canUseService,
-		remainingAttempts: urlStore.userSession.remainingAttempts,
-		isAdmin: urlStore.userSession.isAdmin,
 		isLoading: urlStore.isLoading,
 	};
 };

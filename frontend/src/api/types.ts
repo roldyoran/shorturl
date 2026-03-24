@@ -13,3 +13,23 @@ export interface UrlItem {
 	visits: number;
 	id: number;
 }
+
+export interface SavedUrlItem {
+	original: string;
+	short: string;
+	date: string;
+}
+
+export interface UserSession {
+	remainingAttempts: number;
+	isAdmin: boolean;
+	sessionId: string;
+	lastReset: string;
+}
+
+export interface ShortenResult {
+	success: boolean;
+	shortCode?: string;
+	shortUrl?: string;
+	originalUrl?: string;
+}

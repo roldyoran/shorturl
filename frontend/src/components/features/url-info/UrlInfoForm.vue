@@ -104,9 +104,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { getUrlInfoRequest } from "@/api/http";
 import { useCopyToClipboard } from "@/composables/useCopyToClipboard";
-import { useNotificationStore } from "@/stores/notificationStore";
 import { formatDate } from "@/lib/utils";
 import type { UrlInfoResponse } from "@/api/types";
+import { toast } from "vue-sonner";
 import {
 	Tooltip,
 	TooltipTrigger,
@@ -116,7 +116,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 
 // Composables
 const { copyToClipboard } = useCopyToClipboard();
-const notificationStore = useNotificationStore();
 
 // Reactive state
 const shortCode = ref<string>("");
@@ -147,16 +146,17 @@ const handleSubmit = async (event: Event) => {
 		urlInfo.value = data;
 
 		if (data) {
-			notificationStore.showSuccess(
-				"Información obtenida",
-				"Se ha encontrado la información de la URL",
-			);
+			toast.success("Información obtenida", {
+				description: "Se ha encontrado la información de la URL",
+			});
 		}
 	} catch (err: any) {
 		const errorMessage =
 			err?.response?.data?.message || "Error al obtener información de la URL";
 		error.value = errorMessage;
-		notificationStore.showError("Error al obtener información", errorMessage);
+		toast.error("Error al obtener información", {
+			description: errorMessage,
+		});
 	} finally {
 		isLoading.value = false;
 	}

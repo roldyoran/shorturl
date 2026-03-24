@@ -33,6 +33,40 @@ Usa la guía del área en la que estés tocando código para no saltarte convenc
 
 ---
 
+## Comandos del Monorepo
+
+> **IMPORTANTE**: Este es un monorepo con **bun** como package manager. Todos los comandos deben ejecutarse desde la raíz o especificar el workspace.
+
+### Scripts disponibles
+
+```bash
+# Desarrollo
+bun run dev:front     # Inicia servidor frontend
+bun run dev:back      # Inicia servidor backend
+
+# Build
+bun run build:front   # Build del frontend
+bun run build:back    # Build del backend
+
+# Verificación de código (frontend)
+bun run check         # Verifica código con Biome (no hace build)
+bun run format        # Formatea código con Biome
+bun run lint          # Lint y auto-fix con Biome
+```
+
+### Instalar dependencias
+
+```bash
+# Desde la raíz (instala todos los workspaces)
+bun install
+
+# Opcional: instalar solo un workspace
+bun install --cwd frontend
+bun install --cwd backend
+```
+
+---
+
 ## Conventional Commits
 
 Los mensajes de commit deben seguir el formato de [Conventional Commits](https://www.conventionalcommits.org/) en **inglés**:

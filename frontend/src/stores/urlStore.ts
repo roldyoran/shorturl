@@ -1,24 +1,13 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import type { SavedUrlItem, UserSession } from "@/api/types";
 
-// Interfaces
-export interface UrlItem {
-	original: string;
-	short: string;
-	date: string;
-}
-
-export interface UserSession {
-	remainingAttempts: number;
-	isAdmin: boolean;
-	sessionId: string;
-	lastReset: string;
-}
+export type { SavedUrlItem, UserSession };
 
 // Store de URLs
 export const useUrlStore = defineStore("urlStore", () => {
 	// Estado reactivo
-	const savedUrls = ref<UrlItem[]>([]);
+	const savedUrls = ref<SavedUrlItem[]>([]);
 	const userSession = ref<UserSession>({
 		remainingAttempts: 3,
 		isAdmin: false,
@@ -142,7 +131,7 @@ export const useUrlStore = defineStore("urlStore", () => {
 		try {
 			const stored = localStorage.getItem("savedUrls");
 			if (stored) {
-				const parsedUrls: UrlItem[] = JSON.parse(stored);
+				const parsedUrls: SavedUrlItem[] = JSON.parse(stored);
 				// Remover duplicados y ordenar por fecha
 				savedUrls.value = removeDuplicateUrls(parsedUrls).sort(
 					(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
@@ -155,7 +144,7 @@ export const useUrlStore = defineStore("urlStore", () => {
 	}
 
 	function addUrl(original: string, short: string) {
-		const newUrl: UrlItem = {
+		const newUrl: SavedUrlItem = {
 			original,
 			short,
 			date: new Date().toISOString(),
@@ -199,7 +188,7 @@ export const useUrlStore = defineStore("urlStore", () => {
 		}
 	}
 
-	function removeDuplicateUrls(urlList: UrlItem[]): UrlItem[] {
+	function removeDuplicateUrls(urlList: SavedUrlItem[]): SavedUrlItem[] {
 		const seen = new Set<string>();
 		return urlList.filter((url) => {
 			if (seen.has(url.original)) return false;
