@@ -34,16 +34,37 @@ Use one of the following types:
 ### Scope
 
 The scope is optional but recommended when it adds clarity. Use a scope that describes the area of the codebase:
-- `api` — API endpoints, routes, controllers
+
+**Frontend:**
 - `ui` — User interface, components, pages
-- `db` — Database, migrations, schemas
+- `router` — Routing, navigation, redirects
+- `state` — State management, stores
+- `forms` — Form handling, validation
+- `styles` — CSS, styling, themes
+
+**Backend:**
+- `api` — API endpoints, routes, controllers
+- `db` — Database, migrations, schemas, queries
 - `auth` — Authentication, authorization, sessions
+- `middleware` — Middleware, interceptors
+- `services` — Business logic, services
+
+**General:**
 - `config` — Configuration files, environment
 - `deps` — Dependencies, packages
 - `tests` — Test files and test infrastructure
 - `docs` — Documentation
 - `infra` — Infrastructure, deployment
 - `utils` — Utility functions, helpers
+- `types` — Types, interfaces, schemas
+- `i18n` — Internationalization, translations
+- `logging` — Logging, monitoring
+- `security` — Security fixes, sanitization
+- `cache` — Caching, caching strategies
+- `email` — Email templates, notifications
+- `file` — File handling, uploads
+- `mobile` — Mobile-specific changes (React Native, Flutter, etc.)
+- `desktop` — Desktop application changes
 
 ### Description
 
