@@ -20,6 +20,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@hono/swagger-ui": "^0.6.1",
     "@hono/zod-validator": "^0.7.6",
     "@types/node": "^25.3.3",
     "dotenv": "^17.3.1",
