@@ -4,10 +4,7 @@ import { AppError } from "@/domain/app-error";
 
 export class UrlNotFoundError extends AppError {
 	constructor(shortCode: string) {
-		super(
-			`No existe una URL con el shortCode "${shortCode}"`,
-			"URL_NOT_FOUND",
-		);
+		super(`No existe una URL con el shortCode "${shortCode}"`, "URL_NOT_FOUND");
 	}
 }
 

@@ -4,6 +4,8 @@ import { checkEnvMiddleware, type Bindings } from "@/utils/context";
 import { v1Router } from "@/presentation/http/v1";
 import { redirectRoutes } from "@/presentation/http/redirect";
 import { onError } from "@/infrastructure/http/error-handler";
+import { swaggerRoutes } from "@/presentation/http/swagger";
+import { openapiRoutes } from "@/presentation/http/openapi";
 
 // Crear la instancia principal de la aplicación
 const app = new Hono<{ Bindings: Bindings }>();
@@ -16,13 +18,18 @@ app.use("*", corsMiddleware());
 
 app.get("/", (c) => {
 	return c.json({
-		message: "Bienvenido al acortador de URLs creado por Roldyoran, este proyecto utiliza Hono, TypeScript y Bun, alojado en Clouflare workers. Gracias por visitarlo!",
+		message:
+			"Bienvenido al acortador de URLs creado por Roldyoran, este proyecto utiliza Hono, TypeScript y Bun, alojado en Clouflare workers. Gracias por visitarlo!",
 		version: "1.0.0",
 	});
 });
 
 // Rutas versionadas — añade app.route("/v2", v2Router) cuando sea necesario
 app.route("/v1", v1Router);
+
+// Rutas de Swagger UI
+app.route("/", swaggerRoutes);
+app.route("/", openapiRoutes);
 
 // Redirección directa: GET /:shortCode → URL original
 app.route("/", redirectRoutes);
