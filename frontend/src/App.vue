@@ -65,10 +65,27 @@
                   <List class="w-5 h-5" />
                   <span class="text-xs font-medium">Lista Pública</span>
                 </button>
+
+                <button
+                  type="button"
+                  aria-label="Generar QR"
+                  :aria-pressed="activeTab === 'qr'"
+                  @click="activeTab = 'qr'"
+                  class="col-span-2"
+                  :class="[
+                    'flex flex-col items-center gap-2 p-3 rounded-lg border transition-colors duration-200',
+                    activeTab === 'qr'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'bg-background hover:bg-muted'
+                  ]"
+                >
+                  <QrCode class="w-5 h-5" />
+                  <span class="text-xs font-medium">Generar QR</span>
+                </button>
               </div>
             </div>
 
-            <TabsList class="hidden sm:grid w-full max-w-md mx-auto grid-cols-3 bg-muted/50 p-1 rounded-lg">
+            <TabsList class="hidden sm:grid w-full max-w-md mx-auto grid-cols-4 bg-muted/50 p-1 rounded-lg">
               <TabsTrigger
                 value="info"
                 class="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-colors"
@@ -90,6 +107,13 @@
                 <List class="w-4 h-4" />
                 <span>Lista URLs</span>
               </TabsTrigger>
+              <TabsTrigger
+                value="qr"
+                class="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md transition-colors"
+              >
+                <QrCode class="w-4 h-4" />
+                <span>Generar QR</span>
+              </TabsTrigger>
             </TabsList>
 
             <div class="mt-6">
@@ -103,6 +127,9 @@
                   </TabsContent>
                   <TabsContent value="list">
                     <UrlsList mode="public" />
+                  </TabsContent>
+                  <TabsContent value="qr">
+                    <QrGenerator />
                   </TabsContent>
                 </div>
               </Transition>
@@ -118,20 +145,21 @@
 
 <script setup lang="ts">
 import { ref, watchEffect } from "vue";
-import { Info, Database, List } from "lucide-vue-next";
 import { useColorMode } from "@vueuse/core";
-import { useUrlStore } from "@/stores/urlStore";
+import { Info, Database, List, QrCode } from "lucide-vue-next";
 import { Toaster } from "@/components/ui/sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useUrlStore } from "@/stores/urlStore";
 import "vue-sonner/style.css";
 import NavbarHeader from "@/components/layout/NavbarHeader.vue";
 import HomeView from "@/views/HomeView.vue";
 import FooterComponent from "@/components/layout/FooterComponent.vue";
 import UrlInfoForm from "@/components/features/url-info/UrlInfoForm.vue";
 import UrlsList from "@/components/features/urls/UrlsList.vue";
+import QrGenerator from "@/components/features/qr-generator/QrGenerator.vue";
 
-type Tab = "info" | "myurls" | "list";
+type Tab = "info" | "myurls" | "list" | "qr";
 
 const mode = useColorMode();
 const urlStore = useUrlStore();
