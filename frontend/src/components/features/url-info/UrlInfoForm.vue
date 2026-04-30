@@ -21,7 +21,8 @@
               id="short-url-code"
               v-model="shortCode"
               type="text"
-              placeholder="Ej: abc123"
+              maxlength="9"
+              placeholder="Ej: abc123456"
               required
             />
             <Button type="submit" :disabled="isLoading">
@@ -150,13 +151,22 @@ const handleSubmit = async (event: Event) => {
 				description: "Se ha encontrado la información de la URL",
 			});
 		}
-	} catch (err: any) {
-		const errorMessage =
-			err?.response?.data?.message || "Error al obtener información de la URL";
-		error.value = errorMessage;
-		toast.error("Error al obtener información", {
-			description: errorMessage,
-		});
+} catch (err: any) {
+		const status = err?.response?.status;
+		if (status === 404) {
+			const searchedCode = shortCode.value.trim();
+			error.value = `No existe una URL con el código "${searchedCode}"`;
+			toast.error("URL no encontrada", {
+				description: `El código "${searchedCode}" no existe en la base de datos`,
+			});
+		} else {
+			const errorMessage =
+				err?.response?.data?.message || "Error al obtener información de la URL";
+			error.value = errorMessage;
+			toast.error("Error al obtener información", {
+				description: errorMessage,
+			});
+		}
 	} finally {
 		isLoading.value = false;
 	}

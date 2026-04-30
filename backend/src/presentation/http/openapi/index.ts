@@ -8,7 +8,7 @@ openapiRoutes.get("/openapi.json", (c) => {
 		openapi: "3.0.0",
 		info: {
 			title: "ShortURL API",
-			version: "1.0.0",
+			version: "3.0.2",
 			description:
 				"API para acortar URLs desarrollada con Hono, TypeScript y Cloudflare Workers",
 		},
@@ -62,7 +62,7 @@ openapiRoutes.get("/openapi.json", (c) => {
 										shortCode: {
 											type: "string",
 											minLength: 1,
-											maxLength: 6,
+											maxLength: 9,
 											pattern: "^[a-z0-9]+$",
 										},
 									},
@@ -94,7 +94,7 @@ openapiRoutes.get("/openapi.json", (c) => {
 							required: true,
 							schema: {
 								type: "string",
-								pattern: "^[a-z0-9]{1,6}$",
+								pattern: "^[a-z0-9]{1,9}$",
 							},
 						},
 					],
@@ -121,7 +121,7 @@ openapiRoutes.get("/openapi.json", (c) => {
 							required: true,
 							schema: {
 								type: "string",
-								pattern: "^[a-z0-9]{1,6}$",
+								pattern: "^[a-z0-9]{1,9}$",
 							},
 						},
 					],
@@ -166,7 +166,7 @@ openapiRoutes.get("/openapi.json", (c) => {
 							required: true,
 							schema: {
 								type: "string",
-								pattern: "^[a-z0-9]{1,6}$",
+								pattern: "^[a-z0-9]{1,9}$",
 							},
 						},
 					],

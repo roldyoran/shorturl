@@ -4,6 +4,6 @@ import type { Bindings } from "@/utils/context";
 
 const swaggerRoutes = new Hono<{ Bindings: Bindings }>();
 
-swaggerRoutes.get("/swagger", swaggerUI({ url: "/openapi.json" }));
+swaggerRoutes.get("/docs", swaggerUI({ url: "/openapi.json" }));
 
 export { swaggerRoutes };

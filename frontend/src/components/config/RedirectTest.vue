@@ -18,6 +18,7 @@
           v-model="shortCode"
           placeholder="Ej: abc123xyz"
           type="text"
+          maxlength="9"
         />
       </div>
 

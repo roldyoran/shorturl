@@ -4,8 +4,8 @@ import { urlsTable } from "@/db/schema";
 import type { UrlEntity, CreateUrlInput } from "@/domain/url/url.entity";
 import type { UrlRepositoryPort } from "@/domain/url/url.repository.port";
 
-// Generador de shortCode aleatorio: 6 chars [a-z0-9]
-function generateShortCode(length = 6): string {
+// Generador de shortCode aleatorio: 9 chars [a-z0-9]
+function generateShortCode(length = 9): string {
 	const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 	let result = "";
 	for (let i = 0; i < length; i++) {

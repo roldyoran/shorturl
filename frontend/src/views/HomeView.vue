@@ -99,10 +99,10 @@
               v-model="alias"
               @input="onAliasInput"
               @keydown.enter.prevent="handleShorten"
-              maxlength="6"
+              maxlength="9"
               pattern="[a-z0-9]*"
               inputmode="text"
-              placeholder="alias - máximo 6 caracteres (a-z0-9)"
+              placeholder="alias - máximo 9 caracteres (a-z0-9)"
               class="w-full rounded-lg px-3 py-1.5 text-sm font-mono"
             />
           </div>
@@ -159,7 +159,7 @@ const cardAnimating = ref(false);
 
 const onAliasInput = (e: Event) => {
 	const val = (e.target as HTMLInputElement).value || "";
-	alias.value = val.replace(/[^a-z0-9]/g, "").slice(0, 6);
+	alias.value = val.replace(/[^a-z0-9]/g, "").slice(0, 9);
 };
 
 const customAlias = ref(false);

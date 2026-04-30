@@ -20,7 +20,7 @@ app.get("/", (c) => {
 	return c.json({
 		message:
 			"Bienvenido al acortador de URLs creado por Roldyoran, este proyecto utiliza Hono, TypeScript y Bun, alojado en Clouflare workers. Gracias por visitarlo!",
-		version: "1.0.0",
+		version: "3.0.2",
 	});
 });
 

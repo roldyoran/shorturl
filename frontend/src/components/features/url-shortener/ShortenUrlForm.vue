@@ -78,6 +78,7 @@
               name="custom-hash"
               autocomplete="off"
               spellcheck="false"
+              maxlength="9"
               placeholder="mi-enlace-personalizado…"
               pattern="^[a-zA-Z0-9-_]+$"
             />
