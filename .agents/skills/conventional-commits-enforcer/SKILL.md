@@ -1,325 +1,266 @@
 ---
-name: conventional-commits-enforcer
-description: Validates and generates git commit enforcer messages following Conventional Commits specification with extras rules. Use this skill when creating commits, reviewing commit history, or enforcing commit message standards. Enforces English-only messages, automatic scope inference from file paths, proper structure (header/body/files), and excludes sensitive files (.env, credentials, secrets) from any commit. Triggered on any git commit operation.
-license: LICENSE.txt
+name: git-commit-conventional-enforcer
+description: Execute git commits using Conventional Commits with enforcer and automatic scope inference, diff analysis, intelligent staging, and strict message formatting. Ensures clear, structured, and safe commits while excluding sensitive files.
+license: MIT
+allowed-tools: Bash, Read, Glob
 ---
 
-This skill enforces **strict Conventional Commits formatting** for all git commits.
-All commit messages **MUST be written in English only**.
+# Git Commit - Conventional Commits (Simplified + Enforced)
 
-The AI MUST always generate commits following the exact structure and rules defined below.
+## Overview
 
----
+Create clean, semantic git commits by analyzing changes (diff) and generating standardized messages using Conventional Commits.
 
-# Required Commit Format
+- Auto-detect type and scope
+- Infer scope from file paths
+- Generate structured commit messages
+- Support intelligent staging
+- Enforce English-only messages
+- Prevent committing sensitive files
+
+
+
+# Commit Format
 
 ```
-<type>(<scope>): <description>
+<type>(<scope>)!: <description>
 
 <summary>
 
 Files:
-- [ADD] path/file.ext: short description
-- [MOD] path/file.ext: short description
-- [DEL] path/file.ext: short description
-- [REN] path/file.ext: short description
+- [ADD|MOD|DEL|REN] path/file.ext: short description
+
+Refs:
+- closes #123
 ```
 
-If no clear scope can be inferred:
+If scope is unclear:
 
 ```
 <type>: <description>
 ```
 
----
+Breaking changes: add `!` after type/scope:
 
-# Commit Structure Rules
+```
+feat(api)!: change login response format
+BREAKING CHANGE: login endpoint now returns user object instead of token
+```
+
+# Commit Rules
 
 ## Header
 
-```
-<type>(<scope>): <description>
-```
+- lowercase only
+- imperative mood (e.g., "add", "fix")
+- max 50 characters
+- no period at end
+- no emojis
 
-OR
+## Description
 
-```
-<type>: <description>
-```
+- concise and clear
+- max 50 characters
 
-### Header Requirements
+## Summary (Body)
 
-* MUST use lowercase
-* MUST use imperative mood
-* MUST NOT exceed 50 characters
-* MUST NOT end with a period
-* MUST NOT contain emojis
-* MUST NOT contain extra whitespace
-* Scope: OMIT if unclear, INFER when possible
+- optional, but recommended if 3+ files changed
+- 1–3 lines (max 80 chars per line)
+- explains WHAT changed
 
----
+## Files Section
+
+- REQUIRED when body exists
+- MUST include ALL modified files
+- use relative paths
+- description: 2–5 words
+
+Prefixes:
+- [ADD] new file
+- [MOD] modified file
+- [DEL] deleted file
+- [REN] renamed file
+
+## References
+
+- Optional but recommended
+- Use to link issues/PRs
+- Common keywords: `closes`, `fixes`, `resolves`, `refs`, `see`
+- Format: `closes #123` or `closes GH-456`
+
+
+## Commit Types
+
+| Type       | Purpose                        |
+| ---------- | ------------------------------ |
+| `feat`     | New feature                    |
+| `fix`      | Bug fix                        |
+| `docs`     | Documentation only             |
+| `style`    | Formatting/style (no logic)    |
+| `refactor` | Code refactor (no feature/fix) |
+| `perf`     | Performance improvement        |
+| `test`     | Add/update tests               |
+| `build`    | Build system/dependencies      |
+| `ci`       | CI/config changes              |
+| `chore`    | Maintenance/misc               |
+| `revert`   | Revert commit                  |
+
 
 # Scope Inference
 
-The AI MUST infer scope automatically using:
+Infer automatically from paths:
 
-1. Modified file paths
-2. Folder names
-3. File types
+| Path | Scope |
+|------|------|
+| src/components, pages, views, src/ui | ui |
+| src/store, composables, src/stores, src/state | state |
+| src/router, routes.ts | router |
+| routes, controllers, api/* | api |
+| auth, middleware, src/auth | auth |
+| models, migrations, prisma, schema | db |
+| services, src/services | services |
+| config files (.eslintrc, tsconfig, etc.) | config |
+| tests, __tests__, spec | tests |
+| .github, .gitlab-ci.yml | ci |
+| docker, Dockerfile, docker-compose | docker |
+| scripts, tools | chore |
+| infra, terraform, ansible | infra |
+| logs | logging |
+| utils, types, src/lib, src/hooks | utils |
+| package.json, package-lock.json, bun.lockb | deps |
+| backend/, api/ | backend |
+| frontend/, web/, client/ | frontend |
+| apps/*, packages/* | monorepo |
 
-## Scope Mapping Table
+Rules:
+- same area → use scope
+- multiple areas → MUST omit scope
+- root files → omit scope
+- files with spaces in path → wrap in quotes when staging
 
-| Path Pattern | Scope |
-|--------------|-------|
-| src/components/, src/pages/, src/views/ | ui |
-| src/router/ | router |
-| src/store/, src/composables/ | state |
-| src/forms/, src/styles/ | forms |
-| routes/, controllers/ | api |
-| models/, migrations/ | db |
-| auth/, middleware/ | auth |
-| services/ | services |
-| config/ | config |
-| tests/ | tests |
-| docs/ | docs |
-| scripts/ | chore |
-| .github/, ci/ | ci |
-| docker/ | docker |
-| infra/ | infra |
-| utils/, types/ | utils |
-| i18n/ | i18n |
-| logs/ | logging |
-| security/ | security |
-| cache/ | cache |
-| package.json, package-lock.json | deps |
-| *.config.*, biome.json, tsconfig.json | config |
 
-## Inference Rules
+# Workflow
 
-* All files same area → use that scope
-* Multiple areas → omit scope
-* Dependency changes → use `deps`
-* CI files → use `ci`
-* Build files → use `build`
-* Root-level files only → omit scope
+## 1. Analyze Changes
+```bash
+# If files are staged, use staged diff
+git diff --staged
 
----
+# If nothing staged, use working tree diff
+git diff
 
-# Allowed Types
-
-* feat
-* fix
-* refactor
-* docs
-* test
-* chore
-* perf
-* style
-* build
-* ci
-* revert
-
----
-
-# Description Rules
-
-* Use imperative mood
-* Be concise
-* Max 50 characters
-* No capital first letter
-* No trailing period
-
-Correct:
-```
-feat(api): add user registration endpoint
+# Also check status
+git status --porcelain
 ```
 
-Correct (no scope):
-```
-chore: update dependencies
-```
+## 2. Stage Files
+```bash
+# Stage specific files
+git add path/to/file1 path/to/file2
 
-Incorrect:
-```
-feat: Added new endpoint.
-```
+# Stage by pattern
+git add *.test.*
+git add src/components/*
 
----
-
-# Body
-
-## 3+ Modified Files (MANDATORY)
-
-Body MUST be included when modifying 3+ files.
-
-## 2 or Less Modified Files (OPTIONAL)
-
-Body is optional for 2 or fewer file changes.
-
-Structure:
-```
-<1-3 line summary>
-
-Files:
-- [ADD] file: description
+# Interactive staging
+git add -p
 ```
 
-## Summary Requirements
+## 3. Generate Commit
 
-* 1–3 lines, max 80 characters total
-* Explain WHAT changed
-* No emojis
+- detect type
+- infer scope
+- summarize changes
 
----
+## 4. Commit
+```bash
+git commit -m "<message>"
+```
 
-# Files Section
 
-The commit MUST include a full list of modified files (UNLESS body is omitted).
 
-## Rules
+# Safety Rules
 
-* MUST include ALL modified files
-* MUST use relative paths
-* MUST include change prefix
-* MUST keep descriptions 2–5 words
+- NEVER commit:
+  - `.env`, `.env.local`, `.env.*.local`
+  - `credentials.json`, `secrets.json`, `config/secrets/*`
+  - `*.pem`, `*.key`, `*.p12`, `*.jks`
+  - `id_rsa`, `id_ed25519`, `*.secret`
+  - `aws-credentials`, `gcp-key.json`
+  - `*.log` files with sensitive data
+  - `dump.sql`, `*.sqlite` with production data
 
-## Allowed Prefixes
+If detected:
+- EXCLUDE from staging using `.gitignore` or explicit exclusion
+- DO NOT proceed with commit if only sensitive files remain
+- WARN user and explain which files are blocked
 
-* [ADD] - new file
-* [MOD] - modified file
-* [DEL] - deleted file
-* [REN] - renamed file
-* [BIN] - binary/assets (describe in commit message, not in files list)
+- NEVER force push (`git push --force`) or destructive commands
+- NEVER bypass hooks (`--no-verify`)
 
----
+
+
+# Validation Checklist
+
+Before committing:
+
+- no secrets included
+- header ≤ 50 chars
+- description imperative
+- scope valid or omitted
+- body present if 3+ files (recommended)
+- files section complete
+- breaking changes marked with `!` and `BREAKING CHANGE:` footer
+
+# Best Practices
+
+- one logical change per commit
+- keep messages short and meaningful
+- use body only when needed
+- group related files together
+- English only
+- no emojis
+
+
 
 # Examples
 
-## Example 1: Inferred Scope
-
+## Standard commit
 ```
-fix(api): validate user input
+feat(api): add user login endpoint
 
-Add validation for email and password fields in signup endpoint.
+Implement authentication with JWT support.
 
 Files:
-- [MOD] routes/auth.ts: add validation middleware
-- [MOD] controllers/auth.ts: validate request body
+- [ADD] routes/auth.ts: login route
+- [MOD] controllers/auth.ts: handle login
+- [ADD] services/jwt.ts: token service
+
+Refs:
+- closes #42
 ```
 
-## Example 2: No Scope
-
+## Breaking change
 ```
-chore: update dependencies
+feat(auth)!: change user response format
 
-Upgrade project dependencies to latest stable versions.
+Update user endpoint to return full profile object.
+
+BREAKING CHANGE: /api/user now returns {id, name, email, avatar}
+instead of {id, name, email}
 
 Files:
-- [MOD] package.json: update versions
-- [MOD] package-lock.json: regenerate lockfile
+- [MOD] routes/user.ts: update response schema
+- [MOD] controllers/user.ts: return full profile
+
+Refs:
+- fixes #128
 ```
 
-## Example 3: Ambiguous Multiple Areas
-
+## Simple commit (≤2 files)
 ```
-feat: add user profile feature
-
-Implement user profile with settings and preferences.
+fix: resolve validation error in form
 
 Files:
-- [ADD] src/pages/Profile.vue: profile page
-- [MOD] api/users.ts: user endpoint
-- [ADD] components/UserCard.vue: user card
+- [MOD] utils/validation.ts: fix email regex
 ```
-
-## Example 4: Small Change (No Body)
-
-```
-fix(ui): update button color
-
-Files:
-- [MOD] src/styles/variables.css: update primary color
-```
-
-## Example 5: Binary Assets
-
-```
-chore: add app icons
-
-Update application icons for all platforms.
-
-(Binary files not listed - see working directory changes)
-```
-
-## Example 6: Revert Commit
-
-```
-revert: feat(api): add user registration endpoint
-
-Reverts previous commit that introduced user registration.
-```
-
----
-
-# Breaking Changes
-
-## Option 1
-```
-feat(api)!: change authentication flow
-```
-
-## Option 2
-
-Footer:
-```
-BREAKING CHANGE: authentication now requires token
-```
-
----
-
-# Absolute Rules
-
-The AI MUST:
-
-1. Always write commits in English
-2. Infer scope when possible, omit if unclear
-3. Include body for 3+ files, optional for ≤2
-4. Include file list (unless body omitted)
-5. Never use emojis
-6. Never exceed 50 chars in description
-7. Never exceed 80 chars in summary
-8. Never skip Files section
-9. **NEVER commit secrets, .env files, or credentials. If such files appear in changes, EXCLUDE them from commit entirely and warn the user.**
-
----
-
-# Troubleshooting
-
-## When Scope is Unclear
-
-* If files span multiple areas → omit scope
-* If only root-level files → omit scope
-* If mixed file types → omit scope
-
-## When File List is Empty
-
-* Binary-only changes → describe in commit message
-* If all files are secrets → abort and warn user
-
----
-
-# AI Validation Checklist
-
-Before outputting a commit:
-
-* Check for secrets/.env in changes → exclude if found
-* infer scope from file paths
-* omit scope if ambiguous
-* header format correct
-* description imperative
-* body present (if 3+ files)
-* summary exists (if body present)
-* files section exists (unless body omitted)
-* prefixes correct
-* no emojis
-* English language
